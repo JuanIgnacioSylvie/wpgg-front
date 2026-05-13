@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/auth_request_extra.dart';
+import '../../../../core/oauth/riot_rso_sign_in_url.dart';
 import '../../domain/entities/riot_rso_entities.dart';
 import 'riot_rso_remote_datasource.dart';
 
@@ -27,14 +28,11 @@ class RiotRsoRemoteDataSourceImpl implements RiotRsoRemoteDataSource {
     String? uiLocales,
   }) async {
     try {
-      final qp = <String, dynamic>{};
-      if (requestRedirect) qp['redirect'] = 'true';
-      if (loginHint != null && loginHint.isNotEmpty) {
-        qp['loginHint'] = loginHint;
-      }
-      if (uiLocales != null && uiLocales.isNotEmpty) {
-        qp['uiLocales'] = uiLocales;
-      }
+      final qp = riotRsoSignInQueryParameters(
+        requestRedirect: requestRedirect,
+        loginHint: loginHint,
+        uiLocales: uiLocales,
+      );
       final res = await _api.get<dynamic>(
         '/riot/rso/sign-in',
         queryParameters: qp.isEmpty ? null : qp,

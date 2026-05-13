@@ -2,6 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/oauth/riot_rso_sign_in_url.dart';
+import '../../../../core/platform/navigate_browser.dart';
 import '../../domain/repositories/riot_rso_repository.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
@@ -90,6 +93,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
+    if (kIsWeb) {
+      final url = buildRiotRsoSignInAbsoluteUrl(
+        AppConstants.baseUrl,
+        requestRedirect: event.requestRedirect,
+        loginHint: event.loginHint,
+        uiLocales: event.uiLocales,
+      );
+      navigateBrowserTo(url);
+      return;
+    }
+
     final result = await _riotRsoRepository.getSignIn(
       requestRedirect: event.requestRedirect,
       loginHint: event.loginHint,
@@ -99,12 +113,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) async => emit(AuthError(failure.message)),
       (signIn) async {
         final uri = Uri.parse(signIn.authorizeUrl);
-        final ok = kIsWeb
-            ? await launchUrl(uri, webOnlyWindowName: '_self')
-            : await launchUrl(
-                uri,
-                mode: LaunchMode.externalApplication,
-              );
+        final ok = await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
         if (!ok) {
           emit(const AuthError('No se pudo abrir la página de Riot'));
           return;
