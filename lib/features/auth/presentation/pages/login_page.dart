@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -21,10 +23,11 @@ class LoginPage extends StatelessWidget {
         }
         if (state is AuthRiotRsoSignInLaunched) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(
-                'Se abrió la página de Riot. El callback del API devuelve el JSON de tokens; '
-                'no los guardes en almacenamiento local sin criterio de seguridad.',
+                kIsWeb
+                    ? 'Se abrió Riot. Al volver, deberías aterrizar en ${Uri.base.origin}${AppConstants.riotRsoWebSuccessPath} con los tokens en el #.'
+                    : 'Se abrió la página de Riot.',
               ),
             ),
           );
@@ -69,7 +72,10 @@ class LoginPage extends StatelessWidget {
                         onPressed: loading
                             ? null
                             : () => context.read<AuthBloc>().add(
-                                  const RiotRsoSignInRequested(),
+                                  // ignore: prefer_const_constructors — [requestRedirect] depende de kIsWeb.
+                                  RiotRsoSignInRequested(
+                                    requestRedirect: kIsWeb,
+                                  ),
                                 ),
                         icon: const Icon(Icons.sports_esports_outlined),
                         label: const Text('Entrar con Riot'),

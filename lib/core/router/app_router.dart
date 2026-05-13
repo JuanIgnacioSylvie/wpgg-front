@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
+import '../constants/app_constants.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/pages/dashboard_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
@@ -16,6 +18,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/splash',
       builder: (_, __) => const SplashPage(),
+    ),
+    GoRoute(
+      path: AppConstants.riotRsoWebSuccessPath,
+      builder: (_, __) => const RiotRsoCallbackPage(),
     ),
     GoRoute(
       path: '/login',

@@ -133,7 +133,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (decoded is! Map) {
       throw const AuthException('Token inválido');
     }
-    return Map<String, dynamic>.from(decoded as Map);
+    return Map<String, dynamic>.from(decoded);
   }
 
   static String? _stringClaim(Map<String, dynamic> claims, String key) {

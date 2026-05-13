@@ -21,6 +21,16 @@ abstract final class AppConstants {
   /// y debe coincidir con el cliente registrado en el portal de Riot (el front no lo inventa).
   static const String riotRsoOAuthCallbackPath = '$riotRsoPathPrefix/oauth2-callback';
 
+  /// Ruta SPA donde el backend redirige tras OAuth (tokens en `#`, sin `id_token_claims` pesado).
+  /// Railway: `RIOT_RSO_SUCCESS_REDIRECT_URL` = origen HTTPS del front **sin** `/ final` + este path.
+  /// Ejemplo: `https://wpgg-front-dev.up.railway.app/auth/riot-callback`
+  /// Local path strategy: `http://localhost:PUERTO/auth/riot-callback`
+  static const String riotRsoWebSuccessPath = '/auth/riot-callback';
+
   static const String keyAccessToken = 'access_token';
   static const String keyUserEmail = 'user_email';
+
+  /// Tokens RSO (solo si completás el flujo web); no son el JWT de la app.
+  static const String keyRiotRsoAccessToken = 'riot_rso_access_token';
+  static const String keyRiotRsoRefreshToken = 'riot_rso_refresh_token';
 }
