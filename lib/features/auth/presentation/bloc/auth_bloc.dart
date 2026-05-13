@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/oauth/riot_rso_sign_in_url.dart';
-import '../../../../core/platform/navigate_browser.dart';
+import '../../../../core/oauth/riot_sign_in_navigate.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
@@ -84,8 +83,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  /// Nunca [GET /riot/rso/sign-in] vía Dio/XHR: el navegador debe hacer GET documento
-  /// (y seguir 302 a Riot) para no disparar CORS en `auth.riotgames.com`.
+  /// Nunca [GET /riot/rso/sign-in] vía Dio: solo navegación documento (web) o
+  /// [launchUrl] externo (móvil/desktop).
   Future<void> _onRiotRsoSignIn(
     RiotRsoSignInRequested event,
     Emitter<AuthState> emit,
@@ -97,18 +96,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       loginHint: event.loginHint,
       uiLocales: event.uiLocales,
     );
-    if (kIsWeb) {
-      navigateBrowserTo(url);
-      return;
+    try {
+      await openRiotRsoSignInUrl(url);
+      if (!kIsWeb) emit(const AuthRiotRsoSignInLaunched());
+    } catch (e) {
+      emit(AuthError('$e'));
     }
-    final ok = await launchUrl(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
-    if (!ok) {
-      emit(const AuthError('No se pudo abrir la página de Riot'));
-      return;
-    }
-    emit(const AuthRiotRsoSignInLaunched());
   }
 }

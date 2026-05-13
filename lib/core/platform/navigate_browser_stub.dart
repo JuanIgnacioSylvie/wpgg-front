@@ -1,1 +1,0 @@
-void navigateBrowserTo(String url) {}
