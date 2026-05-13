@@ -72,9 +72,8 @@ class LoginPage extends StatelessWidget {
                         onPressed: loading
                             ? null
                             : () => context.read<AuthBloc>().add(
-                                  // ignore: prefer_const_constructors — [requestRedirect] depende de kIsWeb.
-                                  RiotRsoSignInRequested(
-                                    requestRedirect: kIsWeb,
+                                  const RiotRsoSignInRequested(
+                                    requestRedirect: true,
                                   ),
                                 ),
                         icon: const Icon(Icons.sports_esports_outlined),

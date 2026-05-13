@@ -74,7 +74,6 @@ Future<void> initDependencies() async {
       registerUseCase: sl(),
       logoutUseCase: sl(),
       refreshTokenUseCase: sl(),
-      riotRsoRepository: sl(),
     ),
   );
 

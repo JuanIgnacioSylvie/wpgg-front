@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/oauth/riot_rso_sign_in_url.dart';
 import '../../../../core/platform/navigate_browser.dart';
-import '../../domain/repositories/riot_rso_repository.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
@@ -19,12 +18,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
     required RefreshTokenUseCase refreshTokenUseCase,
-    required RiotRsoRepository riotRsoRepository,
   })  : _loginUseCase = loginUseCase,
         _registerUseCase = registerUseCase,
         _logoutUseCase = logoutUseCase,
         _refreshTokenUseCase = refreshTokenUseCase,
-        _riotRsoRepository = riotRsoRepository,
         super(const AuthInitial()) {
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
@@ -37,7 +34,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
-  final RiotRsoRepository _riotRsoRepository;
 
   Future<void> _onLogin(LoginRequested event, Emitter<AuthState> emit) async {
     emit(const AuthLoading());
@@ -88,41 +84,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  /// Nunca [GET /riot/rso/sign-in] vía Dio/XHR: el navegador debe hacer GET documento
+  /// (y seguir 302 a Riot) para no disparar CORS en `auth.riotgames.com`.
   Future<void> _onRiotRsoSignIn(
     RiotRsoSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
-    if (kIsWeb) {
-      final url = buildRiotRsoSignInAbsoluteUrl(
-        AppConstants.baseUrl,
-        requestRedirect: event.requestRedirect,
-        loginHint: event.loginHint,
-        uiLocales: event.uiLocales,
-      );
-      navigateBrowserTo(url);
-      return;
-    }
-
-    final result = await _riotRsoRepository.getSignIn(
+    final url = buildRiotRsoSignInAbsoluteUrl(
+      AppConstants.baseUrl,
       requestRedirect: event.requestRedirect,
       loginHint: event.loginHint,
       uiLocales: event.uiLocales,
     );
-    await result.fold(
-      (failure) async => emit(AuthError(failure.message)),
-      (signIn) async {
-        final uri = Uri.parse(signIn.authorizeUrl);
-        final ok = await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
-        if (!ok) {
-          emit(const AuthError('No se pudo abrir la página de Riot'));
-          return;
-        }
-        emit(const AuthRiotRsoSignInLaunched());
-      },
+    if (kIsWeb) {
+      navigateBrowserTo(url);
+      return;
+    }
+    final ok = await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
     );
+    if (!ok) {
+      emit(const AuthError('No se pudo abrir la página de Riot'));
+      return;
+    }
+    emit(const AuthRiotRsoSignInLaunched());
   }
 }

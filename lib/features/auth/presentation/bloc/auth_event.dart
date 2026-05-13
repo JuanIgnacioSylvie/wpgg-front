@@ -54,7 +54,7 @@ class RiotRsoSignInRequested extends AuthEvent {
   final String? loginHint;
   final String? uiLocales;
 
-  /// Si es true, el back puede responder 302 en lugar de JSON (no usado con launchUrl).
+  /// Si es true, el API debe responder 302 a Riot (flujo navegación documento; obligatorio en web).
   final bool requestRedirect;
 
   @override
