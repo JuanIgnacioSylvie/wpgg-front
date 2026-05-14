@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/network/auth_refresh_401_hint.dart';
 import '../../../../core/network/auth_request_extra.dart';
 import '../models/user_model.dart';
 import 'auth_remote_datasource.dart';
@@ -101,6 +101,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final res = await _api.post<dynamic>(
         '/auth/refresh',
         data: body.isEmpty ? const <String, dynamic>{} : body,
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
       );
       return _parseAuthSession(res.data);
     } on DioException catch (e) {
@@ -195,6 +201,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   String _message(DioException e, {bool forRefresh = false}) {
     final d = e.response?.data;
+    if (forRefresh && e.response?.statusCode == 401) {
+      final server =
+          d is Map && d['message'] is String ? d['message'] as String : null;
+      final hint = authRefresh401Hint();
+      if (server != null && server.isNotEmpty) {
+        return '$server\n\n$hint';
+      }
+      return hint;
+    }
     if (d is Map && d['message'] is String) return d['message'] as String;
     final raw = e.message ?? '';
     if (e.type == DioExceptionType.connectionError ||
@@ -202,15 +217,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return 'No se pudo conectar con el servidor. En el navegador suele ser '
           'CORS, la URL del API (WPGG_BASE_URL) o contenido mixto (HTTPS vs HTTP). '
           'Revisá la pestaña Red en las herramientas de desarrollador.';
-    }
-    if (forRefresh &&
-        kIsWeb &&
-        e.response?.statusCode == 401 &&
-        (d is! Map || d['message'] is! String)) {
-      return 'Sesión no renovada (401 en /auth/refresh). Ese endpoint no canjea '
-          '`riot_session` (eso es POST /auth/riot-session). Necesitás el `refreshToken` '
-          'de WPGG en el body (tras login o tras riot-session) o cookies del API con '
-          'SameSite=None. Revisá Red → cabeceras y cuerpo.';
     }
     return raw.isNotEmpty ? raw : 'Error de red';
   }

@@ -77,7 +77,7 @@ class AuthInterceptor extends Interceptor {
       await _storage.saveAccessToken(newToken);
       if (newRefresh != null && newRefresh.isNotEmpty) {
         await _storage.saveAuthRefreshToken(newRefresh);
-      } else {
+      } else if (storedRefresh == null || storedRefresh.isEmpty) {
         await _storage.deleteAuthRefreshToken();
       }
 

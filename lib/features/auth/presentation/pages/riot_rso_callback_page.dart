@@ -52,18 +52,6 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
     return 'Error: $code';
   }
 
-  String _refreshFailureHint(String raw) {
-    final lower = raw.toLowerCase();
-    if (!lower.contains('unauthorized') && !lower.contains('401')) {
-      return raw;
-    }
-    return '$raw\n\n'
-        'POST /auth/refresh solo renueva la sesión WPGG: hace falta el `refreshToken` de la '
-        'app en el body (guardado tras login o tras la respuesta de POST /auth/riot-session) '
-        'o cookies del API (p. ej. SameSite=None). No canjea `riot_session`; ese código va '
-        'en POST /auth/riot-session.';
-  }
-
   String _missingWpggSessionHint() {
     return 'La app no tiene JWT de WPGG (ni en la URL ni guardado). Si solo hay '
         'tokens Riot en `#`, falta un paso del back (`?riot_session=` → POST '
@@ -197,7 +185,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
           if (!mounted) return;
           setState(() {
             _savedSessionOk = false;
-            _status = _refreshFailureHint(failMsg);
+            _status = failMsg;
             _done = true;
           });
           return;

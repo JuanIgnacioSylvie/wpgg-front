@@ -28,6 +28,22 @@ class AuthRepositoryImpl implements AuthRepository {
     await _secure.saveUserEmail(session.user.email);
   }
 
+  /// Tras [POST /auth/refresh]: si el JSON no trae `refreshToken`, no borramos el que
+  /// ya estaba guardado (sigue sirviendo para el body en la próxima renovación).
+  Future<void> _persistAuthSessionAfterRefresh(
+    AuthRemoteSession session, {
+    required String? refreshSent,
+  }) async {
+    await _secure.saveAccessToken(session.accessToken);
+    final r = session.refreshToken;
+    if (r != null && r.isNotEmpty) {
+      await _secure.saveAuthRefreshToken(r);
+    } else if (refreshSent == null || refreshSent.isEmpty) {
+      await _secure.deleteAuthRefreshToken();
+    }
+    await _secure.saveUserEmail(session.user.email);
+  }
+
   @override
   Future<Either<Failure, UserEntity>> login({
     required String email,
@@ -90,7 +106,10 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final storedRefresh = await _secure.getAuthRefreshToken();
       final session = await _remote.refresh(refreshToken: storedRefresh);
-      await _persistAuthSession(session);
+      await _persistAuthSessionAfterRefresh(
+        session,
+        refreshSent: storedRefresh,
+      );
       return Right(session.user);
     } on AuthException catch (e) {
       await _secure.clearSession();
