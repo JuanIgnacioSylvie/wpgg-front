@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/platform/configure_url_strategy.dart';
+import 'core/platform/oauth_callback_fragment_capture.dart';
 import 'core/di/injection_container.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -10,6 +11,7 @@ import 'features/ddragon/domain/repositories/ddragon_repository.dart';
 import 'features/ddragon/presentation/providers/ddragon_provider.dart';
 
 Future<void> main() async {
+  captureOauthCallbackFragmentAtAppStart();
   WidgetsFlutterBinding.ensureInitialized();
   configureUrlStrategy();
   await initDependencies();

@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import '../../features/auth/domain/entities/riot_rso_entities.dart';
 
-/// Resultado de parsear el fragmento (`#...`) tras el redirect del backend.
+/// Resultado de parsear el redirect del backend (query y/o fragmento `#...`).
 class RiotRsoFragmentParseResult {
   const RiotRsoFragmentParseResult({
     this.tokens,
     this.oauthError,
     this.oauthErrorDescription,
+    this.sessionFromCookiesOnly = false,
   });
 
   static const RiotRsoFragmentParseResult empty = RiotRsoFragmentParseResult();
@@ -28,11 +29,40 @@ class RiotRsoFragmentParseResult {
   final String? oauthError;
   final String? oauthErrorDescription;
 
+  /// Sin tokens en el hash ni `?error=…`: la sesión wpgg quedó solo en cookies httpOnly.
+  final bool sessionFromCookiesOnly;
+
   bool get hasOAuthError => oauthError != null && oauthError!.isNotEmpty;
 }
 
+/// Tras el redirect del backend a la ruta SPA.
+///
+/// 1. Errores OAuth en **query** (`?error=` / `error_description=`), p. ej. Riot o `rso_no_subject`.
+/// 2. Si no hay error en query: tokens legacy en el **fragmento** (`#access_token=…`).
+/// 3. Si no hay error ni tokens: se asume sesión en cookies httpOnly (sin hash).
+RiotRsoFragmentParseResult parseRiotRsoCallbackUri(Uri uri) {
+  final q = Uri.splitQueryString(uri.query);
+  final lowerQ = <String, String>{
+    for (final e in q.entries) e.key.toLowerCase(): e.value,
+  };
+  final qErr = lowerQ['error'];
+  if (qErr != null && qErr.isNotEmpty) {
+    return RiotRsoFragmentParseResult.oauthError(
+      error: qErr,
+      description: lowerQ['error_description'],
+    );
+  }
+
+  final frag = parseRiotRsoFragment(uri.fragment);
+  if (frag.hasOAuthError) return frag;
+  if (frag.tokens != null) {
+    return RiotRsoFragmentParseResult.success(frag.tokens!);
+  }
+  return const RiotRsoFragmentParseResult(sessionFromCookiesOnly: true);
+}
+
 /// Soporta:
-/// - `application/x-www-form-urlencoded` en el fragmento (`access_token=...&refresh_token=...`)
+/// - `application/x-www-form-urlencoded` (`access_token=...&refresh_token=...`)
 /// - JSON (`{ "access_token": "..." }`), opcionalmente [Uri]-encoded.
 ///
 /// No incluye `id_token_claims` en el fragmento (lo acordás con el backend); el front puede

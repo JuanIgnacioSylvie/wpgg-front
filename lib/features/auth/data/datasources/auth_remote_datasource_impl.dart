@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_client.dart';
@@ -13,7 +14,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient _api;
 
   @override
-  Future<(UserModel, String)> login({
+  Future<AuthRemoteSession> login({
     required String email,
     required String password,
     required bool rememberMe,
@@ -27,14 +28,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'rememberMe': rememberMe,
         },
       );
-      return _parseUser(res.data, fallbackEmail: email);
+      return _parseAuthSession(res.data, fallbackEmail: email);
     } on DioException catch (e) {
       throw AuthException(_message(e));
     }
   }
 
   @override
-  Future<(UserModel, String)> register({
+  Future<AuthRemoteSession> register({
     required String email,
     required String password,
   }) async {
@@ -46,7 +47,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'password': password,
         },
       );
-      return _parseUser(res.data, fallbackEmail: email);
+      return _parseAuthSession(res.data, fallbackEmail: email);
     } on DioException catch (e) {
       throw AuthException(_message(e));
     }
@@ -62,16 +63,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<(UserModel, String)> refresh() async {
+  Future<AuthRemoteSession> refresh({String? refreshToken}) async {
     try {
-      final res = await _api.post<dynamic>('/auth/refresh');
-      return _parseUser(res.data);
+      final body = <String, dynamic>{};
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        body['refreshToken'] = refreshToken;
+      }
+      final res = await _api.post<dynamic>(
+        '/auth/refresh',
+        data: body.isEmpty ? const <String, dynamic>{} : body,
+      );
+      return _parseAuthSession(res.data);
     } on DioException catch (e) {
-      throw AuthException(_message(e));
+      throw AuthException(_message(e, forRefresh: true));
     }
   }
 
-  (UserModel, String) _parseUser(
+  AuthRemoteSession _parseAuthSession(
     dynamic data, {
     String? fallbackEmail,
   }) {
@@ -83,13 +91,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (token == null || token.isEmpty) {
       throw const AuthException('Token no recibido');
     }
+    final refresh = map['refreshToken'] as String? ?? map['refresh_token'] as String?;
+    final refreshOut =
+        refresh != null && refresh.isNotEmpty ? refresh : null;
+
     final user = map['user'];
     if (user is Map) {
       final u = Map<String, dynamic>.from(user);
-      return (UserModel.fromAuthJson(u), token);
+      return (
+        user: UserModel.fromAuthJson(u),
+        accessToken: token,
+        refreshToken: refreshOut,
+      );
     }
     final fromJwt = _userFromAccessToken(token, fallbackEmail: fallbackEmail);
-    return (fromJwt, token);
+    return (
+      user: fromJwt,
+      accessToken: token,
+      refreshToken: refreshOut,
+    );
   }
 
   /// Backend que solo devuelve `accessToken`: leemos claims del JWT (sin verificar firma).
@@ -144,7 +164,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return null;
   }
 
-  String _message(DioException e) {
+  String _message(DioException e, {bool forRefresh = false}) {
     final d = e.response?.data;
     if (d is Map && d['message'] is String) return d['message'] as String;
     final raw = e.message ?? '';
@@ -153,6 +173,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return 'No se pudo conectar con el servidor. En el navegador suele ser '
           'CORS, la URL del API (WPGG_BASE_URL) o contenido mixto (HTTPS vs HTTP). '
           'Revisá la pestaña Red en las herramientas de desarrollador.';
+    }
+    if (forRefresh &&
+        kIsWeb &&
+        e.response?.statusCode == 401 &&
+        (d is! Map || d['message'] is! String)) {
+      return 'Sesión no renovada (401 en /auth/refresh). Sin cookie enviada, '
+          'el back necesita `refreshToken` en el body (guardado tras login/refresh) '
+          'o Set-Cookie con SameSite=None en el API. Revisá Red → cabeceras y cuerpo.';
     }
     return raw.isNotEmpty ? raw : 'Error de red';
   }

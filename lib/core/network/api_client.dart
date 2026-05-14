@@ -8,6 +8,7 @@ import '../constants/app_constants.dart';
 import '../storage/secure_storage.dart';
 import 'auth_interceptor.dart';
 import 'http_client_config.dart';
+import 'web_credentials_interceptor.dart';
 
 class ApiClient {
   ApiClient({
@@ -20,6 +21,9 @@ class ApiClient {
         connectTimeout: AppConstants.connectTimeout,
         receiveTimeout: AppConstants.receiveTimeout,
         headers: const {'Content-Type': 'application/json'},
+        // Web (dio_web_adapter): fuerza credenciales en cada XHR; sin esto algunos
+        // builds pueden no enviar cookies cross-origin aunque el adapter tenga withCredentials.
+        extra: const {'withCredentials': true},
       ),
     );
 
@@ -28,6 +32,10 @@ class ApiClient {
     if (!kIsWeb) {
       final jar = CookieJar();
       _dio.interceptors.add(CookieManager(jar));
+    }
+
+    if (kIsWeb) {
+      _dio.interceptors.add(WebCredentialsInterceptor());
     }
 
     _dio.interceptors.addAll([

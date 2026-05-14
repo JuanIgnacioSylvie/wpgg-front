@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/storage/secure_storage.dart';
+import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -57,13 +58,19 @@ class _SplashPageState extends State<SplashPage>
 
   Future<void> _navigate() async {
     if (!mounted) return;
-    final token = await sl<SecureStorage>().getAccessToken();
+    final storage = sl<SecureStorage>();
+    final token = await storage.getAccessToken();
     if (!mounted) return;
     if (token != null && token.isNotEmpty) {
       context.go('/dashboard');
-    } else {
-      context.go('/login');
+      return;
     }
+    final refreshed = await sl<RefreshTokenUseCase>()();
+    if (!mounted) return;
+    refreshed.fold(
+      (_) => context.go('/login'),
+      (_) => context.go('/dashboard'),
+    );
   }
 
   @override

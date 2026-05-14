@@ -31,6 +31,32 @@
 
   <title>wpgg_flutter</title>
   <link rel="manifest" href="manifest.json">
+  <!--
+    OAuth implicit: tokens llegan en #… antes de que Flutter arranque. PathUrlStrategy
+    puede hacer replaceState y borrar el hash; guardamos el fragmento aquí (mismo key
+    que oauth_callback_fragment_capture_html.dart) para que Dart lo recupere.
+  -->
+  <script>
+    (function () {
+      try {
+        var key = 'wpgg_oauth_fragment';
+        var p = window.location.pathname || '';
+        var isCb = p === '/auth/riot-callback' || p.endsWith('/auth/riot-callback');
+        if (!isCb) {
+          sessionStorage.removeItem(key);
+          return;
+        }
+        var h = window.location.hash;
+        if (h.length > 1) {
+          var raw = h.substring(1);
+          if (/access_token=|id_token=|refresh_token=|(?:^|[&])error=/.test(raw))
+            sessionStorage.setItem(key, raw);
+        } else {
+          sessionStorage.removeItem(key);
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

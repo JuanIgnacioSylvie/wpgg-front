@@ -8,7 +8,7 @@ void configureHttpClientAdapter(Dio dio) {
   final adapter = BrowserHttpClientAdapter();
   const withCreds = bool.fromEnvironment(
     'WPGG_WEB_CREDENTIALS',
-    defaultValue: false,
+    defaultValue: true,
   );
   adapter.withCredentials = withCreds;
   dio.httpClientAdapter = adapter;

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../storage/secure_storage.dart';
 import 'auth_request_extra.dart';
@@ -40,25 +41,45 @@ class AuthInterceptor extends Interceptor {
     }
 
     try {
+      final storedRefresh = await _storage.getAuthRefreshToken();
+      final body = <String, dynamic>{};
+      if (storedRefresh != null && storedRefresh.isNotEmpty) {
+        body['refreshToken'] = storedRefresh;
+      }
       final refresh = await _dio.post<dynamic>(
         '/auth/refresh',
+        data: body.isEmpty ? const <String, dynamic>{} : body,
         options: Options(
           extra: {
             AuthRequestExtra.skipAuth: true,
             AuthRequestExtra.skipRefresh: true,
+            if (kIsWeb) 'withCredentials': true,
           },
         ),
       );
       final data = refresh.data;
       String? newToken;
-      if (data is Map && data['accessToken'] is String) {
-        newToken = data['accessToken'] as String;
+      String? newRefresh;
+      if (data is Map) {
+        final access = data['accessToken'];
+        if (access is String && access.isNotEmpty) {
+          newToken = access;
+        }
+        final r = data['refreshToken'] ?? data['refresh_token'];
+        if (r is String && r.isNotEmpty) {
+          newRefresh = r;
+        }
       }
       if (newToken == null || newToken.isEmpty) {
         await _storage.clearSession();
         return handler.next(err);
       }
       await _storage.saveAccessToken(newToken);
+      if (newRefresh != null && newRefresh.isNotEmpty) {
+        await _storage.saveAuthRefreshToken(newRefresh);
+      } else {
+        await _storage.deleteAuthRefreshToken();
+      }
 
       final retry = await _dio.fetch<dynamic>(
         opts.copyWith(

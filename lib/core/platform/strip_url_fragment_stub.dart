@@ -1,1 +1,3 @@
 void stripUrlFragment() {}
+
+void stripOAuthReturnUrl() {}

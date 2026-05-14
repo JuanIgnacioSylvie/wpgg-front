@@ -4,11 +4,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/oauth/riot_rso_fragment_parser.dart';
+import '../../../../core/platform/browser_oauth_uri.dart';
+import '../../../../core/platform/oauth_callback_fragment_capture.dart';
 import '../../../../core/platform/strip_url_fragment.dart';
 import '../../../../core/storage/secure_storage.dart';
+import '../../domain/repositories/auth_repository.dart';
 
-/// Pantalla de aterrizaje tras `RIOT_RSO_SUCCESS_REDIRECT_URL`: lee el `#`, guarda tokens RSO
-/// en [SecureStorage] y limpia el fragmento del historial.
+/// Aterrizaje tras `RIOT_RSO_SUCCESS_REDIRECT_URL`: errores en `?error=`, sesión en cookies
+/// httpOnly (sin `#`), o tokens legacy en el fragmento.
 class RiotRsoCallbackPage extends StatefulWidget {
   const RiotRsoCallbackPage({super.key});
 
@@ -19,78 +22,126 @@ class RiotRsoCallbackPage extends StatefulWidget {
 class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
   String? _status;
   var _done = false;
+  var _savedSessionOk = false;
+
+  Uri? _oauthLocationUri;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _consumeFragment());
+    if (kIsWeb) {
+      _oauthLocationUri = browserOAuthLocationUri();
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleRedirect());
   }
 
-  Future<void> _consumeFragment() async {
-    if (!kIsWeb) {
+  String _oauthErrorMessage(String code, String? desc) {
+    if (code == 'rso_no_subject') {
+      return desc != null && desc.isNotEmpty
+          ? 'El servidor no pudo obtener tu identidad de Riot: $desc'
+          : 'El servidor no pudo obtener tu identidad de Riot (rso_no_subject). '
+              'Probá iniciar sesión de nuevo.';
+    }
+    if (desc != null && desc.isNotEmpty) {
+      return 'Error: $code — $desc';
+    }
+    return 'Error: $code';
+  }
+
+  Future<void> _handleRedirect() async {
+    try {
+      assert(() {
+        if (kIsWeb) {
+          final href = _oauthLocationUri ?? browserOAuthLocationUri();
+          // ignore: avoid_print
+          print('href (window.location): ${href.toString()}');
+          // ignore: avoid_print
+          print('fragment (window): "${href.fragment}"');
+          // ignore: avoid_print
+          print('query (window): "${href.query}"');
+          // ignore: avoid_print
+          print('Uri.base (Flutter): ${Uri.base}');
+        }
+        return true;
+      }());
+
+      if (!kIsWeb) {
+        setState(() {
+          _status = 'El login con Riot por redirect solo está soportado en web.';
+          _done = true;
+        });
+        return;
+      }
+
+      final locationUri = _oauthLocationUri ?? browserOAuthLocationUri();
+      final parsed = parseRiotRsoCallbackUri(locationUri);
+
+      if (parsed.hasOAuthError) {
+        final code = parsed.oauthError ?? 'unknown';
+        final desc = parsed.oauthErrorDescription;
+        setState(() {
+          _status = _oauthErrorMessage(code, desc);
+          _done = true;
+        });
+        stripOAuthReturnUrl();
+        return;
+      }
+
+      final tokens = parsed.tokens;
+      if (tokens != null) {
+        final secure = sl<SecureStorage>();
+        final access = tokens.accessToken;
+        final refresh = tokens.refreshToken;
+        final idToken = tokens.idToken;
+        if (access != null && access.isNotEmpty) {
+          await secure.saveRiotRsoAccessToken(access);
+        }
+        if (refresh != null && refresh.isNotEmpty) {
+          await secure.saveRiotRsoRefreshToken(refresh);
+        }
+        if (idToken != null && idToken.isNotEmpty) {
+          await secure.saveRiotRsoIdToken(idToken);
+        }
+      }
+
+      stripOAuthReturnUrl();
+
+      if (parsed.sessionFromCookiesOnly || tokens != null) {
+        final hydrated = await sl<AuthRepository>().refreshSession();
+        final failMsg = hydrated.fold<String?>(
+          (f) => f.message,
+          (_) => null,
+        );
+        if (failMsg != null) {
+          if (!mounted) return;
+          setState(() {
+            _savedSessionOk = false;
+            _status = failMsg;
+            _done = true;
+          });
+          return;
+        }
+      }
+
+      if (!mounted) return;
       setState(() {
-        _status = 'El login con Riot por redirect solo está soportado en web.';
+        _savedSessionOk = true;
+        _status = parsed.sessionFromCookiesOnly
+            ? 'Sesión iniciada con Riot (cookies).'
+            : 'Cuenta Riot autenticada; sesión de la app actualizada.';
         _done = true;
       });
-      return;
-    }
 
-    final fragment = Uri.base.fragment;
-    final parsed = parseRiotRsoFragment(fragment);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login Riot completado')),
+      );
 
-    if (parsed.hasOAuthError) {
-      final desc = parsed.oauthErrorDescription;
-      setState(() {
-        _status = desc != null && desc.isNotEmpty
-            ? 'Riot: ${parsed.oauthError}: $desc'
-            : 'Riot: ${parsed.oauthError}';
-        _done = true;
+      Future<void>.delayed(const Duration(milliseconds: 400), () {
+        if (mounted) context.go('/dashboard');
       });
-      stripUrlFragment();
-      return;
+    } finally {
+      clearCapturedOauthCallbackFragment();
     }
-
-    final tokens = parsed.tokens;
-    if (tokens == null) {
-      setState(() {
-        _status =
-            'No hay tokens en la URL (# vacío o formato no reconocido). '
-            'Revisá que el backend redirija con fragmento tipo '
-            'access_token=…&refresh_token=… o JSON equivalente.';
-        _done = true;
-      });
-      if (kIsWeb) stripUrlFragment();
-      return;
-    }
-
-    final secure = sl<SecureStorage>();
-    final access = tokens.accessToken;
-    final refresh = tokens.refreshToken;
-    if (access != null && access.isNotEmpty) {
-      await secure.saveRiotRsoAccessToken(access);
-    }
-    if (refresh != null && refresh.isNotEmpty) {
-      await secure.saveRiotRsoRefreshToken(refresh);
-    }
-
-    stripUrlFragment();
-
-    if (!mounted) return;
-    setState(() {
-      _status = 'Cuenta Riot autenticada. Los tokens RSO quedaron guardados en el dispositivo '
-          'para próximos pasos (p. ej. intercambio por sesión de app en el backend). '
-          'El JWT de la app sigue siendo el de email/contraseña.';
-      _done = true;
-    });
-
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login Riot completado')),
-    );
-
-    Future<void>.delayed(const Duration(milliseconds: 400), () {
-      if (mounted) context.go('/login');
-    });
   }
 
   @override
@@ -107,9 +158,9 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
               if (!_done) const CircularProgressIndicator(),
               if (_done) ...[
                 Icon(
-                  _status != null && _status!.startsWith('Riot:')
-                      ? Icons.error_outline
-                      : Icons.check_circle_outline,
+                  _savedSessionOk
+                      ? Icons.check_circle_outline
+                      : Icons.error_outline,
                   size: 48,
                   color: theme.colorScheme.primary,
                 ),
@@ -121,8 +172,11 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
                 ),
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: () => context.go('/login'),
-                  child: const Text('Ir al inicio de sesión'),
+                  onPressed: () =>
+                      context.go(_savedSessionOk ? '/dashboard' : '/login'),
+                  child: Text(
+                    _savedSessionOk ? 'Ir al panel' : 'Ir al inicio de sesión',
+                  ),
                 ),
               ],
             ],

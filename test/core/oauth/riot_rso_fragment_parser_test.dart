@@ -36,4 +36,45 @@ void main() {
     expect(r.tokens, isNull);
     expect(r.hasOAuthError, false);
   });
+
+  test('parseRiotRsoCallbackUri prefers fragment when query has no error', () {
+    final u = Uri.parse(
+      'https://example.com/callback?access_token=query&refresh_token=r2'
+      '#access_token=frag&refresh_token=r1',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.tokens?.accessToken, 'frag');
+    expect(r.tokens?.refreshToken, 'r1');
+    expect(r.sessionFromCookiesOnly, false);
+  });
+
+  test('parseRiotRsoCallbackUri query error takes precedence over fragment', () {
+    final u = Uri.parse(
+      'https://example.com/callback?error=rso_no_subject&error_description=sub'
+      '#access_token=frag&refresh_token=r1',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.hasOAuthError, true);
+    expect(r.oauthError, 'rso_no_subject');
+    expect(r.oauthErrorDescription, 'sub');
+    expect(r.tokens, isNull);
+  });
+
+  test('parseRiotRsoCallbackUri cookie session when fragment empty', () {
+    final u = Uri.parse(
+      'https://example.com/callback?access_token=q&refresh_token=rq',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.tokens, isNull);
+    expect(r.hasOAuthError, false);
+    expect(r.sessionFromCookiesOnly, true);
+  });
+
+  test('parseRiotRsoCallbackUri clean URL is cookie session', () {
+    final u = Uri.parse('https://example.com/auth/riot-callback');
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.sessionFromCookiesOnly, true);
+    expect(r.hasOAuthError, false);
+    expect(r.tokens, isNull);
+  });
 }

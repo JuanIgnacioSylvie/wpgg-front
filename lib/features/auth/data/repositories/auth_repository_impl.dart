@@ -17,6 +17,17 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remote;
   final SecureStorage _secure;
 
+  Future<void> _persistAuthSession(AuthRemoteSession session) async {
+    await _secure.saveAccessToken(session.accessToken);
+    final r = session.refreshToken;
+    if (r != null && r.isNotEmpty) {
+      await _secure.saveAuthRefreshToken(r);
+    } else {
+      await _secure.deleteAuthRefreshToken();
+    }
+    await _secure.saveUserEmail(session.user.email);
+  }
+
   @override
   Future<Either<Failure, UserEntity>> login({
     required String email,
@@ -24,14 +35,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required bool rememberMe,
   }) async {
     try {
-      final (user, token) = await _remote.login(
+      final session = await _remote.login(
         email: email,
         password: password,
         rememberMe: rememberMe,
       );
-      await _secure.saveAccessToken(token);
-      await _secure.saveUserEmail(user.email);
-      return Right(user);
+      await _persistAuthSession(session);
+      return Right(session.user);
     } on AuthException catch (e) {
       return Left(AuthFailure(e.message));
     } on ServerException catch (e) {
@@ -47,13 +57,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final (user, token) = await _remote.register(
+      final session = await _remote.register(
         email: email,
         password: password,
       );
-      await _secure.saveAccessToken(token);
-      await _secure.saveUserEmail(user.email);
-      return Right(user);
+      await _persistAuthSession(session);
+      return Right(session.user);
     } on AuthException catch (e) {
       return Left(AuthFailure(e.message));
     } catch (e) {
@@ -78,15 +87,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, UserEntity>> refreshSession() async {
-    final existing = await _secure.getAccessToken();
-    if (existing == null || existing.isEmpty) {
-      return const Left(AuthFailure('Sin sesión activa'));
-    }
     try {
-      final (user, token) = await _remote.refresh();
-      await _secure.saveAccessToken(token);
-      await _secure.saveUserEmail(user.email);
-      return Right(user);
+      final storedRefresh = await _secure.getAuthRefreshToken();
+      final session = await _remote.refresh(refreshToken: storedRefresh);
+      await _persistAuthSession(session);
+      return Right(session.user);
     } on AuthException catch (e) {
       await _secure.clearSession();
       return Left(AuthFailure(e.message));
