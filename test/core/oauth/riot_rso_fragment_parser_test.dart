@@ -60,6 +60,18 @@ void main() {
     expect(r.tokens, isNull);
   });
 
+  test('parseRiotRsoCallbackUri riot_session_unavailable in query', () {
+    final u = Uri.parse(
+      'https://example.com/auth/riot-callback?error=riot_session_unavailable'
+      '&error_description=db',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.hasOAuthError, true);
+    expect(r.oauthError, 'riot_session_unavailable');
+    expect(r.oauthErrorDescription, 'db');
+    expect(r.hasRiotSessionCode, false);
+  });
+
   test('parseRiotRsoCallbackUri riot_session code', () {
     final u = Uri.parse(
       'https://example.com/auth/riot-callback?riot_session=abc123',

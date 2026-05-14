@@ -12,7 +12,8 @@ import '../../domain/repositories/auth_repository.dart';
 
 /// Aterrizaje tras `RIOT_RSO_SUCCESS_REDIRECT_URL`.
 ///
-/// Prioridad: `?error=` → `?riot_session=` → **solo** [POST /auth/riot-session] (sin `/auth/refresh`).
+/// Prioridad: `?error=` (p. ej. `riot_session_unavailable`, `rso_no_subject`) →
+/// `?riot_session=` → **solo** [POST /auth/riot-session] (sin `/auth/refresh` en ese paso).
 /// Luego query/`#` legacy; [POST /auth/refresh] si falta `accessToken` en query y (**refresh
 /// WPGG en almacén/URL** o **redirect “solo cookies”** del parser: el back puede haber fijado
 /// cookies HttpOnly en el **origen del API**, enviadas con `withCredentials` aunque JS no las lea).
@@ -40,6 +41,14 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
   }
 
   String _oauthErrorMessage(String code, String? desc) {
+    if (code == 'riot_session_unavailable') {
+      final tail = desc != null && desc.isNotEmpty ? '\n\nDetalle del servidor: $desc' : '';
+      return 'No se pudo generar el enlace de sesión (riot_session). Suele ser un '
+          'problema temporal del servidor o de la base de datos (p. ej. migraciones '
+          'pendientes). Quien opera el back debería revisar logs, aplicar '
+          '`prisma migrate deploy` si corresponde y volver a intentar. '
+          'Podés reintentar el login con Riot cuando esté resuelto.$tail';
+    }
     if (code == 'rso_no_subject') {
       return desc != null && desc.isNotEmpty
           ? 'El servidor no pudo obtener tu identidad de Riot: $desc'
