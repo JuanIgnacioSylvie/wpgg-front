@@ -10,8 +10,12 @@ import '../../../../core/platform/strip_url_fragment.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-/// Aterrizaje tras `RIOT_RSO_SUCCESS_REDIRECT_URL`: errores en `?error=`, sesión en cookies
-/// httpOnly (sin `#`), o tokens legacy en el fragmento.
+/// Aterrizaje tras `RIOT_RSO_SUCCESS_REDIRECT_URL`.
+///
+/// Prioridad: `?error=` → `?riot_session=` → **solo** [POST /auth/riot-session] (sin `/auth/refresh`).
+/// Luego query/`#` legacy; [POST /auth/refresh] si falta `accessToken` en query y (**refresh
+/// WPGG en almacén/URL** o **redirect “solo cookies”** del parser: el back puede haber fijado
+/// cookies HttpOnly en el **origen del API**, enviadas con `withCredentials` aunque JS no las lea).
 class RiotRsoCallbackPage extends StatefulWidget {
   const RiotRsoCallbackPage({super.key});
 
@@ -46,6 +50,39 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
       return 'Error: $code — $desc';
     }
     return 'Error: $code';
+  }
+
+  String _refreshFailureHint(String raw) {
+    final lower = raw.toLowerCase();
+    if (!lower.contains('unauthorized') && !lower.contains('401')) {
+      return raw;
+    }
+    return '$raw\n\n'
+        'POST /auth/refresh solo renueva la sesión WPGG: hace falta el `refreshToken` de la '
+        'app en el body (guardado tras login o tras la respuesta de POST /auth/riot-session) '
+        'o cookies del API (p. ej. SameSite=None). No canjea `riot_session`; ese código va '
+        'en POST /auth/riot-session.';
+  }
+
+  String _missingWpggSessionHint() {
+    return 'La app no tiene JWT de WPGG (ni en la URL ni guardado). Si solo hay '
+        'tokens Riot en `#`, falta un paso del back (`?riot_session=` → POST '
+        '/auth/riot-session) o tokens de la app en query.';
+  }
+
+  Future<void> _finishSuccess({required String statusLine}) async {
+    if (!mounted) return;
+    setState(() {
+      _savedSessionOk = true;
+      _status = statusLine;
+      _done = true;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Login Riot completado')),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) context.go('/dashboard');
+    });
   }
 
   Future<void> _handleRedirect() async {
@@ -87,9 +124,43 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
         return;
       }
 
+      if (parsed.hasRiotSessionCode) {
+        final exchanged = await sl<AuthRepository>().exchangeRiotSession(
+          code: parsed.riotSessionCode!,
+        );
+        final failMsg = exchanged.fold<String?>(
+          (f) => f.message,
+          (_) => null,
+        );
+        stripOAuthReturnUrl();
+        if (failMsg != null) {
+          if (!mounted) return;
+          setState(() {
+            _savedSessionOk = false;
+            _status = failMsg;
+            _done = true;
+          });
+          return;
+        }
+        await _finishSuccess(
+          statusLine: 'Sesión WPGG vía canje Riot (riot_session).',
+        );
+        return;
+      }
+
+      final secure = sl<SecureStorage>();
+      final q = Uri.splitQueryString(locationUri.query);
+      final qAccess = q['accessToken'] ?? q['access_token'];
+      final qRefresh = q['refreshToken'] ?? q['refresh_token'];
+      if (qAccess != null && qAccess.isNotEmpty) {
+        await secure.saveAccessToken(qAccess);
+      }
+      if (qRefresh != null && qRefresh.isNotEmpty) {
+        await secure.saveAuthRefreshToken(qRefresh);
+      }
+
       final tokens = parsed.tokens;
       if (tokens != null) {
-        final secure = sl<SecureStorage>();
         final access = tokens.accessToken;
         final refresh = tokens.refreshToken;
         final idToken = tokens.idToken;
@@ -106,7 +177,17 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
 
       stripOAuthReturnUrl();
 
-      if (parsed.sessionFromCookiesOnly || tokens != null) {
+      final haveAppAccessFromQuery =
+          qAccess != null && qAccess.isNotEmpty;
+      final storedWpggRefresh = await secure.getAuthRefreshToken();
+      final haveWpggRefresh = storedWpggRefresh != null &&
+          storedWpggRefresh.isNotEmpty;
+      // HttpOnly cookies del API no aparecen en SecureStorage; igual se envían
+      // a /auth/refresh con withCredentials cuando el redirect viene "limpio".
+      final shouldCallRefresh = !haveAppAccessFromQuery &&
+          (haveWpggRefresh || parsed.sessionFromCookiesOnly);
+
+      if (shouldCallRefresh) {
         final hydrated = await sl<AuthRepository>().refreshSession();
         final failMsg = hydrated.fold<String?>(
           (f) => f.message,
@@ -116,29 +197,33 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
           if (!mounted) return;
           setState(() {
             _savedSessionOk = false;
-            _status = failMsg;
+            _status = _refreshFailureHint(failMsg);
             _done = true;
           });
           return;
         }
       }
 
-      if (!mounted) return;
-      setState(() {
-        _savedSessionOk = true;
-        _status = parsed.sessionFromCookiesOnly
-            ? 'Sesión iniciada con Riot (cookies).'
-            : 'Cuenta Riot autenticada; sesión de la app actualizada.';
-        _done = true;
-      });
+      if (!haveAppAccessFromQuery) {
+        final access = await secure.getAccessToken();
+        if (access == null || access.isEmpty) {
+          if (!mounted) return;
+          setState(() {
+            _savedSessionOk = false;
+            _status = _missingWpggSessionHint();
+            _done = true;
+          });
+          return;
+        }
+      }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Riot completado')),
+      await _finishSuccess(
+        statusLine: haveAppAccessFromQuery
+            ? 'Sesión iniciada con Riot (tokens en la URL).'
+            : parsed.sessionFromCookiesOnly
+                ? 'Sesión iniciada con Riot (cookies).'
+                : 'Cuenta Riot autenticada; sesión de la app actualizada.',
       );
-
-      Future<void>.delayed(const Duration(milliseconds: 400), () {
-        if (mounted) context.go('/dashboard');
-      });
     } finally {
       clearCapturedOauthCallbackFragment();
     }

@@ -60,6 +60,26 @@ void main() {
     expect(r.tokens, isNull);
   });
 
+  test('parseRiotRsoCallbackUri riot_session code', () {
+    final u = Uri.parse(
+      'https://example.com/auth/riot-callback?riot_session=abc123',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.hasRiotSessionCode, true);
+    expect(r.riotSessionCode, 'abc123');
+    expect(r.sessionFromCookiesOnly, false);
+    expect(r.tokens, isNull);
+  });
+
+  test('parseRiotRsoCallbackUri error beats riot_session', () {
+    final u = Uri.parse(
+      'https://example.com/c?error=denied&riot_session=x',
+    );
+    final r = parseRiotRsoCallbackUri(u);
+    expect(r.hasOAuthError, true);
+    expect(r.hasRiotSessionCode, false);
+  });
+
   test('parseRiotRsoCallbackUri cookie session when fragment empty', () {
     final u = Uri.parse(
       'https://example.com/callback?access_token=q&refresh_token=rq',

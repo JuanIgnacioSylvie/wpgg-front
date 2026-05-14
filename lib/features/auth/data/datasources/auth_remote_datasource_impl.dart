@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/network/auth_request_extra.dart';
 import '../models/user_model.dart';
 import 'auth_remote_datasource.dart';
 
@@ -28,7 +29,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'rememberMe': rememberMe,
         },
       );
-      return _parseAuthSession(res.data, fallbackEmail: email);
+      return _requireRefreshBody(
+        _parseAuthSession(res.data, fallbackEmail: email),
+        'login',
+      );
     } on DioException catch (e) {
       throw AuthException(_message(e));
     }
@@ -47,7 +51,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'password': password,
         },
       );
-      return _parseAuthSession(res.data, fallbackEmail: email);
+      return _requireRefreshBody(
+        _parseAuthSession(res.data, fallbackEmail: email),
+        'register',
+      );
     } on DioException catch (e) {
       throw AuthException(_message(e));
     }
@@ -59,6 +66,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await _api.post<dynamic>('/auth/logout');
     } on DioException catch (e) {
       throw ServerException(_message(e));
+    }
+  }
+
+  @override
+  Future<AuthRemoteSession> exchangeRiotSession({required String code}) async {
+    try {
+      final res = await _api.post<dynamic>(
+        '/auth/riot-session',
+        data: {'code': code},
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
+      );
+      return _requireRefreshBody(
+        _parseAuthSession(res.data),
+        'POST /auth/riot-session',
+      );
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
     }
   }
 
@@ -178,10 +207,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         kIsWeb &&
         e.response?.statusCode == 401 &&
         (d is! Map || d['message'] is! String)) {
-      return 'Sesión no renovada (401 en /auth/refresh). Sin cookie enviada, '
-          'el back necesita `refreshToken` en el body (guardado tras login/refresh) '
-          'o Set-Cookie con SameSite=None en el API. Revisá Red → cabeceras y cuerpo.';
+      return 'Sesión no renovada (401 en /auth/refresh). Ese endpoint no canjea '
+          '`riot_session` (eso es POST /auth/riot-session). Necesitás el `refreshToken` '
+          'de WPGG en el body (tras login o tras riot-session) o cookies del API con '
+          'SameSite=None. Revisá Red → cabeceras y cuerpo.';
     }
     return raw.isNotEmpty ? raw : 'Error de red';
+  }
+
+  AuthRemoteSession _requireRefreshBody(AuthRemoteSession s, String where) {
+    if (s.refreshToken == null || s.refreshToken!.isEmpty) {
+      throw AuthException(
+        'refreshToken no recibido en $where: el API debe devolver accessToken y refreshToken en JSON.',
+      );
+    }
+    return s;
   }
 }

@@ -18,4 +18,7 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> logout();
 
   Future<Either<Failure, UserEntity>> refreshSession();
+
+  /// `POST /auth/riot-session` con el valor de `?riot_session=`.
+  Future<Either<Failure, UserEntity>> exchangeRiotSession({required String code});
 }

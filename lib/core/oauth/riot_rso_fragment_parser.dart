@@ -9,6 +9,7 @@ class RiotRsoFragmentParseResult {
     this.oauthError,
     this.oauthErrorDescription,
     this.sessionFromCookiesOnly = false,
+    this.riotSessionCode,
   });
 
   static const RiotRsoFragmentParseResult empty = RiotRsoFragmentParseResult();
@@ -29,17 +30,24 @@ class RiotRsoFragmentParseResult {
   final String? oauthError;
   final String? oauthErrorDescription;
 
-  /// Sin tokens en el hash ni `?error=…`: la sesión wpgg quedó solo en cookies httpOnly.
+  /// Sin tokens en el hash ni `?error=…` ni `?riot_session=…`: sesión wpgg solo vía cookies.
   final bool sessionFromCookiesOnly;
 
+  /// Código de un solo uso del back (`?riot_session=`) para `POST /auth/riot-session`.
+  final String? riotSessionCode;
+
   bool get hasOAuthError => oauthError != null && oauthError!.isNotEmpty;
+
+  bool get hasRiotSessionCode =>
+      riotSessionCode != null && riotSessionCode!.isNotEmpty;
 }
 
 /// Tras el redirect del backend a la ruta SPA.
 ///
 /// 1. Errores OAuth en **query** (`?error=` / `error_description=`), p. ej. Riot o `rso_no_subject`.
-/// 2. Si no hay error en query: tokens legacy en el **fragmento** (`#access_token=…`).
-/// 3. Si no hay error ni tokens: se asume sesión en cookies httpOnly (sin hash).
+/// 2. **`?riot_session=`** (código de un solo uso) → canje con `POST /auth/riot-session`.
+/// 3. Tokens legacy en el **fragmento** (`#access_token=…`).
+/// 4. Si no hay error ni código ni tokens: sesión solo en cookies httpOnly (sin hash).
 RiotRsoFragmentParseResult parseRiotRsoCallbackUri(Uri uri) {
   final q = Uri.splitQueryString(uri.query);
   final lowerQ = <String, String>{
@@ -51,6 +59,11 @@ RiotRsoFragmentParseResult parseRiotRsoCallbackUri(Uri uri) {
       error: qErr,
       description: lowerQ['error_description'],
     );
+  }
+
+  final riotSession = lowerQ['riot_session'];
+  if (riotSession != null && riotSession.isNotEmpty) {
+    return RiotRsoFragmentParseResult(riotSessionCode: riotSession);
   }
 
   final frag = parseRiotRsoFragment(uri.fragment);

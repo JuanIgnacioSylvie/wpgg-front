@@ -100,4 +100,21 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> exchangeRiotSession({
+    required String code,
+  }) async {
+    try {
+      final session = await _remote.exchangeRiotSession(code: code);
+      await _persistAuthSession(session);
+      return Right(session.user);
+    } on AuthException catch (e) {
+      await _secure.clearSession();
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      await _secure.clearSession();
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }
