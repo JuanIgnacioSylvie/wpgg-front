@@ -79,13 +79,28 @@ class StatsHeader extends StatelessWidget {
 }
 
 class StatsHeaderEmpty extends StatelessWidget {
-  const StatsHeaderEmpty({super.key, required this.onLinkTap});
+  const StatsHeaderEmpty({
+    super.key,
+    required this.onLinkTap,
+    this.afterRiotLogin = false,
+  });
 
   final VoidCallback onLinkTap;
+
+  /// True cuando el usuario entró con Riot pero el back no pudo auto-vincular.
+  final bool afterRiotLogin;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final message = afterRiotLogin
+        ? 'No pudimos vincular tu cuenta de LoL automáticamente. '
+            'Completá los datos de tu invocador para ver estadísticas.'
+        : 'Vinculá tu cuenta de Riot para ver estadísticas.';
+    final buttonLabel = afterRiotLogin
+        ? 'Completar vinculación manual'
+        : 'Vincular cuenta de Riot';
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -93,13 +108,13 @@ class StatsHeaderEmpty extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Vinculá tu cuenta de Riot para ver estadísticas.',
+              message,
               style: theme.textTheme.bodyLarge,
             ),
             const SizedBox(height: 16),
             FilledButton(
               onPressed: onLinkTap,
-              child: const Text('Vincular cuenta de Riot'),
+              child: Text(buttonLabel),
             ),
           ],
         ),

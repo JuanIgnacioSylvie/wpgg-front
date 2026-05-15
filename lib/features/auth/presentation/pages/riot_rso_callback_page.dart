@@ -68,6 +68,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
   }
 
   Future<void> _finishSuccess({required String statusLine}) async {
+    await sl<SecureStorage>().markRiotRsoJustLoggedIn();
     if (!mounted) return;
     setState(() {
       _savedSessionOk = true;

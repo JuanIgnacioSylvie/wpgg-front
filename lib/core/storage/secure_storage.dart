@@ -66,10 +66,24 @@ class SecureStorage {
     await _storage.delete(key: AppConstants.keyRiotRsoIdToken);
   }
 
+  Future<void> markRiotRsoJustLoggedIn() async {
+    await _storage.write(key: AppConstants.keyRiotRsoJustLoggedIn, value: '1');
+  }
+
+  Future<bool> consumeRiotRsoJustLoggedIn() async {
+    final v = await _storage.read(key: AppConstants.keyRiotRsoJustLoggedIn);
+    if (v == '1') {
+      await _storage.delete(key: AppConstants.keyRiotRsoJustLoggedIn);
+      return true;
+    }
+    return false;
+  }
+
   Future<void> clearSession() async {
     await _storage.delete(key: AppConstants.keyAccessToken);
     await _storage.delete(key: AppConstants.keyAuthRefreshToken);
     await _storage.delete(key: AppConstants.keyUserEmail);
+    await _storage.delete(key: AppConstants.keyRiotRsoJustLoggedIn);
     await clearRiotRsoTokens();
   }
 }

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/di/injection_container.dart';
+import '../../../../core/storage/secure_storage.dart';
 import '../../../../core/theme/theme_provider.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -24,10 +26,18 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  var _showRiotLinkFallback = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final afterRiot = await sl<SecureStorage>().consumeRiotRsoJustLoggedIn();
+      if (mounted) {
+        setState(() => _showRiotLinkFallback = afterRiot);
+      }
+      if (!mounted) return;
       context.read<DDragonProvider>().ensureLoaded();
       context.read<RiotBloc>().add(const LoadDashboard());
     });
@@ -154,7 +164,10 @@ class _DashboardPageState extends State<DashboardPage> {
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  StatsHeaderEmpty(onLinkTap: _openLinkSheet),
+                  StatsHeaderEmpty(
+                    onLinkTap: _openLinkSheet,
+                    afterRiotLogin: _showRiotLinkFallback,
+                  ),
                 ],
               );
             }

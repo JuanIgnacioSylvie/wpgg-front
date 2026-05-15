@@ -37,6 +37,9 @@ abstract final class AppConstants {
   /// JWT refresh de la app (SPA / otro dominio sin cookie cross-site).
   static const String keyAuthRefreshToken = 'auth_refresh_token';
 
+  /// Marca login reciente con Riot (para UX si falla auto-vinculación en el back).
+  static const String keyRiotRsoJustLoggedIn = 'riot_rso_just_logged_in';
+
   /// Tokens RSO (solo si completás el flujo web); no son el JWT de la app.
   static const String keyRiotRsoAccessToken = 'riot_rso_access_token';
   static const String keyRiotRsoRefreshToken = 'riot_rso_refresh_token';
