@@ -172,16 +172,25 @@ class _DashboardPageState extends State<DashboardPage> {
               );
             }
             if (state is RiotLoaded) {
+              final theme = Theme.of(context);
+              final matches = state.matches;
+
               return RefreshIndicator(
+                color: theme.colorScheme.primary,
+                backgroundColor: theme.scaffoldBackgroundColor,
                 onRefresh: () async {
-                  context.read<RiotBloc>().add(const RefreshMatchHistory());
+                  final bloc = context.read<RiotBloc>();
+                  final done = bloc.stream.firstWhere(
+                    (s) => s is RiotLoaded || s is RiotError,
+                  );
+                  bloc.add(const RefreshMatchHistory());
+                  await done;
                 },
                 child: ListView(
-                  padding: const EdgeInsets.all(16),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                   children: [
-                    StatsHeader(
-                      summoner: state.summoner,
-                    ),
+                    StatsHeader(summoner: state.summoner),
                     const SizedBox(height: 16),
                     ...state.rankedEntries.map(
                       (e) => Padding(
@@ -191,16 +200,30 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Últimas partidas',
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      matches.isEmpty
+                          ? 'Últimas partidas'
+                          : 'Últimas partidas (${matches.length})',
+                      style: theme.textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 8),
-                    ...state.matches.map(
-                      (m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: MatchTile(match: m),
+                    if (matches.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Text(
+                          'No hay partidas recientes para mostrar.',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    else
+                      ...matches.map(
+                        (m) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: MatchTile(match: m),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );

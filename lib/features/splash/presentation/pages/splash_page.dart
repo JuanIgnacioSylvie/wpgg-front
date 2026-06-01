@@ -62,14 +62,14 @@ class _SplashPageState extends State<SplashPage>
     final token = await storage.getAccessToken();
     if (!mounted) return;
     if (token != null && token.isNotEmpty) {
-      context.go('/dashboard');
+      context.go('/home');
       return;
     }
     final refreshed = await sl<RefreshTokenUseCase>()();
     if (!mounted) return;
     refreshed.fold(
       (_) => context.go('/login'),
-      (_) => context.go('/dashboard'),
+      (_) => context.go('/home'),
     );
   }
 

@@ -5,8 +5,8 @@ abstract final class AppColors {
   static const Color darkBackgroundSecondary = Color(0xFF151220);
   static const Color darkSurface = Color(0xFF1D1830);
   static const Color darkModal = Color(0xFF12101B);
-  static const Color darkPrimary = Color(0xFF7C4DFF);
-  static const Color darkPrimaryHover = Color(0xFF956BFF);
+  static const Color darkPrimary = Color(0xFFAD1F0F);
+  static const Color darkPrimaryHover = Color(0xFFC42818);
   static const Color darkAccent = Color(0xFFB388FF);
   static const Color darkTextPrimary = Color(0xFFF5F5F7);
   static const Color darkTextSecondary = Color(0xFFB8B5C3);
@@ -23,8 +23,8 @@ abstract final class AppColors {
   static const Color lightBackgroundSecondary = Color(0xFFEFEFFC);
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightModal = Color(0xFFFAF9FF);
-  static const Color lightPrimary = Color(0xFF6C3DFF);
-  static const Color lightPrimaryHover = Color(0xFF5B2DFF);
+  static const Color lightPrimary = Color(0xFFAD1F0F);
+  static const Color lightPrimaryHover = Color(0xFFC42818);
   static const Color lightAccent = Color(0xFFA78BFA);
   static const Color lightTextPrimary = Color(0xFF18161F);
   static const Color lightTextSecondary = Color(0xFF5F5B6B);

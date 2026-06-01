@@ -6,10 +6,30 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
 import '../constants/app_constants.dart';
+import '../../features/missions/presentation/bloc/missions_bloc.dart';
+import '../../features/missions/presentation/pages/home_page.dart';
+import '../../features/missions/presentation/pages/missions_by_day_page.dart';
+import '../../features/missions/presentation/pages/pick_missions_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
-import '../../features/riot/presentation/pages/dashboard_page.dart';
-import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../features/wallet/presentation/pages/finance_page.dart';
 import '../di/injection_container.dart';
+import '../presentation/app_shell_page.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
+
+int shellBranchIndexForNav(int navIndex) {
+  if (navIndex <= 1) {
+    return navIndex;
+  }
+  if (navIndex == 3) {
+    return 2;
+  }
+  if (navIndex == 4) {
+    return 3;
+  }
+  return 0;
+}
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
@@ -25,27 +45,74 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (_, __) => BlocProvider(
-        create: (_) => sl<AuthBloc>(),
+      builder: (_, __) => BlocProvider.value(
+        value: sl<AuthBloc>(),
         child: const LoginPage(),
       ),
     ),
     GoRoute(
       path: '/register',
-      builder: (_, __) => BlocProvider(
-        create: (_) => sl<AuthBloc>(),
+      builder: (_, __) => BlocProvider.value(
+        value: sl<AuthBloc>(),
         child: const RegisterPage(),
       ),
     ),
     GoRoute(
-      path: '/dashboard',
+      path: '/missions/pick',
       builder: (_, __) => MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => sl<AuthBloc>()),
-          BlocProvider(create: (_) => sl<RiotBloc>()),
+          BlocProvider.value(value: sl<RiotBloc>()),
+          BlocProvider.value(value: sl<MissionsBloc>()),
         ],
-        child: const DashboardPage(),
+        child: const PickMissionsPage(),
       ),
+    ),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<AuthBloc>()),
+            BlocProvider.value(value: sl<RiotBloc>()),
+            BlocProvider.value(value: sl<MissionsBloc>()),
+            BlocProvider.value(value: sl<WalletBloc>()),
+          ],
+          child: AppShellPage(navigationShell: navigationShell),
+        );
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (_, __) => const HomePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/missions/by-day',
+              builder: (_, __) => const MissionsByDayPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/finance',
+              builder: (_, __) => const FinancePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/profile',
+              builder: (_, __) => const ProfilePage(),
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 );

@@ -16,101 +16,129 @@ class MatchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final dd = context.watch<DDragonProvider>();
-    final champUrl = dd.championSquareUrl(match.championName);
+    final onSurface = theme.colorScheme.onSurface;
+    final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
+    final dd = context.read<DDragonProvider>();
+    final champUrl = dd.championSquareUrl(
+      match.championName,
+      championId: match.championId,
+    );
     final ago = _relative(match.endedAt);
     final duration = _formatDuration(match.durationSeconds);
-    final endedClock = DateFormat.Hm('es').format(match.endedAt.toLocal());
+    final endedClock = DateFormat.Hm().format(match.endedAt.toLocal());
 
-    final winBg = isDark
-        ? AppColors.darkSuccess.withValues(alpha: 0.12)
-        : AppColors.lightSuccess.withValues(alpha: 0.12);
-    final lossBg = isDark
-        ? AppColors.darkError.withValues(alpha: 0.12)
-        : AppColors.lightError.withValues(alpha: 0.12);
+    final cardColor = _cardColor(isDark, match.win);
+    final accent = match.win
+        ? (isDark ? AppColors.darkSuccess : AppColors.lightSuccess)
+        : (isDark ? AppColors.darkError : AppColors.lightError);
 
     return Card(
-      color: match.win ? winBg : lossBg,
+      color: cardColor,
+      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: champUrl,
-                width: 48,
-                height: 48,
-                fit: BoxFit.cover,
-                errorWidget: (_, __, ___) =>
-                    const Icon(Icons.image_not_supported),
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _championAvatar(context, champUrl, onSurfaceVariant),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        match.championName.isNotEmpty
+                            ? match.championName
+                            : 'Campeón ${match.championId}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: onSurface),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${match.kills} / ${match.deaths} / ${match.assists}',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: onSurface,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '$duration · $endedClock · $ago',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: onSurfaceVariant),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    match.championName,
-                    style: theme.textTheme.titleMedium,
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  match.win ? 'Victoria' : 'Derrota',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: isDark ? AppColors.darkTextPrimary : Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(
-                      style: theme.textTheme.bodyMedium,
-                      children: [
-                        TextSpan(
-                          text: '${match.kills}',
-                          style: TextStyle(
-                            color: isDark
-                                ? AppColors.darkSuccess
-                                : AppColors.lightSuccess,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const TextSpan(text: ' / '),
-                        TextSpan(
-                          text: '${match.deaths}',
-                          style: TextStyle(
-                            color: isDark
-                                ? AppColors.darkError
-                                : AppColors.lightError,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const TextSpan(text: ' / '),
-                        TextSpan(
-                          text: '${match.assists}',
-                          style: TextStyle(
-                            color: theme.colorScheme.secondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    '$duration · $endedClock · $ago',
-                    style: theme.textTheme.labelSmall,
-                  ),
-                ],
-              ),
-            ),
-            Chip(
-              label: Text(match.win ? 'Victoria' : 'Derrota'),
-              backgroundColor: match.win
-                  ? (isDark ? AppColors.darkSuccess : AppColors.lightSuccess)
-                  : (isDark ? AppColors.darkError : AppColors.lightError),
-              labelStyle: theme.textTheme.labelSmall?.copyWith(
-                color:
-                    isDark ? AppColors.darkTextPrimary : AppColors.lightSurface,
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _championAvatar(
+    BuildContext context,
+    String champUrl,
+    Color iconColor,
+  ) {
+    final placeholder = Container(
+      width: 52,
+      height: 52,
+      decoration: BoxDecoration(
+        color: AppColors.darkBorder,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(Icons.person, color: iconColor),
+    );
+
+    if (champUrl.isEmpty) return placeholder;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: champUrl,
+        width: 52,
+        height: 52,
+        fit: BoxFit.cover,
+        placeholder: (_, __) => placeholder,
+        errorWidget: (_, __, ___) => placeholder,
+      ),
+    );
+  }
+
+  static Color _cardColor(bool isDark, bool win) {
+    if (isDark) {
+      return win ? const Color(0xFF1A3A2E) : const Color(0xFF3A1F28);
+    }
+    return win ? const Color(0xFFD4EDDA) : const Color(0xFFF8D7DA);
   }
 
   static String _formatDuration(int seconds) {
@@ -121,7 +149,7 @@ class MatchTile extends StatelessWidget {
 
   static String _relative(DateTime t) {
     final diff = DateTime.now().difference(t);
-    if (diff.inMinutes < 1) return 'hace instantes';
+    if (diff.isNegative || diff.inMinutes < 1) return 'hace instantes';
     if (diff.inMinutes < 60) return 'hace ${diff.inMinutes} min';
     if (diff.inHours < 24) return 'hace ${diff.inHours} h';
     return 'hace ${diff.inDays} d';

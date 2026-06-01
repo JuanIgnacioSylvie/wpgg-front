@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/utils/json_list_parser.dart';
 import 'riot_remote_datasource.dart';
 
 class RiotRemoteDataSourceImpl implements RiotRemoteDataSource {
@@ -33,12 +34,7 @@ class RiotRemoteDataSourceImpl implements RiotRemoteDataSource {
         '/riot/matches',
         queryParameters: {'limit': limit},
       );
-      final data = res.data;
-      if (data is List) return data;
-      if (data is Map && data['items'] is List) {
-        return data['items'] as List<dynamic>;
-      }
-      return const [];
+      return parseJsonList(res.data);
     } on DioException catch (e) {
       throw ServerException(_message(e));
     }
@@ -48,12 +44,13 @@ class RiotRemoteDataSourceImpl implements RiotRemoteDataSource {
   Future<List<dynamic>> fetchRanked() async {
     try {
       final res = await _api.get<dynamic>('/riot/ranked');
+      final list = parseJsonList(res.data);
+      if (list.isNotEmpty) return list;
       final data = res.data;
-      if (data is List) return data;
       if (data is Map && data['entries'] is List) {
         return data['entries'] as List<dynamic>;
       }
-      return const [];
+      return list;
     } on DioException catch (e) {
       throw ServerException(_message(e));
     }

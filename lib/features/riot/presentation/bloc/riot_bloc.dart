@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failures.dart';
@@ -45,7 +46,13 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
       emit(const RiotNoAccount());
       return;
     }
-    final matchesRes = await _getMatchHistory(limit: 10);
+    final results = await Future.wait([
+      _getMatchHistory(limit: 10),
+      _getRankedStats(),
+    ]);
+    final matchesRes = results[0] as Either<Failure, List<MatchEntity>>;
+    final rankedRes = results[1] as Either<Failure, List<RankedEntryEntity>>;
+
     final matchesFail = matchesRes.fold<Failure?>((f) => f, (_) => null);
     if (matchesFail != null) {
       emit(RiotError(matchesFail.message));
@@ -55,7 +62,7 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
       (_) => const [],
       (m) => m,
     );
-    final rankedRes = await _getRankedStats();
+
     final rankedFail = rankedRes.fold<Failure?>((f) => f, (_) => null);
     if (rankedFail != null) {
       emit(RiotError(rankedFail.message));
@@ -98,7 +105,6 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
       add(const LoadDashboard());
       return;
     }
-    emit(const RiotLoading());
     final matchesRes = await _getMatchHistory(limit: 10);
     final fail = matchesRes.fold<Failure?>((f) => f, (_) => null);
     if (fail != null) {

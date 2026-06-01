@@ -1,0 +1,115 @@
+import '../../../../core/network/api_client.dart';
+import '../models/mission_card_model.dart';
+
+class MissionsHomeResponse {
+  MissionsHomeResponse({
+    required this.primary,
+    required this.secondary,
+    required this.past,
+    required this.endsInSeconds,
+  });
+
+  final MissionCardModel? primary;
+  final List<MissionCardModel> secondary;
+  final List<MissionCardModel> past;
+  final int endsInSeconds;
+}
+
+class PickTodayResponse {
+  PickTodayResponse({
+    required this.date,
+    required this.offers,
+    required this.selectedCount,
+    required this.maxSelectable,
+    required this.maxHard,
+  });
+
+  final String date;
+  final List<MissionCardModel> offers;
+  final int selectedCount;
+  final int maxSelectable;
+  final int maxHard;
+}
+
+abstract class MissionsRemoteDataSource {
+  Future<MissionsHomeResponse> fetchHome();
+  Future<PickTodayResponse> fetchPickToday();
+  Future<List<MissionCardModel>> fetchByDay(String? date);
+  Future<MissionCardModel> acceptOffer(String offerId);
+  Future<MissionCardModel> rerollOffer(String offerId);
+  Future<void> syncMatches();
+}
+
+class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
+  MissionsRemoteDataSourceImpl(this._client);
+
+  final ApiClient _client;
+
+  @override
+  Future<MissionsHomeResponse> fetchHome() async {
+    final res = await _client.get<Map<String, dynamic>>('/missions/home');
+    final data = res.data!;
+    return MissionsHomeResponse(
+      primary: data['primary'] != null
+          ? MissionCardModel.fromJson(
+              data['primary'] as Map<String, dynamic>,
+            )
+          : null,
+      secondary: (data['secondary'] as List<dynamic>? ?? [])
+          .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      past: (data['past'] as List<dynamic>? ?? [])
+          .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      endsInSeconds: (data['endsInSeconds'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  @override
+  Future<PickTodayResponse> fetchPickToday() async {
+    final res = await _client.get<Map<String, dynamic>>('/missions/pick/today');
+    final data = res.data!;
+    return PickTodayResponse(
+      date: data['date'] as String? ?? '',
+      offers: (data['offers'] as List<dynamic>? ?? [])
+          .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      selectedCount: (data['selectedCount'] as num?)?.toInt() ?? 0,
+      maxSelectable: (data['maxSelectable'] as num?)?.toInt() ?? 3,
+      maxHard: (data['maxHard'] as num?)?.toInt() ?? 1,
+    );
+  }
+
+  @override
+  Future<List<MissionCardModel>> fetchByDay(String? date) async {
+    final res = await _client.get<Map<String, dynamic>>(
+      '/missions/by-day',
+      queryParameters: date != null ? {'date': date} : null,
+    );
+    final list = res.data!['missions'] as List<dynamic>? ?? [];
+    return list
+        .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<MissionCardModel> acceptOffer(String offerId) async {
+    final res = await _client.post<Map<String, dynamic>>(
+      '/missions/pick/$offerId/accept',
+    );
+    return MissionCardModel.fromJson(res.data!);
+  }
+
+  @override
+  Future<MissionCardModel> rerollOffer(String offerId) async {
+    final res = await _client.post<Map<String, dynamic>>(
+      '/missions/pick/$offerId/reroll',
+    );
+    return MissionCardModel.fromJson(res.data!);
+  }
+
+  @override
+  Future<void> syncMatches() async {
+    await _client.post<void>('/missions/sync');
+  }
+}

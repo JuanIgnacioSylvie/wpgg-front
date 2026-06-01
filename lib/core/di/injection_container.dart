@@ -29,6 +29,10 @@ import '../../features/riot/domain/usecases/get_ranked_stats_usecase.dart';
 import '../../features/riot/domain/usecases/get_summoner_profile_usecase.dart';
 import '../../features/riot/domain/usecases/link_riot_account_usecase.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
+import '../../features/missions/data/datasources/missions_remote_datasource.dart';
+import '../../features/missions/presentation/bloc/missions_bloc.dart';
+import '../../features/wallet/data/datasources/wallet_remote_datasource.dart';
+import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -68,7 +72,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => RefreshTokenUseCase(sl()));
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => AuthBloc(
       loginUseCase: sl(),
       registerUseCase: sl(),
@@ -87,12 +91,26 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetMatchHistoryUseCase(sl()));
   sl.registerLazySingleton(() => GetRankedStatsUseCase(sl()));
   sl.registerLazySingleton(() => LinkRiotAccountUseCase(sl()));
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => RiotBloc(
       getSummonerProfile: sl(),
       getMatchHistory: sl(),
       getRankedStats: sl(),
       linkRiotAccount: sl(),
     ),
+  );
+
+  sl.registerLazySingleton<MissionsRemoteDataSource>(
+    () => MissionsRemoteDataSourceImpl(sl<ApiClient>()),
+  );
+  sl.registerLazySingleton(
+    () => MissionsBloc(sl<MissionsRemoteDataSource>()),
+  );
+
+  sl.registerLazySingleton<WalletRemoteDataSource>(
+    () => WalletRemoteDataSourceImpl(sl<ApiClient>()),
+  );
+  sl.registerLazySingleton(
+    () => WalletBloc(sl<WalletRemoteDataSource>()),
   );
 }

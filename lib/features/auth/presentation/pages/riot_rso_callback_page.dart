@@ -79,7 +79,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
       const SnackBar(content: Text('Login Riot completado')),
     );
     Future<void>.delayed(const Duration(milliseconds: 400), () {
-      if (mounted) context.go('/dashboard');
+      if (mounted) context.go('/home');
     });
   }
 
@@ -256,7 +256,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
                 const SizedBox(height: 24),
                 FilledButton(
                   onPressed: () =>
-                      context.go(_savedSessionOk ? '/dashboard' : '/login'),
+                      context.go(_savedSessionOk ? '/home' : '/login'),
                   child: Text(
                     _savedSessionOk ? 'Ir al panel' : 'Ir al inicio de sesión',
                   ),

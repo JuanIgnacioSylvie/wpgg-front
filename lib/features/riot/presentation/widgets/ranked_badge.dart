@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/riot_queue_labels.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../domain/entities/ranked_entry_entity.dart';
 
@@ -29,17 +30,26 @@ class RankedBadge extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              entry.queueType,
+              riotQueueLabel(entry.queueType),
               style: theme.textTheme.labelLarge,
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                CachedNetworkImage(
-                  imageUrl: emblemUrl,
-                  width: 56,
-                  height: 56,
-                  errorWidget: (_, __, ___) => const Icon(Icons.military_tech),
+                SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: ClipRect(
+                    child: Transform.scale(
+                      scale: 2.4,
+                      child: CachedNetworkImage(
+                        imageUrl: emblemUrl,
+                        fit: BoxFit.contain,
+                        errorWidget: (_, __, ___) =>
+                            const Icon(Icons.military_tech, size: 48),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/utils/json_list_parser.dart';
 import '../../domain/entities/match_entity.dart';
 import '../../domain/entities/ranked_entry_entity.dart';
 import '../../domain/entities/summoner_entity.dart';
@@ -34,10 +35,16 @@ class RiotRepositoryImpl implements RiotRepository {
   }) async {
     try {
       final raw = await _remote.fetchMatches(limit);
-      final list = raw
-          .whereType<Map>()
-          .map((e) => MatchModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+      final list = <MatchEntity>[];
+      for (final item in raw) {
+        final map = parseJsonMap(item);
+        if (map == null) continue;
+        try {
+          list.add(MatchModel.fromJson(map));
+        } catch (_) {
+          continue;
+        }
+      }
       return Right(list);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));

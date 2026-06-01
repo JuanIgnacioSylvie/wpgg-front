@@ -11,6 +11,20 @@ class DDragonRepositoryImpl implements DDragonRepository {
   final DDragonRemoteDataSource _remote;
 
   @override
+  Future<Either<Failure, Map<int, String>>> getChampionKeys(
+    String version,
+  ) async {
+    try {
+      final keys = await _remote.fetchChampionKeys(version);
+      return Right(keys);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, String>> getLatestVersion() async {
     try {
       final v = await _remote.fetchLatestVersion();
