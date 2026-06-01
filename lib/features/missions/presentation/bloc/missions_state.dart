@@ -1,22 +1,9 @@
 part of 'missions_bloc.dart';
 
-sealed class MissionsState extends Equatable {
-  const MissionsState();
+enum MissionsLoadStatus { initial, loading, loaded, error }
 
-  @override
-  List<Object?> get props => [];
-}
-
-class MissionsInitial extends MissionsState {
-  const MissionsInitial();
-}
-
-class MissionsLoading extends MissionsState {
-  const MissionsLoading();
-}
-
-class MissionsHomeLoaded extends MissionsState {
-  const MissionsHomeLoaded({
+class MissionsHomeData extends Equatable {
+  const MissionsHomeData({
     required this.primary,
     required this.secondary,
     required this.past,
@@ -32,8 +19,8 @@ class MissionsHomeLoaded extends MissionsState {
   List<Object?> get props => [primary, secondary, past, endsInSeconds];
 }
 
-class MissionsPickLoaded extends MissionsState {
-  const MissionsPickLoaded({
+class MissionsPickData extends Equatable {
+  const MissionsPickData({
     required this.date,
     required this.offers,
     required this.selectedCount,
@@ -48,11 +35,11 @@ class MissionsPickLoaded extends MissionsState {
   final int maxHard;
 
   @override
-  List<Object?> get props => [date, offers, selectedCount];
+  List<Object?> get props => [date, offers, selectedCount, maxSelectable, maxHard];
 }
 
-class MissionsByDayLoaded extends MissionsState {
-  const MissionsByDayLoaded({
+class MissionsByDayData extends Equatable {
+  const MissionsByDayData({
     required this.date,
     required this.missions,
   });
@@ -64,11 +51,68 @@ class MissionsByDayLoaded extends MissionsState {
   List<Object?> get props => [date, missions];
 }
 
-class MissionsError extends MissionsState {
-  const MissionsError(this.message);
+class MissionsState extends Equatable {
+  const MissionsState({
+    this.homeStatus = MissionsLoadStatus.initial,
+    this.home,
+    this.homeError,
+    this.pickStatus = MissionsLoadStatus.initial,
+    this.pick,
+    this.pickError,
+    this.byDayStatus = MissionsLoadStatus.initial,
+    this.byDay,
+    this.byDayError,
+  });
 
-  final String message;
+  final MissionsLoadStatus homeStatus;
+  final MissionsHomeData? home;
+  final String? homeError;
+
+  final MissionsLoadStatus pickStatus;
+  final MissionsPickData? pick;
+  final String? pickError;
+
+  final MissionsLoadStatus byDayStatus;
+  final MissionsByDayData? byDay;
+  final String? byDayError;
+
+  MissionsState copyWith({
+    MissionsLoadStatus? homeStatus,
+    MissionsHomeData? home,
+    String? homeError,
+    bool clearHomeError = false,
+    MissionsLoadStatus? pickStatus,
+    MissionsPickData? pick,
+    String? pickError,
+    bool clearPickError = false,
+    MissionsLoadStatus? byDayStatus,
+    MissionsByDayData? byDay,
+    String? byDayError,
+    bool clearByDayError = false,
+  }) {
+    return MissionsState(
+      homeStatus: homeStatus ?? this.homeStatus,
+      home: home ?? this.home,
+      homeError: clearHomeError ? null : (homeError ?? this.homeError),
+      pickStatus: pickStatus ?? this.pickStatus,
+      pick: pick ?? this.pick,
+      pickError: clearPickError ? null : (pickError ?? this.pickError),
+      byDayStatus: byDayStatus ?? this.byDayStatus,
+      byDay: byDay ?? this.byDay,
+      byDayError: clearByDayError ? null : (byDayError ?? this.byDayError),
+    );
+  }
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [
+        homeStatus,
+        home,
+        homeError,
+        pickStatus,
+        pick,
+        pickError,
+        byDayStatus,
+        byDay,
+        byDayError,
+      ];
 }

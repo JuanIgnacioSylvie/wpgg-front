@@ -62,23 +62,37 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
           ),
           body: BlocConsumer<MissionsBloc, MissionsState>(
             listener: (context, state) {
-              if (state is MissionsError) {
+              if (state.pickError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
+                  SnackBar(content: Text(state.pickError!)),
                 );
               }
             },
             builder: (context, state) {
-              if (state is MissionsLoading) {
+              if (state.pickStatus == MissionsLoadStatus.loading ||
+                  state.pickStatus == MissionsLoadStatus.initial) {
                 return const Center(
                   child: CircularProgressIndicator(color: WpggBrand.primary),
                 );
               }
-              if (state is! MissionsPickLoaded) {
+              if (state.pickStatus == MissionsLoadStatus.error) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      state.pickError ?? 'Error loading offers',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: WpggBrand.white),
+                    ),
+                  ),
+                );
+              }
+              final pick = state.pick;
+              if (pick == null) {
                 return const SizedBox.shrink();
               }
-              final offers = _filterOffers(state.offers);
-              final acceptedIds = state.offers
+              final offers = _filterOffers(pick.offers);
+              final acceptedIds = pick.offers
                   .where((o) => o.status != MissionStatus.offer)
                   .map((o) => o.offerId ?? o.id)
                   .toSet();
@@ -98,7 +112,7 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      'Selected ${state.selectedCount}/${state.maxSelectable} (max ${state.maxHard} hard)',
+                      'Selected ${pick.selectedCount}/${pick.maxSelectable} (max ${pick.maxHard} hard)',
                       style: const TextStyle(color: WpggBrand.textMuted),
                     ),
                   ),

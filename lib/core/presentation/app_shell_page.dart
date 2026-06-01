@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_event.dart';
+import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../router/app_router.dart';
 import 'wpgg_bottom_nav.dart';
 
@@ -21,6 +23,7 @@ class _AppShellPageState extends State<AppShellPage> {
   void initState() {
     super.initState();
     context.read<RiotBloc>().add(const LoadDashboard());
+    context.read<DDragonProvider>().ensureLoaded();
   }
 
   @override
@@ -35,6 +38,9 @@ class _AppShellPageState extends State<AppShellPage> {
         onTap: (index) {
           final branch = shellBranchIndexForNav(index);
           widget.navigationShell.goBranch(branch);
+          if (index == 0) {
+            context.read<MissionsBloc>().add(const LoadMissionsHome());
+          }
         },
         onFabTap: () => context.push('/missions/pick'),
       ),

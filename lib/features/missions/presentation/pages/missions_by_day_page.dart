@@ -76,8 +76,8 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
           ),
           body: BlocBuilder<MissionsBloc, MissionsState>(
             builder: (context, state) {
-              final missions = state is MissionsByDayLoaded
-                  ? _filterMissions(state.missions)
+              final missions = state.byDay != null
+                  ? _filterMissions(state.byDay!.missions)
                   : <MissionCardEntity>[];
 
               return Column(
@@ -101,13 +101,23 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
                     onSelected: (i) => setState(() => _filterIndex = i),
                   ),
                   Expanded(
-                    child: state is MissionsLoading
+                    child: state.byDayStatus == MissionsLoadStatus.loading ||
+                            state.byDayStatus == MissionsLoadStatus.initial
                         ? const Center(
                             child: CircularProgressIndicator(
                               color: WpggBrand.primary,
                             ),
                           )
-                        : ListView.builder(
+                        : state.byDayStatus == MissionsLoadStatus.error
+                            ? Center(
+                                child: Text(
+                                  state.byDayError ?? 'Error',
+                                  style: const TextStyle(
+                                    color: WpggBrand.white,
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
                             padding: const EdgeInsets.only(
                               top: 16,
                               bottom: 100,

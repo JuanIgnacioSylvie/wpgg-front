@@ -8,7 +8,7 @@ part 'missions_event.dart';
 part 'missions_state.dart';
 
 class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
-  MissionsBloc(this._dataSource) : super(const MissionsInitial()) {
+  MissionsBloc(this._dataSource) : super(const MissionsState()) {
     on<LoadMissionsHome>(_onHome);
     on<LoadPickToday>(_onPick);
     on<LoadMissionsByDay>(_onByDay);
@@ -22,17 +22,27 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     LoadMissionsHome event,
     Emitter<MissionsState> emit,
   ) async {
-    emit(const MissionsLoading());
+    emit(state.copyWith(
+      homeStatus: MissionsLoadStatus.loading,
+      clearHomeError: true,
+    ));
     try {
       final home = await _dataSource.fetchHome();
-      emit(MissionsHomeLoaded(
-        primary: home.primary,
-        secondary: home.secondary,
-        past: home.past,
-        endsInSeconds: home.endsInSeconds,
+      emit(state.copyWith(
+        homeStatus: MissionsLoadStatus.loaded,
+        home: MissionsHomeData(
+          primary: home.primary,
+          secondary: home.secondary,
+          past: home.past,
+          endsInSeconds: home.endsInSeconds,
+        ),
+        clearHomeError: true,
       ));
     } catch (e) {
-      emit(MissionsError(e.toString()));
+      emit(state.copyWith(
+        homeStatus: MissionsLoadStatus.error,
+        homeError: e.toString(),
+      ));
     }
   }
 
@@ -40,18 +50,28 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     LoadPickToday event,
     Emitter<MissionsState> emit,
   ) async {
-    emit(const MissionsLoading());
+    emit(state.copyWith(
+      pickStatus: MissionsLoadStatus.loading,
+      clearPickError: true,
+    ));
     try {
       final pick = await _dataSource.fetchPickToday();
-      emit(MissionsPickLoaded(
-        date: pick.date,
-        offers: pick.offers,
-        selectedCount: pick.selectedCount,
-        maxSelectable: pick.maxSelectable,
-        maxHard: pick.maxHard,
+      emit(state.copyWith(
+        pickStatus: MissionsLoadStatus.loaded,
+        pick: MissionsPickData(
+          date: pick.date,
+          offers: pick.offers,
+          selectedCount: pick.selectedCount,
+          maxSelectable: pick.maxSelectable,
+          maxHard: pick.maxHard,
+        ),
+        clearPickError: true,
       ));
     } catch (e) {
-      emit(MissionsError(e.toString()));
+      emit(state.copyWith(
+        pickStatus: MissionsLoadStatus.error,
+        pickError: e.toString(),
+      ));
     }
   }
 
@@ -59,15 +79,25 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     LoadMissionsByDay event,
     Emitter<MissionsState> emit,
   ) async {
-    emit(const MissionsLoading());
+    emit(state.copyWith(
+      byDayStatus: MissionsLoadStatus.loading,
+      clearByDayError: true,
+    ));
     try {
       final missions = await _dataSource.fetchByDay(event.date);
-      emit(MissionsByDayLoaded(
-        date: event.date,
-        missions: missions,
+      emit(state.copyWith(
+        byDayStatus: MissionsLoadStatus.loaded,
+        byDay: MissionsByDayData(
+          date: event.date,
+          missions: missions,
+        ),
+        clearByDayError: true,
       ));
     } catch (e) {
-      emit(MissionsError(e.toString()));
+      emit(state.copyWith(
+        byDayStatus: MissionsLoadStatus.error,
+        byDayError: e.toString(),
+      ));
     }
   }
 
@@ -78,8 +108,9 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     try {
       await _dataSource.acceptOffer(event.offerId);
       add(const LoadPickToday());
+      add(const LoadMissionsHome());
     } catch (e) {
-      emit(MissionsError(e.toString()));
+      emit(state.copyWith(pickError: e.toString()));
     }
   }
 
@@ -91,7 +122,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
       await _dataSource.rerollOffer(event.offerId);
       add(const LoadPickToday());
     } catch (e) {
-      emit(MissionsError(e.toString()));
+      emit(state.copyWith(pickError: e.toString()));
     }
   }
 }
