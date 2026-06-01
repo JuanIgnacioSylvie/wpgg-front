@@ -173,17 +173,30 @@ class _HomePageState extends State<HomePage> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 100),
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(16, 8, 16, 12),
-                        child: Text(
-                          'In Progress',
-                          style: TextStyle(
-                            color: WpggBrand.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'In Progress',
+                            style: TextStyle(
+                              color: WpggBrand.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Mission day ${home.missionDate} · resets 00:00 ${home.missionDayTimezone}',
+                            style: const TextStyle(
+                              color: WpggBrand.textMuted,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
                       if (home.primary != null)
                         MissionPrimaryCard(
                           mission: home.primary!,

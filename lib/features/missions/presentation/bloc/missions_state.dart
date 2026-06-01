@@ -8,15 +8,20 @@ class MissionsHomeData extends Equatable {
     required this.secondary,
     required this.past,
     required this.endsInSeconds,
+    required this.missionDate,
+    required this.missionDayTimezone,
   });
 
   final MissionCardEntity? primary;
   final List<MissionCardEntity> secondary;
   final List<MissionCardEntity> past;
   final int endsInSeconds;
+  final String missionDate;
+  final String missionDayTimezone;
 
   @override
-  List<Object?> get props => [primary, secondary, past, endsInSeconds];
+  List<Object?> get props =>
+      [primary, secondary, past, endsInSeconds, missionDate, missionDayTimezone];
 }
 
 class MissionsPickData extends Equatable {

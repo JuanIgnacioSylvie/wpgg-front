@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/utils/mission_day.dart';
 
 class DayCarousel extends StatelessWidget {
   const DayCarousel({
@@ -17,8 +18,11 @@ class DayCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final today = DateTime.now();
-    final days = List.generate(5, (i) => today.add(Duration(days: i - 2)));
+    final today = MissionDay.todayUtc();
+    final days = List.generate(
+      5,
+      (i) => today.add(Duration(days: i - 2)),
+    );
 
     return SizedBox(
       height: 88,
@@ -28,8 +32,8 @@ class DayCarousel extends StatelessWidget {
         itemCount: days.length,
         itemBuilder: (_, i) {
           final d = days[i];
-          final isSelected = _sameDay(d, selectedDate);
-          final isToday = _sameDay(d, today);
+          final isSelected = MissionDay.isSameMissionDay(d, selectedDate);
+          final isToday = MissionDay.isSameMissionDay(d, today);
           final canTap = !lockToToday || isToday;
 
           return Padding(
@@ -80,7 +84,4 @@ class DayCarousel extends StatelessWidget {
     );
   }
 
-  bool _sameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
 }

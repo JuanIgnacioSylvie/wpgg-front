@@ -35,6 +35,8 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
           secondary: home.secondary,
           past: home.past,
           endsInSeconds: home.endsInSeconds,
+          missionDate: home.missionDate,
+          missionDayTimezone: home.missionDayTimezone,
         ),
         clearHomeError: true,
       ));

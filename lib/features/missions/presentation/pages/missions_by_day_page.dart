@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -24,7 +24,7 @@ class MissionsByDayPage extends StatefulWidget {
 }
 
 class _MissionsByDayPageState extends State<MissionsByDayPage> {
-  var _selectedDate = DateTime.now();
+  var _selectedDate = MissionDay.todayUtc();
   var _filterIndex = 0;
 
   @override
@@ -34,7 +34,7 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
   }
 
   void _load() {
-    final date = DateFormat('yyyy-MM-dd').format(_selectedDate);
+    final date = MissionDay.toApiDate(_selectedDate);
     context.read<MissionsBloc>().add(LoadMissionsByDay(date: date));
   }
 

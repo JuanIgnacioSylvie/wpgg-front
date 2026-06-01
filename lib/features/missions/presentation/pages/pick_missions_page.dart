@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -24,7 +25,7 @@ class PickMissionsPage extends StatefulWidget {
 
 class _PickMissionsPageState extends State<PickMissionsPage> {
   var _filterIndex = 0;
-  final _selectedDate = DateTime.now();
+  final _selectedDate = MissionDay.todayUtc();
 
   @override
   void initState() {

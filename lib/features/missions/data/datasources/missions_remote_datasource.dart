@@ -7,12 +7,16 @@ class MissionsHomeResponse {
     required this.secondary,
     required this.past,
     required this.endsInSeconds,
+    required this.missionDate,
+    required this.missionDayTimezone,
   });
 
   final MissionCardModel? primary;
   final List<MissionCardModel> secondary;
   final List<MissionCardModel> past;
   final int endsInSeconds;
+  final String missionDate;
+  final String missionDayTimezone;
 }
 
 class PickTodayResponse {
@@ -50,6 +54,9 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
     final res = await _client.get<Map<String, dynamic>>('/missions/home');
     final data = res.data!;
     return MissionsHomeResponse(
+      missionDate: data['missionDate'] as String? ?? '',
+      missionDayTimezone:
+          data['missionDayTimezone'] as String? ?? 'UTC',
       primary: data['primary'] != null
           ? MissionCardModel.fromJson(
               data['primary'] as Map<String, dynamic>,

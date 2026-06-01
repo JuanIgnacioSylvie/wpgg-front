@@ -92,7 +92,7 @@ class MissionPrimaryCard extends StatelessWidget {
                     if (endsInSeconds != null && endsInSeconds! > 0) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Ends in: ${_formatDuration(Duration(seconds: endsInSeconds!))}',
+                        'Ends in: ${_formatDuration(Duration(seconds: endsInSeconds!))} (UTC)',
                         style: const TextStyle(
                           fontSize: 11,
                           color: Colors.black54,
