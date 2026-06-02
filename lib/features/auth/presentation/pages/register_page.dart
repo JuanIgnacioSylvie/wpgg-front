@@ -110,6 +110,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: const Text('Registrarse'),
                   ),
                   if (loading) const LinearProgressIndicator(),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: loading
+                        ? null
+                        : () => context.read<AuthBloc>().add(
+                              const RiotRsoSignUpRequested(
+                                requestRedirect: true,
+                              ),
+                            ),
+                    icon: const Icon(Icons.sports_esports_outlined),
+                    label: const Text('Registrarme con Riot'),
+                  ),
                   TextButton(
                     onPressed: () => context.go('/login'),
                     child: const Text('Ya tengo cuenta'),

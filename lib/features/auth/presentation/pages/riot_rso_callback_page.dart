@@ -113,12 +113,22 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
 
       if (parsed.hasOAuthError) {
         final code = parsed.oauthError ?? 'unknown';
+        stripOAuthReturnUrl();
+        if (code == 'user_not_found') {
+          if (!mounted) return;
+          context.go('/auth/riot-no-account');
+          return;
+        }
+        if (code == 'user_already_exists') {
+          if (!mounted) return;
+          context.go('/auth/riot-already-exists');
+          return;
+        }
         final desc = parsed.oauthErrorDescription;
         setState(() {
           _status = _oauthErrorMessage(code, desc);
           _done = true;
         });
-        stripOAuthReturnUrl();
         return;
       }
 

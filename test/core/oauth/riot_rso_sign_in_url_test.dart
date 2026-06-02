@@ -12,4 +12,14 @@ void main() {
       'https://api.example/riot/rso/sign-in?redirect=true&loginHint=x',
     );
   });
+
+  test('buildRiotRsoSignUpAbsoluteUrl uses sign-up path', () {
+    expect(
+      buildRiotRsoSignUpAbsoluteUrl(
+        'https://api.example/',
+        requestRedirect: true,
+      ),
+      'https://api.example/riot/rso/sign-up?redirect=true',
+    );
+  });
 }

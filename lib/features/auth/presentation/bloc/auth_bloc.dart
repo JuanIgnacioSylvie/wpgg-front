@@ -27,6 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutRequested>(_onLogout);
     on<SessionChecked>(_onSessionChecked);
     on<RiotRsoSignInRequested>(_onRiotRsoSignIn);
+    on<RiotRsoSignUpRequested>(_onRiotRsoSignUp);
   }
 
   final LoginUseCase _loginUseCase;
@@ -83,19 +84,40 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  /// Nunca [GET /riot/rso/sign-in] vía Dio: solo navegación documento (web) o
+  /// Nunca [GET /riot/rso/sign-in|sign-up] vía Dio: solo navegación documento (web) o
   /// [launchUrl] externo (móvil/desktop).
   Future<void> _onRiotRsoSignIn(
     RiotRsoSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthLoading());
-    final url = buildRiotRsoSignInAbsoluteUrl(
-      AppConstants.baseUrl,
-      requestRedirect: event.requestRedirect,
-      loginHint: event.loginHint,
-      uiLocales: event.uiLocales,
+    await _launchRiotRso(
+      emit,
+      buildRiotRsoSignInAbsoluteUrl(
+        AppConstants.baseUrl,
+        requestRedirect: event.requestRedirect,
+        loginHint: event.loginHint,
+        uiLocales: event.uiLocales,
+      ),
     );
+  }
+
+  Future<void> _onRiotRsoSignUp(
+    RiotRsoSignUpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _launchRiotRso(
+      emit,
+      buildRiotRsoSignUpAbsoluteUrl(
+        AppConstants.baseUrl,
+        requestRedirect: event.requestRedirect,
+        loginHint: event.loginHint,
+        uiLocales: event.uiLocales,
+      ),
+    );
+  }
+
+  Future<void> _launchRiotRso(Emitter<AuthState> emit, String url) async {
+    emit(const AuthLoading());
     try {
       await openRiotRsoSignInUrl(url);
       if (!kIsWeb) emit(const AuthRiotRsoSignInLaunched());

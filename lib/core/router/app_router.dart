@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/riot_rso_already_exists_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
+import '../../features/auth/presentation/pages/riot_rso_no_account_page.dart';
 import '../constants/app_constants.dart';
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/missions/presentation/pages/home_page.dart';
@@ -42,6 +44,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppConstants.riotRsoWebSuccessPath,
       builder: (_, __) => const RiotRsoCallbackPage(),
+    ),
+    GoRoute(
+      path: '/auth/riot-no-account',
+      builder: (_, __) => const RiotRsoNoAccountPage(),
+    ),
+    GoRoute(
+      path: '/auth/riot-already-exists',
+      builder: (_, __) => const RiotRsoAlreadyExistsPage(),
     ),
     GoRoute(
       path: '/login',

@@ -60,3 +60,19 @@ class RiotRsoSignInRequested extends AuthEvent {
   @override
   List<Object?> get props => [loginHint, uiLocales, requestRedirect];
 }
+
+/// [GET /riot/rso/sign-up] — registro explícito con Riot (`intent=register` en OAuth state).
+class RiotRsoSignUpRequested extends AuthEvent {
+  const RiotRsoSignUpRequested({
+    this.loginHint,
+    this.uiLocales,
+    this.requestRedirect = false,
+  });
+
+  final String? loginHint;
+  final String? uiLocales;
+  final bool requestRedirect;
+
+  @override
+  List<Object?> get props => [loginHint, uiLocales, requestRedirect];
+}
