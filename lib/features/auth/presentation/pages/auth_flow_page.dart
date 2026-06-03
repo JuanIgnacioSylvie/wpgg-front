@@ -8,6 +8,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
 import '../auth_flow_mode.dart';
 import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
@@ -21,16 +22,14 @@ import '../widgets/auth_underline_field.dart';
 import '../widgets/riot_oauth_button.dart';
 import '../widgets/wpgg_primary_button.dart';
 
-/// Pantalla única de auth: solo cambia [AuthFlowMode] (login, registro, sin cuenta, vincular Riot).
+/// Login y registro WPGG (card con Samira).
 class AuthFlowPage extends StatefulWidget {
   const AuthFlowPage({
     super.key,
     required this.initialMode,
-    this.riotLinkPendingCode,
   });
 
   final AuthFlowMode initialMode;
-  final String? riotLinkPendingCode;
 
   @override
   State<AuthFlowPage> createState() => _AuthFlowPageState();
@@ -47,44 +46,29 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   var _obscurePassword = true;
   var _obscureConfirm = true;
 
-  String? _riotLinkPendingFromRoute(BuildContext context) {
-    if (widget.riotLinkPendingCode != null &&
-        widget.riotLinkPendingCode!.isNotEmpty) {
-      return widget.riotLinkPendingCode;
-    }
-    try {
-      return GoRouterState.of(context).uri.queryParameters['riot_link_pending'];
-    } catch (_) {
-      return null;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     _authBloc = sl<AuthBloc>();
     _mode = widget.initialMode;
     _authSub = _authBloc.stream.listen(_onAuthState);
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      try {
-        final q = GoRouterState.of(context).uri.queryParameters;
-        if (q['error'] == 'user_not_found') {
-          setState(() => _mode = AuthFlowMode.riotNoAccount);
-        }
-      } catch (_) {}
-    });
+  Future<void> _navigateAfterAuthenticated() async {
+    final res = await sl<GetSummonerProfileUseCase>()();
+    if (!mounted) return;
+    final needsLink = res.fold((_) => false, (s) => s == null);
+    context.go(needsLink ? '/auth/link-riot' : '/home');
   }
 
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthAuthenticated) {
-      context.go('/home');
+      unawaited(_navigateAfterAuthenticated());
       return;
     }
     if (state is AuthRegisteredPendingRiotLink) {
-      setState(() => _mode = AuthFlowMode.linkRiot);
+      context.go('/auth/link-riot');
       return;
     }
     if (state is AuthRiotRsoSignInLaunched) {
@@ -116,30 +100,31 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     super.dispose();
   }
 
-  void _setMode(AuthFlowMode mode) {
-    setState(() => _mode = mode);
+  void _goToMode(AuthFlowMode mode) {
+    if (mode == AuthFlowMode.login) {
+      context.go('/login');
+    } else {
+      context.go('/register');
+    }
   }
 
-  bool get _showConfirmPassword =>
-      _mode == AuthFlowMode.register || _mode == AuthFlowMode.riotNoAccount;
+  bool get _showConfirmPassword => _mode == AuthFlowMode.register;
 
   bool get _showRememberForgot => _mode == AuthFlowMode.login;
 
   bool get _showRiotFooter => _mode == AuthFlowMode.login;
-
-  bool get _isLinkOnly => _mode == AuthFlowMode.linkRiot;
 
   void _submit(bool loading) {
     if (loading) return;
 
     if (_mode == AuthFlowMode.login) {
       _authBloc.add(
-            LoginRequested(
-              email: _email.text.trim(),
-              password: _password.text,
-              rememberMe: _remember,
-            ),
-          );
+        LoginRequested(
+          email: _email.text.trim(),
+          password: _password.text,
+          rememberMe: _remember,
+        ),
+      );
       return;
     }
 
@@ -150,80 +135,33 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       return;
     }
 
-    if (_mode == AuthFlowMode.riotNoAccount) {
-      final pending = _riotLinkPendingFromRoute(context);
-      if (pending == null || pending.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(AuthStrings.riotLinkExpired)),
-        );
-        return;
-      }
-      _authBloc.add(
-            RegisterRequested(
-              email: _email.text.trim(),
-              password: _password.text,
-              riotLinkPendingCode: pending,
-            ),
-          );
-      return;
-    }
-
     _authBloc.add(
-          RegisterRequested(
-            email: _email.text.trim(),
-            password: _password.text,
-            thenLinkRiot: true,
-          ),
-        );
+      RegisterRequested(
+        email: _email.text.trim(),
+        password: _password.text,
+        thenLinkRiot: true,
+      ),
+    );
   }
 
   Widget _header() {
     switch (_mode) {
-      case AuthFlowMode.riotNoAccount:
-        return const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            AuthStrings.riotNoAccountMessage,
-            textAlign: TextAlign.left,
-            style: _bodyMutedStyle,
-          ),
-        );
-      case AuthFlowMode.linkRiot:
-        return const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            AuthStrings.linkRiotBody,
-            textAlign: TextAlign.left,
-            style: _bodyStyle,
-          ),
-        );
       case AuthFlowMode.register:
         return AuthSwitchPrompt(
           line1: AuthStrings.registerSwitchLine,
           linkText: AuthStrings.registerSwitchLink,
-          onLinkTap: () => _setMode(AuthFlowMode.login),
+          onLinkTap: () => _goToMode(AuthFlowMode.login),
         );
       case AuthFlowMode.login:
         return AuthSwitchPrompt(
           line1: AuthStrings.loginSwitchLine,
           linkText: AuthStrings.loginSwitchLink,
-          onLinkTap: () => _setMode(AuthFlowMode.register),
+          onLinkTap: () => _goToMode(AuthFlowMode.register),
         );
     }
   }
 
   Widget _form(bool loading) {
-    if (_isLinkOnly) {
-      return Center(
-        child: loading
-            ? const CircularProgressIndicator(color: AuthUiColors.accentRed)
-            : RiotOAuthButton(
-                size: 64,
-                onPressed: () => _authBloc.add(const RiotRsoLinkRequested()),
-              ),
-      );
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -325,21 +263,6 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     );
   }
 
-  static const _bodyStyle = TextStyle(
-    fontFamily: AppFonts.lexendDeca,
-    color: AuthUiColors.cardText,
-    fontSize: 15,
-    height: 1.5,
-    fontWeight: FontWeight.w500,
-  );
-
-  static const _bodyMutedStyle = TextStyle(
-    fontFamily: AppFonts.lexendDeca,
-    color: AuthUiColors.cardTextMuted,
-    fontSize: 14,
-    height: 1.4,
-  );
-
   static const _labelStyle = TextStyle(
     fontFamily: AppFonts.lexendDeca,
     color: AuthUiColors.cardText,
@@ -372,7 +295,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _header(),
-                  SizedBox(height: _isLinkOnly ? 32 : 28),
+                  const SizedBox(height: 28),
                   _form(loading),
                 ],
               ),

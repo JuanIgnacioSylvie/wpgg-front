@@ -116,19 +116,12 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
         stripOAuthReturnUrl();
         if (code == 'user_not_found') {
           if (!mounted) return;
-          final pending = Uri.splitQueryString(locationUri.query)['riot_link_pending'];
-          if (pending != null && pending.isNotEmpty) {
-            context.go(
-              '/auth/riot-no-account?riot_link_pending=${Uri.encodeComponent(pending)}',
-            );
-          } else {
-            context.go('/auth/riot-no-account');
-          }
+          context.go('/login?riot_not_found=1');
           return;
         }
         if (code == 'user_already_exists') {
           if (!mounted) return;
-          context.go('/auth/riot-already-exists');
+          context.go('/login?riot_already_exists=1');
           return;
         }
         final desc = parsed.oauthErrorDescription;

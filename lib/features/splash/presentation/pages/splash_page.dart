@@ -8,6 +8,7 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../../auth/domain/usecases/refresh_token_usecase.dart';
+import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -56,20 +57,29 @@ class _SplashPageState extends State<SplashPage>
     Future<void>.delayed(const Duration(milliseconds: 2800), _navigate);
   }
 
+  Future<void> _goAfterSession() async {
+    final profile = await sl<GetSummonerProfileUseCase>()();
+    if (!mounted) return;
+    final needsLink = profile.fold((_) => false, (s) => s == null);
+    context.go(needsLink ? '/auth/link-riot' : '/home');
+  }
+
   Future<void> _navigate() async {
     if (!mounted) return;
     final storage = sl<SecureStorage>();
     final token = await storage.getAccessToken();
     if (!mounted) return;
     if (token != null && token.isNotEmpty) {
-      context.go('/home');
+      await _goAfterSession();
       return;
     }
     final refreshed = await sl<RefreshTokenUseCase>()();
     if (!mounted) return;
-    refreshed.fold(
-      (_) => context.go('/login'),
-      (_) => context.go('/home'),
+    await refreshed.fold(
+      (_) async {
+        if (mounted) context.go('/login');
+      },
+      (_) => _goAfterSession(),
     );
   }
 

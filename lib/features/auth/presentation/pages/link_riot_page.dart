@@ -1,8 +1,6 @@
-import '../auth_flow_mode.dart';
-import 'auth_flow_page.dart';
+import 'link_riot_screen.dart';
 
-/// Alias de ruta `/auth/link-riot`.
-class LinkRiotPage extends AuthFlowPage {
-  const LinkRiotPage({super.key})
-      : super(initialMode: AuthFlowMode.linkRiot);
+/// Ruta `/auth/link-riot` — vincular Riot (casos 2 y 3).
+class LinkRiotPage extends LinkRiotScreen {
+  const LinkRiotPage({super.key});
 }

@@ -69,11 +69,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/auth/riot-no-account',
-      builder: (_, state) => _authFlowRoute(
-        RiotRsoNoAccountPage(
-          riotLinkPendingCode: state.uri.queryParameters['riot_link_pending'],
-        ),
-      ),
+      builder: (_, __) => const RiotRsoNoAccountPage(),
     ),
     GoRoute(
       path: '/auth/link-riot',

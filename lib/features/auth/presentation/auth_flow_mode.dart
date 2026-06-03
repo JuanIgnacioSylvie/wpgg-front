@@ -1,18 +1,10 @@
-/// Estados del flujo de autenticación (misma pantalla, distinto contenido).
+/// Estados del flujo de autenticación (login y registro en card compartida).
 enum AuthFlowMode {
   login,
   register,
-  riotNoAccount,
-  linkRiot,
 }
 
 AuthFlowMode authFlowModeFromPath(String path) {
-  if (path.contains('riot-no-account')) {
-    return AuthFlowMode.riotNoAccount;
-  }
-  if (path.contains('link-riot')) {
-    return AuthFlowMode.linkRiot;
-  }
   if (path.contains('register')) {
     return AuthFlowMode.register;
   }
