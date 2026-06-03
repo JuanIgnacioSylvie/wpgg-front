@@ -1,0 +1,14 @@
+---
+description: Botones default WPGG (primario y cancel) en modales y auth
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Botones WPGG
+
+En modales y flujos de la app, usar siempre los widgets compartidos:
+
+- **Acción principal**: `WpggPrimaryButton` — rojo sólido (`AuthUiColors.accentRed`), texto blanco, forma pill con curvatura (`wpgg_primary_button.dart`).
+- **Cancel / secundario**: `WpggCancelButton` — misma forma que el primario, fondo blanco, texto rojo default, borde (stroke) rojo del mismo color (`AuthUiColors.accentRed`, 1.5px).
+
+No usar `OutlinedButton`, `FilledButton` ni estilos ad hoc en modales; reutilizar estos dos componentes.

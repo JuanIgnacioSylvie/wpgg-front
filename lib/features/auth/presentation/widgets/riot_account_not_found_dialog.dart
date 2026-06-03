@@ -82,30 +82,9 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
               },
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              height: WpggPrimaryButton.height,
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AuthUiColors.accentRed,
-                  side: const BorderSide(color: AuthUiColors.accentRed, width: 1.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-                  backgroundColor: Colors.white,
-                  shadowColor: Colors.black26,
-                  elevation: 2,
-                ),
-                child: const Text(
-                  AuthStrings.riotNotFoundCancel,
-                  style: TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+            WpggCancelButton(
+              label: AuthStrings.riotNotFoundCancel,
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         ),

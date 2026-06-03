@@ -3,7 +3,32 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 
-/// Botón rojo con leve curvatura vertical en el centro (mockup).
+/// Forma pill con leve curvatura (mockup WPGG). Compartida por botones primario y cancel.
+Path wpggBulgeButtonPath(Size size) {
+  const bulge = 2.2;
+  final w = size.width;
+  final h = size.height;
+  final r = h / 2;
+
+  final path = Path();
+  path.moveTo(r, 0);
+  path.quadraticBezierTo(w * 0.5, -bulge, w - r, 0);
+  path.arcToPoint(
+    Offset(w - r, h),
+    radius: Radius.circular(r),
+    clockwise: true,
+  );
+  path.quadraticBezierTo(w * 0.5, h + bulge, r, h);
+  path.arcToPoint(
+    Offset(r, 0),
+    radius: Radius.circular(r),
+    clockwise: true,
+  );
+  path.close();
+  return path;
+}
+
+/// Botón primario default de la app (rojo sólido, texto blanco).
 class WpggPrimaryButton extends StatelessWidget {
   const WpggPrimaryButton({
     super.key,
@@ -35,7 +60,10 @@ class WpggPrimaryButton extends StatelessWidget {
       width: double.infinity,
       height: height,
       child: CustomPaint(
-        painter: _WpggBulgeButtonPainter(color: color),
+        painter: _WpggFilledBulgePainter(
+          fillColor: color,
+          drawShadow: enabled && color == AuthUiColors.accentRed,
+        ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -59,39 +87,80 @@ class WpggPrimaryButton extends StatelessWidget {
   }
 }
 
-class _WpggBulgeButtonPainter extends CustomPainter {
-  _WpggBulgeButtonPainter({required this.color});
+/// Botón cancel / secundario: misma forma que [WpggPrimaryButton], fondo blanco,
+/// texto rojo default y borde rojo.
+class WpggCancelButton extends StatelessWidget {
+  const WpggCancelButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
 
-  final Color color;
+  final String label;
+  final VoidCallback? onPressed;
 
-  static Path bulgePath(Size size) {
-    const bulge = 2.2;
-    final w = size.width;
-    final h = size.height;
-    final r = h / 2;
+  static const TextStyle labelStyle = TextStyle(
+    fontFamily: AppFonts.lexendDeca,
+    color: AuthUiColors.accentRed,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+  );
 
-    final path = Path();
-    path.moveTo(r, 0);
-    path.quadraticBezierTo(w * 0.5, -bulge, w - r, 0);
-    path.arcToPoint(
-      Offset(w - r, h),
-      radius: Radius.circular(r),
-      clockwise: true,
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onPressed != null;
+
+    return SizedBox(
+      width: double.infinity,
+      height: WpggPrimaryButton.height,
+      child: CustomPaint(
+        painter: _WpggFilledBulgePainter(
+          fillColor: Colors.white,
+          borderColor: enabled
+              ? AuthUiColors.accentRed
+              : AuthUiColors.cardTextMuted,
+          borderWidth: 1.5,
+          drawShadow: enabled,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            child: Center(
+              child: Text(
+                label,
+                style: labelStyle.copyWith(
+                  color: enabled
+                      ? AuthUiColors.accentRed
+                      : AuthUiColors.cardTextMuted,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
-    path.quadraticBezierTo(w * 0.5, h + bulge, r, h);
-    path.arcToPoint(
-      Offset(r, 0),
-      radius: Radius.circular(r),
-      clockwise: true,
-    );
-    path.close();
-    return path;
   }
+}
+
+class _WpggFilledBulgePainter extends CustomPainter {
+  _WpggFilledBulgePainter({
+    required this.fillColor,
+    this.borderColor,
+    this.borderWidth = 0,
+    this.drawShadow = false,
+  });
+
+  final Color fillColor;
+  final Color? borderColor;
+  final double borderWidth;
+  final bool drawShadow;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = bulgePath(size);
-    if (color == AuthUiColors.accentRed) {
+    final path = wpggBulgeButtonPath(size);
+    if (drawShadow) {
       canvas.drawShadow(
         path,
         Colors.black.withValues(alpha: 0.2),
@@ -99,10 +168,22 @@ class _WpggBulgeButtonPainter extends CustomPainter {
         true,
       );
     }
-    canvas.drawPath(path, Paint()..color = color);
+    canvas.drawPath(path, Paint()..color = fillColor);
+    if (borderColor != null && borderWidth > 0) {
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = borderColor!
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = borderWidth,
+      );
+    }
   }
 
   @override
-  bool shouldRepaint(covariant _WpggBulgeButtonPainter old) =>
-      old.color != color;
+  bool shouldRepaint(covariant _WpggFilledBulgePainter old) =>
+      old.fillColor != fillColor ||
+      old.borderColor != borderColor ||
+      old.borderWidth != borderWidth ||
+      old.drawShadow != drawShadow;
 }
