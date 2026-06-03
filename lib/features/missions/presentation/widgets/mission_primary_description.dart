@@ -40,7 +40,7 @@ class _MissionPrimaryDescriptionState extends State<MissionPrimaryDescription> {
         fontFamily: AppFonts.lexendDeca,
         color: WpggBrand.primary,
         fontWeight: FontWeight.w600,
-        fontSize: 15,
+        fontSize: 19,
         height: 1.35,
       );
 

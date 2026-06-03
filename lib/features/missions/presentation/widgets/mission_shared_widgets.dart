@@ -12,30 +12,34 @@ class MissionDifficultyHeader extends StatelessWidget {
     required this.difficulty,
     this.iconSize = 18,
     this.fontSize = 14,
+    this.fontWeight = FontWeight.w700,
+    this.underlined = false,
   });
 
   final MissionDifficulty difficulty;
   final double iconSize;
   final double fontSize;
+  final FontWeight fontWeight;
+  final bool underlined;
 
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(difficulty);
     final l10n = context.l10n;
+    final labelStyle = TextStyle(
+      fontFamily: AppFonts.lexendDeca,
+      color: color,
+      fontWeight: fontWeight,
+      fontSize: fontSize,
+      decoration: underlined ? TextDecoration.underline : null,
+      decorationColor: color,
+    );
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(difficultyIcon(difficulty), size: iconSize, color: color),
         const SizedBox(width: 4),
-        Text(
-          difficultyLabel(difficulty, l10n),
-          style: TextStyle(
-            fontFamily: AppFonts.lexendDeca,
-            color: color,
-            fontWeight: FontWeight.w700,
-            fontSize: fontSize,
-          ),
-        ),
+        Text(difficultyLabel(difficulty, l10n), style: labelStyle),
       ],
     );
   }

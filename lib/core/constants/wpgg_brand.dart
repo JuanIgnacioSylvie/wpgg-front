@@ -13,6 +13,7 @@ abstract final class WpggBrand {
   static const Color hardAccent = Color(0xFFFF383C);
   static const Color missionSecondaryBg = Color(0xFFEBF5FF);
   static const Color cardSurface = Color(0xFFFFFFFF);
+  static const Color cardTextDark = Color(0xFF24252C);
   static const Color textOnDark = Color(0xFFF5F5F7);
   static const Color textMuted = Color(0xFFB8B5C3);
   static const Color incomeGreen = Color(0xFF22C55E);

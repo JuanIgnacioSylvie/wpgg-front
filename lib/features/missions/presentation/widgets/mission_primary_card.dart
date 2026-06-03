@@ -47,20 +47,25 @@ class MissionPrimaryCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MissionDifficultyHeader(difficulty: mission.difficulty),
+                    MissionDifficultyHeader(
+                      difficulty: mission.difficulty,
+                      iconSize: 12,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      underlined: true,
+                    ),
                     const SizedBox(height: 12),
                     MissionProgressRing(
                       percent: mission.progressPercent,
                       color: color,
-                      size: 88,
-                      strokeWidth: 8,
+                      size: 104,
+                      strokeWidth: 4,
                     ),
                     const SizedBox(height: 12),
                     MissionRewardRow(
                       amount: mission.rewardWpgg,
                       color: color,
-                      underlined: true,
-                      coinSize: 22,
+                      coinSize: 24,
                     ),
                   ],
                 ),
