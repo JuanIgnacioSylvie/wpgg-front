@@ -12,3 +12,5 @@ En modales y flujos de la app, usar siempre los widgets compartidos:
 - **Cancel / secundario**: `WpggCancelButton` — misma forma que el primario, fondo blanco, texto rojo default, borde (stroke) rojo del mismo color (`AuthUiColors.accentRed`, 1.5px).
 
 No usar `OutlinedButton`, `FilledButton` ni estilos ad hoc en modales; reutilizar estos dos componentes.
+
+Drop shadow (Figma) en ambos cuando están habilitados: offset `(0, 4)`, blur `4`, spread `0`, `#000000` al 25% — ver `WpggButtonShadow` / `paintWpggBulgeDropShadow` en `wpgg_primary_button.dart`.

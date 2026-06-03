@@ -3,6 +3,31 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 
+/// Drop shadow Figma: X 0, Y 4, blur 4, spread 0, #000000 25%.
+abstract final class WpggButtonShadow {
+  static const Offset offset = Offset(0, 4);
+  static const double blurRadius = 4;
+  static const Color color = Color(0x40000000);
+
+  /// Espacio extra bajo el botón para que no se recorte la sombra.
+  static const double layoutPaddingBottom = 4;
+}
+
+void paintWpggBulgeDropShadow(Canvas canvas, Path path) {
+  canvas.save();
+  canvas.translate(WpggButtonShadow.offset.dx, WpggButtonShadow.offset.dy);
+  canvas.drawPath(
+    path,
+    Paint()
+      ..color = WpggButtonShadow.color
+      ..maskFilter = const MaskFilter.blur(
+        BlurStyle.normal,
+        WpggButtonShadow.blurRadius,
+      ),
+  );
+  canvas.restore();
+}
+
 /// Forma pill con leve curvatura (mockup WPGG). Compartida por botones primario y cancel.
 Path wpggBulgeButtonPath(Size size) {
   const bulge = 2.2;
@@ -56,14 +81,16 @@ class WpggPrimaryButton extends StatelessWidget {
     final enabled = onPressed != null && !isLoading;
     final color = enabled ? AuthUiColors.accentRed : AuthUiColors.cardTextMuted;
 
-    return SizedBox(
-      width: double.infinity,
-      height: height,
-      child: CustomPaint(
-        painter: _WpggFilledBulgePainter(
-          fillColor: color,
-          drawShadow: enabled && color == AuthUiColors.accentRed,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: WpggButtonShadow.layoutPaddingBottom),
+      child: SizedBox(
+        width: double.infinity,
+        height: height,
+        child: CustomPaint(
+          painter: _WpggFilledBulgePainter(
+            fillColor: color,
+            drawShadow: enabled,
+          ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -82,6 +109,7 @@ class WpggPrimaryButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -111,18 +139,20 @@ class WpggCancelButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
 
-    return SizedBox(
-      width: double.infinity,
-      height: WpggPrimaryButton.height,
-      child: CustomPaint(
-        painter: _WpggFilledBulgePainter(
-          fillColor: Colors.white,
-          borderColor: enabled
-              ? AuthUiColors.accentRed
-              : AuthUiColors.cardTextMuted,
-          borderWidth: 1.5,
-          drawShadow: enabled,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: WpggButtonShadow.layoutPaddingBottom),
+      child: SizedBox(
+        width: double.infinity,
+        height: WpggPrimaryButton.height,
+        child: CustomPaint(
+          painter: _WpggFilledBulgePainter(
+            fillColor: Colors.white,
+            borderColor: enabled
+                ? AuthUiColors.accentRed
+                : AuthUiColors.cardTextMuted,
+            borderWidth: 1.5,
+            drawShadow: enabled,
+          ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -139,6 +169,7 @@ class WpggCancelButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -161,12 +192,7 @@ class _WpggFilledBulgePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = wpggBulgeButtonPath(size);
     if (drawShadow) {
-      canvas.drawShadow(
-        path,
-        Colors.black.withValues(alpha: 0.2),
-        4,
-        true,
-      );
+      paintWpggBulgeDropShadow(canvas, path);
     }
     canvas.drawPath(path, Paint()..color = fillColor);
     if (borderColor != null && borderWidth > 0) {
