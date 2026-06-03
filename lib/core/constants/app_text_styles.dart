@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
-/// Estilos Wallpoet para logo / splash. El cuerpo usa `Theme.of(context).textTheme` (Mont).
+/// Estilos Wallpoet para logo / splash. El cuerpo usa `Theme.of(context).textTheme` (Lexend Deca).
 abstract final class AppTextStyles {
   static TextStyle wallpoetLogo(BuildContext context, {double fontSize = 36}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

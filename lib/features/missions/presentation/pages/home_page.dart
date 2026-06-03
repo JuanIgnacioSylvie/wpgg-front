@@ -18,6 +18,7 @@ import '../../../riot/presentation/widgets/stats_header.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
+import '../widgets/mission_tertiary_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -198,9 +199,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                       if (home.primary != null)
-                        MissionPrimaryCard(
-                          mission: home.primary!,
-                          endsInSeconds: home.endsInSeconds,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: MissionPrimaryCard(
+                            mission: home.primary!,
+                            endsInSeconds: home.endsInSeconds,
+                          ),
                         )
                       else
                         Padding(
@@ -224,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                       if (home.secondary.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         SizedBox(
-                          height: 120,
+                          height: 132,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.only(left: 16),
@@ -276,10 +280,7 @@ class _HomePageState extends State<HomePage> {
                         ...home.past.map(
                           (m) => Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                            child: MissionSecondaryCard(
-                              mission: m,
-                              width: double.infinity,
-                            ),
+                            child: MissionTertiaryCard(mission: m),
                           ),
                         ),
                     ],

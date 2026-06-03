@@ -17,9 +17,19 @@ class MissionProgressRing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = (percent.clamp(0, 100)) / 100;
-    return SizedBox(
+    return Container(
       width: size,
       height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.2),
+            blurRadius: 8,
+            spreadRadius: -2,
+          ),
+        ],
+      ),
       child: Stack(
         alignment: Alignment.center,
         children: [

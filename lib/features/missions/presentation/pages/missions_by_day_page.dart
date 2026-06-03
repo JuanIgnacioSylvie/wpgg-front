@@ -14,7 +14,7 @@ import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/day_carousel.dart';
 import '../widgets/filter_pills.dart';
-import '../widgets/mission_secondary_card.dart';
+import '../widgets/mission_tertiary_card.dart';
 
 class MissionsByDayPage extends StatefulWidget {
   const MissionsByDayPage({super.key});
@@ -128,9 +128,8 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
                                 horizontal: 16,
                                 vertical: 6,
                               ),
-                              child: MissionSecondaryCard(
+                              child: MissionTertiaryCard(
                                 mission: missions[i],
-                                width: double.infinity,
                               ),
                             ),
                           ),

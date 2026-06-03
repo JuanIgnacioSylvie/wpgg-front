@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/wpgg_brand.dart';
 import '../../domain/entities/mission_card_entity.dart';
-import 'mission_progress_ring.dart';
+import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
 class MissionSecondaryCard extends StatelessWidget {
@@ -18,53 +17,56 @@ class MissionSecondaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(mission.difficulty);
+    final bg = difficultyCardBackground(mission.difficulty);
+
     return Container(
       width: width,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: WpggBrand.cardSurface,
+        color: bg,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(difficultyIcon(mission.difficulty), color: color),
+          Row(
+            children: [
+              MissionDifficultyHeader(
+                difficulty: mission.difficulty,
+                iconSize: 16,
+                fontSize: 13,
+              ),
+              const Spacer(),
+              MissionRewardRow(
+                amount: mission.rewardWpgg,
+                color: color,
+                fontSize: 13,
+              ),
+              const SizedBox(width: 8),
+              MissionDifficultyIconBox(
+                difficulty: mission.difficulty,
+                size: 36,
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mission.title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  statusLabel(mission.status),
-                  style: const TextStyle(fontSize: 11, color: Colors.black45),
-                ),
-              ],
+          const SizedBox(height: 10),
+          Text(
+            mission.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+              height: 1.25,
             ),
           ),
-          MissionProgressRing(
+          const SizedBox(height: 12),
+          MissionLinearProgress(
             percent: mission.progressPercent,
             color: color,
-            size: 52,
-            strokeWidth: 4,
           ),
         ],
       ),

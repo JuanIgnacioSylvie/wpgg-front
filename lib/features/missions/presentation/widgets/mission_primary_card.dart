@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_progress_ring.dart';
+import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
 class MissionPrimaryCard extends StatelessWidget {
@@ -18,101 +19,88 @@ class MissionPrimaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(mission.difficulty);
+    final showTimer = endsInSeconds != null && endsInSeconds! > 0;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: WpggBrand.cardSurface,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MissionProgressRing(
-                percent: mission.progressPercent,
-                color: color,
-                size: 88,
-                strokeWidth: 8,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(difficultyIcon(mission.difficulty),
-                            size: 16, color: color),
-                        const SizedBox(width: 4),
-                        Text(
-                          difficultyLabel(mission.difficulty),
-                          style: TextStyle(
-                            color: color,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      mission.title,
-                      style: TextStyle(
-                        color: WpggBrand.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        height: 1.3,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 120, 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MissionDifficultyHeader(difficulty: mission.difficulty),
+                      const SizedBox(height: 12),
+                      MissionProgressRing(
+                        percent: mission.progressPercent,
+                        color: color,
+                        size: 88,
+                        strokeWidth: 8,
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: WpggBrand.primary,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${mission.rewardWpgg} WPGG',
-                            style: const TextStyle(
-                              color: WpggBrand.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (endsInSeconds != null && endsInSeconds! > 0) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ends in: ${_formatDuration(Duration(seconds: endsInSeconds!))} (UTC)',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.black54,
-                        ),
+                      const SizedBox(height: 12),
+                      MissionRewardRow(
+                        amount: mission.rewardWpgg,
+                        color: color,
+                        underlined: true,
                       ),
                     ],
-                  ],
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 28),
+                        RichText(
+                          text: missionTitleSpans(
+                            mission.title,
+                            accent: color,
+                          ),
+                        ),
+                        if (showTimer) ...[
+                          const SizedBox(height: 8),
+                          MissionEndsInTooltip(
+                            label:
+                                'Ends in: ${_formatDuration(Duration(seconds: endsInSeconds!))}',
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: -12,
+              bottom: -28,
+              child: Image.asset(
+                'assets/images/sion_asset.png',
+                width: 140,
+                height: 160,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Icon(
+                  Icons.person,
+                  size: 120,
+                  color: color.withValues(alpha: 0.3),
                 ),
               ),
-            ],
-          ),
-          Positioned(
-            right: -8,
-            bottom: -16,
-            child: Icon(
-              Icons.sports_martial_arts,
-              size: 100,
-              color: color.withValues(alpha: 0.25),
             ),
-          ),
         ],
       ),
     );

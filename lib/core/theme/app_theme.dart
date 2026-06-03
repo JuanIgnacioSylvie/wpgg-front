@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
+import '../constants/app_fonts.dart';
 
 class AppTheme {
   static ThemeData get dark => ThemeData(
@@ -13,7 +14,7 @@ class AppTheme {
           surface: AppColors.darkSurface,
           error: AppColors.darkError,
         ),
-        fontFamily: 'Mont',
+        fontFamily: AppFonts.lexendDeca,
         textTheme: _buildTextTheme(
           AppColors.darkTextPrimary,
           AppColors.darkTextSecondary,
@@ -43,7 +44,7 @@ class AppTheme {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(
-              fontFamily: 'Mont',
+              fontFamily: AppFonts.lexendDeca,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
@@ -56,7 +57,7 @@ class AppTheme {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(
-              fontFamily: 'Mont',
+              fontFamily: AppFonts.lexendDeca,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
@@ -79,11 +80,11 @@ class AppTheme {
           ),
           labelStyle: TextStyle(
             color: AppColors.darkTextSecondary,
-            fontFamily: 'Mont',
+            fontFamily: AppFonts.lexendDeca,
           ),
           hintStyle: TextStyle(
             color: AppColors.darkTextDisabled,
-            fontFamily: 'Mont',
+            fontFamily: AppFonts.lexendDeca,
           ),
         ),
       );
@@ -98,7 +99,7 @@ class AppTheme {
           surface: AppColors.lightSurface,
           error: AppColors.lightError,
         ),
-        fontFamily: 'Mont',
+        fontFamily: AppFonts.lexendDeca,
         textTheme: _buildTextTheme(
           AppColors.lightTextPrimary,
           AppColors.lightTextSecondary,
@@ -128,7 +129,7 @@ class AppTheme {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(
-              fontFamily: 'Mont',
+              fontFamily: AppFonts.lexendDeca,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
@@ -141,7 +142,7 @@ class AppTheme {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(
-              fontFamily: 'Mont',
+              fontFamily: AppFonts.lexendDeca,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
@@ -164,63 +165,63 @@ class AppTheme {
           ),
           labelStyle: TextStyle(
             color: AppColors.lightTextSecondary,
-            fontFamily: 'Mont',
+            fontFamily: AppFonts.lexendDeca,
           ),
           hintStyle: TextStyle(
             color: AppColors.lightTextDisabled,
-            fontFamily: 'Mont',
+            fontFamily: AppFonts.lexendDeca,
           ),
         ),
       );
 
   static TextTheme _buildTextTheme(Color primary, Color secondary) => TextTheme(
         displayLarge: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w900,
           color: primary,
         ),
         displayMedium: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w800,
           color: primary,
         ),
         headlineLarge: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w700,
           color: primary,
         ),
         headlineMedium: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w600,
           color: primary,
         ),
         titleMedium: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w600,
           color: primary,
         ),
         bodyLarge: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w400,
           color: primary,
         ),
         bodyMedium: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w400,
           color: secondary,
         ),
         bodySmall: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w400,
           color: secondary,
         ),
         labelLarge: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w600,
           color: primary,
         ),
         labelSmall: TextStyle(
-          fontFamily: 'Mont',
+          fontFamily: AppFonts.lexendDeca,
           fontWeight: FontWeight.w300,
           color: secondary,
         ),

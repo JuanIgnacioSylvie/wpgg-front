@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../domain/entities/mission_card_entity.dart';
@@ -28,12 +29,19 @@ String difficultyLabel(MissionDifficulty d) {
 IconData difficultyIcon(MissionDifficulty d) {
   switch (d) {
     case MissionDifficulty.easy:
-      return Icons.eco_outlined;
+      return Symbols.psychiatry;
     case MissionDifficulty.medium:
-      return Icons.eco;
+      return Symbols.swords;
     case MissionDifficulty.hard:
-      return Icons.local_fire_department;
+      return Symbols.local_fire_department;
   }
+}
+
+Color difficultyCardBackground(MissionDifficulty d) {
+  return Color.alphaBlend(
+    difficultyColor(d).withValues(alpha: 0.1),
+    WpggBrand.missionSecondaryBg,
+  );
 }
 
 String statusLabel(MissionStatus s) {
