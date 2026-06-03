@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
@@ -61,6 +62,7 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
     return BlocBuilder<RiotBloc, RiotState>(
       builder: (context, riotState) {
@@ -70,7 +72,7 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
         }
         return WpggGradientScaffold(
           appBar: WpggAppBar(
-            title: 'Missions by days',
+            title: l10n.missionsByDays,
             summoner: summoner,
             ddragon: ddragon,
           ),
@@ -91,11 +93,11 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
                   ),
                   const SizedBox(height: 12),
                   FilterPills(
-                    labels: const [
-                      'All',
-                      'To do',
-                      'In Progress',
-                      'Completed',
+                    labels: [
+                      l10n.filterAll,
+                      l10n.filterToDo,
+                      l10n.filterInProgress,
+                      l10n.filterCompleted,
                     ],
                     selectedIndex: _filterIndex,
                     onSelected: (i) => setState(() => _filterIndex = i),
@@ -111,7 +113,7 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
                         : state.byDayStatus == MissionsLoadStatus.error
                             ? Center(
                                 child: Text(
-                                  state.byDayError ?? 'Error',
+                                  state.byDayError ?? l10n.errorGeneric,
                                   style: const TextStyle(
                                     color: WpggBrand.white,
                                   ),

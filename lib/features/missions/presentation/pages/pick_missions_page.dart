@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
@@ -47,6 +48,7 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
     return BlocBuilder<RiotBloc, RiotState>(
       builder: (context, riotState) {
@@ -56,7 +58,7 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
         }
         return WpggGradientScaffold(
           appBar: WpggAppBar(
-            title: 'Pick Missions',
+            title: l10n.pickMissionsTitle,
             showBack: true,
             summoner: summoner,
             ddragon: ddragon,
@@ -81,7 +83,7 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Text(
-                      state.pickError ?? 'Error loading offers',
+                      state.pickError ?? l10n.errorLoadingOffers,
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: WpggBrand.white),
                     ),
@@ -106,14 +108,23 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                   ),
                   const SizedBox(height: 12),
                   FilterPills(
-                    labels: const ['All', 'Hard', 'Medium', 'Easy'],
+                    labels: [
+                      l10n.filterAll,
+                      l10n.difficultyHard,
+                      l10n.difficultyMedium,
+                      l10n.difficultyEasy,
+                    ],
                     selectedIndex: _filterIndex,
                     onSelected: (i) => setState(() => _filterIndex = i),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      'Selected ${pick.selectedCount}/${pick.maxSelectable} (max ${pick.maxHard} hard)',
+                      l10n.selectedMissionsCount(
+                        pick.selectedCount,
+                        pick.maxSelectable,
+                        pick.maxHard,
+                      ),
                       style: const TextStyle(color: WpggBrand.textMuted),
                     ),
                   ),
@@ -137,18 +148,16 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                             final ok = await showDialog<bool>(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                title: const Text('Reroll mission?'),
-                                content: const Text(
-                                  'This will cost 5 WPGG from your balance.',
-                                ),
+                                title: Text(l10n.rerollMissionTitle),
+                                content: Text(l10n.rerollMissionBody),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(ctx, false),
-                                    child: const Text('Cancel'),
+                                    child: Text(l10n.cancel),
                                   ),
                                   FilledButton(
                                     onPressed: () => Navigator.pop(ctx, true),
-                                    child: const Text('Reroll'),
+                                    child: Text(l10n.reroll),
                                   ),
                                 ],
                               ),

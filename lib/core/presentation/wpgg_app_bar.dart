@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/app_fonts.dart';
 import '../constants/wpgg_brand.dart';
+import '../l10n/l10n_extension.dart';
 import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../features/riot/domain/entities/summoner_entity.dart';
 
@@ -24,6 +26,7 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -63,9 +66,10 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Hello!',
-                      style: TextStyle(
+                    Text(
+                      l10n.hello,
+                      style: const TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
                         color: WpggBrand.textMuted,
                         fontSize: 12,
                       ),

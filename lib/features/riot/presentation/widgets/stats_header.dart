@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../domain/entities/summoner_entity.dart';
 
@@ -15,6 +16,7 @@ class StatsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final dd = context.watch<DDragonProvider>();
@@ -58,7 +60,7 @@ class StatsHeader extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Nivel ${summoner.summonerLevel}',
+                        l10n.summonerLevel(summoner.summonerLevel),
                         style: theme.textTheme.bodyMedium,
                       ),
                       const SizedBox(width: 12),
@@ -92,14 +94,13 @@ class StatsHeaderEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final message = afterRiotLogin
-        ? 'No pudimos vincular tu cuenta de LoL automáticamente. '
-            'Completá los datos de tu invocador para ver estadísticas.'
-        : 'Vinculá tu cuenta de Riot para ver estadísticas.';
-    final buttonLabel = afterRiotLogin
-        ? 'Completar vinculación manual'
-        : 'Vincular cuenta de Riot';
+        ? l10n.linkRiotAfterLoginPrompt
+        : l10n.linkRiotPrompt;
+    final buttonLabel =
+        afterRiotLogin ? l10n.completeRiotLinkButton : l10n.linkRiotButton;
 
     return Card(
       child: Padding(

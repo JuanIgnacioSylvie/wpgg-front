@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/extensions/mission_card_l10n.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_progress_ring.dart';
 import 'mission_shared_widgets.dart';
@@ -17,6 +19,7 @@ class MissionTertiaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(mission.difficulty);
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -40,7 +43,7 @@ class MissionTertiaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  mission.title,
+                  mission.localizedTitle(context),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -52,7 +55,7 @@ class MissionTertiaryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  statusLabel(mission.status),
+                  statusLabel(mission.status, l10n),
                   style: const TextStyle(
                     fontSize: 12,
                     color: Colors.black45,

@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_web_plugins:
     sdk: flutter
 
@@ -31,7 +33,7 @@ dependencies:
   get_it: ^8.0.0
 
   cached_network_image: ^3.3.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   fl_chart: ^0.69.0
 
   url_launcher: ^6.3.1
@@ -44,10 +46,12 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/fonts/
     - assets/images/
+    - assets/icons/
   fonts:
     - family: LexendDeca
       fonts:

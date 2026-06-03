@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/mission_card_entity.dart';
 
 Color difficultyColor(MissionDifficulty d) {
@@ -15,14 +16,14 @@ Color difficultyColor(MissionDifficulty d) {
   }
 }
 
-String difficultyLabel(MissionDifficulty d) {
+String difficultyLabel(MissionDifficulty d, AppLocalizations l10n) {
   switch (d) {
     case MissionDifficulty.easy:
-      return 'Easy';
+      return l10n.difficultyEasy;
     case MissionDifficulty.medium:
-      return 'Medium';
+      return l10n.difficultyMedium;
     case MissionDifficulty.hard:
-      return 'Hard';
+      return l10n.difficultyHard;
   }
 }
 
@@ -44,15 +45,15 @@ Color difficultyCardBackground(MissionDifficulty d) {
   );
 }
 
-String statusLabel(MissionStatus s) {
+String statusLabel(MissionStatus s, AppLocalizations l10n) {
   switch (s) {
     case MissionStatus.completed:
-      return 'Completed';
+      return l10n.statusCompleted;
     case MissionStatus.expired:
-      return 'Incomplete';
+      return l10n.statusIncomplete;
     case MissionStatus.active:
-      return 'In Progress';
+      return l10n.statusInProgress;
     case MissionStatus.offer:
-      return 'To do';
+      return l10n.statusToDo;
   }
 }

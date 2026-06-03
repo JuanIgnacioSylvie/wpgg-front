@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_fonts.dart';
+
 class MissionProgressRing extends StatelessWidget {
   const MissionProgressRing({
     super.key,
@@ -42,6 +44,7 @@ class MissionProgressRing extends StatelessWidget {
           Text(
             '$percent%',
             style: TextStyle(
+              fontFamily: AppFonts.lexendDeca,
               color: color,
               fontWeight: FontWeight.w700,
               fontSize: size * 0.22,

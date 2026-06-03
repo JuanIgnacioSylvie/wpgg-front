@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../bloc/riot_bloc.dart';
 import '../bloc/riot_event.dart';
 
@@ -14,6 +15,7 @@ void showRiotLinkSheet(BuildContext context) {
     context: context,
     isScrollControlled: true,
     builder: (ctx) {
+      final l10n = ctx.l10n;
       return Padding(
         padding: EdgeInsets.only(
           left: 24,
@@ -25,21 +27,24 @@ void showRiotLinkSheet(BuildContext context) {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Vincular Riot', style: Theme.of(ctx).textTheme.headlineSmall),
+            Text(
+              l10n.linkRiotSheetTitle,
+              style: Theme.of(ctx).textTheme.headlineSmall,
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: gameName,
-              decoration: const InputDecoration(labelText: 'Nombre de invocador'),
+              decoration: InputDecoration(labelText: l10n.summonerNameLabel),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: tagLine,
-              decoration: const InputDecoration(labelText: 'Tag (#TAG sin #)'),
+              decoration: InputDecoration(labelText: l10n.tagLabel),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: region,
-              decoration: const InputDecoration(labelText: 'Región (ej. LA2)'),
+              decoration: InputDecoration(labelText: l10n.regionLabel),
             ),
             const SizedBox(height: 20),
             FilledButton(
@@ -53,7 +58,7 @@ void showRiotLinkSheet(BuildContext context) {
                     );
                 Navigator.pop(ctx);
               },
-              child: const Text('Vincular'),
+              child: Text(l10n.linkRiotSheetAction),
             ),
           ],
         ),

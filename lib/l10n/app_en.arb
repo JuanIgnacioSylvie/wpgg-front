@@ -1,0 +1,71 @@
+{
+  "@@locale": "en",
+  "hello": "Hello!",
+  "profile": "Profile",
+  "logOut": "Log out",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageSpanish": "Spanish",
+  "retry": "Retry",
+  "inProgress": "In Progress",
+  "missionDayResets": "Mission day {date} · resets 00:00 {timezone}",
+  "@missionDayResets": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "timezone": {"type": "String"}
+    }
+  },
+  "noActiveMissions": "No active missions yet. Pick up to 3 for today!",
+  "pickMissions": "Pick missions",
+  "passMissions": "Pass Missions",
+  "completedMissionsPlaceholder": "Completed missions will appear here.",
+  "errorLoadingMissions": "Error loading missions",
+  "missionsByDays": "Missions by days",
+  "errorGeneric": "Error",
+  "filterAll": "All",
+  "filterToDo": "To do",
+  "filterInProgress": "In Progress",
+  "filterCompleted": "Completed",
+  "difficultyEasy": "Easy",
+  "difficultyMedium": "Medium",
+  "difficultyHard": "Hard",
+  "statusCompleted": "Completed",
+  "statusIncomplete": "Incomplete",
+  "statusInProgress": "In Progress",
+  "statusToDo": "To do",
+  "endsIn": "Ends in: {time}",
+  "@endsIn": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "pickMissionsTitle": "Pick Missions",
+  "errorLoadingOffers": "Error loading offers",
+  "selectedMissionsCount": "Selected {count}/{max} (max {maxHard} hard)",
+  "@selectedMissionsCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "max": {"type": "int"},
+      "maxHard": {"type": "int"}
+    }
+  },
+  "rerollMissionTitle": "Reroll mission?",
+  "rerollMissionBody": "This will cost 5 WPGG from your balance.",
+  "cancel": "Cancel",
+  "reroll": "Reroll",
+  "summonerLevel": "Level {level}",
+  "@summonerLevel": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "linkRiotPrompt": "Link your Riot account to see stats.",
+  "linkRiotAfterLoginPrompt": "We couldn't link your LoL account automatically. Complete your summoner details to see stats.",
+  "linkRiotButton": "Link Riot account",
+  "completeRiotLinkButton": "Complete manual linking",
+  "linkRiotSheetTitle": "Link Riot",
+  "linkRiotSheetAction": "Link",
+  "summonerNameLabel": "Summoner name",
+  "tagLabel": "Tag (#TAG without #)",
+  "regionLabel": "Region (e.g. LA2)"
+}

@@ -29,8 +29,6 @@ class MissionCardEntity extends Equatable {
   final int? championId;
   final DateTime? endsAt;
 
-  String get title => titleEs;
-
   @override
   List<Object?> get props => [id, status, progressPercent];
 }

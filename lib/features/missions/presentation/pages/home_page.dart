@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
@@ -49,6 +50,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
     return MultiBlocListener(
       listeners: [
@@ -106,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () => context
                             .read<RiotBloc>()
                             .add(const LoadDashboard()),
-                        child: const Text('Reintentar'),
+                        child: Text(l10n.retry),
                       ),
                     ],
                   ),
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            state.homeError ?? 'Error loading missions',
+                            state.homeError ?? l10n.errorLoadingMissions,
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: WpggBrand.white),
                           ),
@@ -147,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () => context
                                 .read<MissionsBloc>()
                                 .add(const LoadMissionsHome()),
-                            child: const Text('Reintentar'),
+                            child: Text(l10n.retry),
                           ),
                         ],
                       ),
@@ -179,9 +181,9 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'In Progress',
-                            style: TextStyle(
+                          Text(
+                            l10n.inProgress,
+                            style: const TextStyle(
                               color: WpggBrand.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -189,7 +191,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Mission day ${home.missionDate} · resets 00:00 ${home.missionDayTimezone}',
+                            l10n.missionDayResets(
+                              home.missionDate,
+                              home.missionDayTimezone,
+                            ),
                             style: const TextStyle(
                               color: WpggBrand.textMuted,
                               fontSize: 12,
@@ -211,16 +216,16 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Column(
                             children: [
-                              const Text(
-                                'No active missions yet. Pick up to 3 for today!',
+                              Text(
+                                l10n.noActiveMissions,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: WpggBrand.textMuted),
+                                style: const TextStyle(color: WpggBrand.textMuted),
                               ),
                               const SizedBox(height: 16),
                               FilledButton.icon(
                                 onPressed: () => context.push('/missions/pick'),
                                 icon: const Icon(Icons.add),
-                                label: const Text('Pick missions'),
+                                label: Text(l10n.pickMissions),
                               ),
                             ],
                           ),
@@ -269,11 +274,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 12),
                       if (home.past.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Text(
-                            'Completed missions will appear here.',
-                            style: TextStyle(color: WpggBrand.textMuted),
+                            l10n.completedMissionsPlaceholder,
+                            style: const TextStyle(color: WpggBrand.textMuted),
                           ),
                         )
                       else

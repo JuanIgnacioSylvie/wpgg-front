@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
@@ -53,7 +54,7 @@ class MissionSecondaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            mission.title,
+            mission.localizedTitle(context),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(

@@ -18,6 +18,7 @@ class DayCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
     final today = MissionDay.todayUtc();
     final days = List.generate(
       5,
@@ -53,7 +54,7 @@ class DayCarousel extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      DateFormat('MMM').format(d),
+                      DateFormat('MMM', locale).format(d),
                       style: TextStyle(
                         fontSize: 11,
                         color: isSelected ? WpggBrand.white : Colors.black54,
@@ -68,7 +69,7 @@ class DayCarousel extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat('EEE').format(d),
+                      DateFormat('EEE', locale).format(d),
                       style: TextStyle(
                         fontSize: 11,
                         color: isSelected ? WpggBrand.white : Colors.black54,
