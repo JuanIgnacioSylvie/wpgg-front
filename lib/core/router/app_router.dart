@@ -45,6 +45,19 @@ int shellBranchIndexForNav(int navIndex) {
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
   redirect: (context, state) => null,
+  errorBuilder: (context, state) => Scaffold(
+    backgroundColor: const Color(0xFF1A1A1A),
+    body: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          state.error?.toString() ?? 'Ruta no encontrada',
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white70),
+        ),
+      ),
+    ),
+  ),
   routes: [
     GoRoute(
       path: '/splash',

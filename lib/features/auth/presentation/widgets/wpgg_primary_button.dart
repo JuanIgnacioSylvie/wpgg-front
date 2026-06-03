@@ -24,40 +24,34 @@ class WpggPrimaryButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 52,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CustomPaint(
-            painter: _WpggBulgeButtonPainter(color: color),
-          ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              customBorder: _WpggBulgeBorder(),
-              onTap: enabled ? onPressed : null,
-              child: Center(
-                child: isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        label,
-                        style: const TextStyle(
-                          fontFamily: AppFonts.lexendDeca,
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
+      child: CustomPaint(
+        painter: _WpggBulgeButtonPainter(color: color),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
+            child: Center(
+              child: isLoading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
                       ),
-              ),
+                    )
+                  : Text(
+                      label,
+                      style: const TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -109,23 +103,4 @@ class _WpggBulgeButtonPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _WpggBulgeButtonPainter old) =>
       old.color != color;
-}
-
-class _WpggBulgeBorder extends ShapeBorder {
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
-      _WpggBulgeButtonPainter.bulgePath(rect.size);
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
-      _WpggBulgeButtonPainter.bulgePath(rect.size);
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) => this;
 }

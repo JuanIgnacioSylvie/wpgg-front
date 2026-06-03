@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
@@ -37,6 +38,8 @@ class AuthFlowPage extends StatefulWidget {
 
 class _AuthFlowPageState extends State<AuthFlowPage> {
   late AuthFlowMode _mode;
+  late final AuthBloc _authBloc;
+  StreamSubscription<AuthState>? _authSub;
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _confirm = TextEditingController();
@@ -44,18 +47,69 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   var _obscurePassword = true;
   var _obscureConfirm = true;
 
-  String? get _riotLinkPending =>
-      widget.riotLinkPendingCode ??
-      GoRouterState.of(context).uri.queryParameters['riot_link_pending'];
+  String? _riotLinkPendingFromRoute(BuildContext context) {
+    if (widget.riotLinkPendingCode != null &&
+        widget.riotLinkPendingCode!.isNotEmpty) {
+      return widget.riotLinkPendingCode;
+    }
+    try {
+      return GoRouterState.of(context).uri.queryParameters['riot_link_pending'];
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _authBloc = sl<AuthBloc>();
     _mode = widget.initialMode;
+    _authSub = _authBloc.stream.listen(_onAuthState);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      try {
+        final q = GoRouterState.of(context).uri.queryParameters;
+        if (q['error'] == 'user_not_found') {
+          setState(() => _mode = AuthFlowMode.riotNoAccount);
+        }
+      } catch (_) {}
+    });
+  }
+
+  void _onAuthState(AuthState state) {
+    if (!mounted) return;
+    if (state is AuthAuthenticated) {
+      context.go('/home');
+      return;
+    }
+    if (state is AuthRegisteredPendingRiotLink) {
+      setState(() => _mode = AuthFlowMode.linkRiot);
+      return;
+    }
+    if (state is AuthRiotRsoSignInLaunched) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            kIsWeb
+                ? 'Se abrió Riot. Al volver, deberías aterrizar en ${Uri.base.origin}${AppConstants.riotRsoWebSuccessPath}.'
+                : 'Se abrió la página de Riot.',
+            style: const TextStyle(fontFamily: AppFonts.lexendDeca),
+          ),
+        ),
+      );
+      return;
+    }
+    if (state is AuthError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
   }
 
   @override
   void dispose() {
+    _authSub?.cancel();
     _email.dispose();
     _password.dispose();
     _confirm.dispose();
@@ -79,7 +133,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     if (loading) return;
 
     if (_mode == AuthFlowMode.login) {
-      context.read<AuthBloc>().add(
+      _authBloc.add(
             LoginRequested(
               email: _email.text.trim(),
               password: _password.text,
@@ -97,14 +151,14 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     }
 
     if (_mode == AuthFlowMode.riotNoAccount) {
-      final pending = _riotLinkPending;
+      final pending = _riotLinkPendingFromRoute(context);
       if (pending == null || pending.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text(AuthStrings.riotLinkExpired)),
         );
         return;
       }
-      context.read<AuthBloc>().add(
+      _authBloc.add(
             RegisterRequested(
               email: _email.text.trim(),
               password: _password.text,
@@ -114,7 +168,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       return;
     }
 
-    context.read<AuthBloc>().add(
+    _authBloc.add(
           RegisterRequested(
             email: _email.text.trim(),
             password: _password.text,
@@ -175,9 +229,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
             ? const CircularProgressIndicator(color: AuthUiColors.accentRed)
             : RiotOAuthButton(
                 size: 64,
-                onPressed: () => context.read<AuthBloc>().add(
-                      const RiotRsoLinkRequested(),
-                    ),
+                onPressed: () => _authBloc.add(const RiotRsoLinkRequested()),
               ),
       );
     }
@@ -313,36 +365,11 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: sl<AuthBloc>(),
-      child: BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          context.go('/home');
-        }
-        if (state is AuthRegisteredPendingRiotLink) {
-          setState(() => _mode = AuthFlowMode.linkRiot);
-        }
-        if (state is AuthRiotRsoSignInLaunched) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                kIsWeb
-                    ? 'Se abrió Riot. Al volver, deberías aterrizar en ${Uri.base.origin}${AppConstants.riotRsoWebSuccessPath}.'
-                    : 'Se abrió la página de Riot.',
-                style: const TextStyle(fontFamily: AppFonts.lexendDeca),
-              ),
-            ),
-          );
-        }
-        if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-        }
-      },
-      builder: (context, state) {
-        final loading = state is AuthLoading;
+    return StreamBuilder<AuthState>(
+      stream: _authBloc.stream,
+      initialData: _authBloc.state,
+      builder: (context, snapshot) {
+        final loading = snapshot.data is AuthLoading;
         return AuthLexendScope(
           child: AuthScreenScaffold(
             bottom: _showRiotFooter
@@ -350,30 +377,27 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
                     separatorText: AuthStrings.riotFooter,
                     onRiotPressed: loading
                         ? null
-                        : () => context.read<AuthBloc>().add(
+                        : () => _authBloc.add(
                               const RiotRsoSignInRequested(
                                 requestRedirect: true,
                               ),
                             ),
                   )
                 : null,
-            child: Center(
-              child: AuthCard(
-                topPadding: _mode == AuthFlowMode.linkRiot ? 88 : 72,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _header(),
-                    SizedBox(height: _isLinkOnly ? 32 : 28),
-                    _form(loading),
-                  ],
-                ),
+            child: AuthCard(
+              topPadding: _mode == AuthFlowMode.linkRiot ? 88 : 72,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _header(),
+                  SizedBox(height: _isLinkOnly ? 32 : 28),
+                  _form(loading),
+                ],
               ),
             ),
           ),
         );
       },
-      ),
     );
   }
 }
