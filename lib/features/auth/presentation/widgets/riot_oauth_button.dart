@@ -9,7 +9,7 @@ class RiotOAuthButton extends StatelessWidget {
   const RiotOAuthButton({
     super.key,
     required this.onPressed,
-    this.size = 80,
+    this.size = 72,
   });
 
   final VoidCallback? onPressed;
