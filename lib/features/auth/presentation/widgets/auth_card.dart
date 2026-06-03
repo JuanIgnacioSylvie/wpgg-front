@@ -47,6 +47,7 @@ class AuthCard extends StatelessWidget {
             height: 140,
             fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
+            errorBuilder: (_, __, ___) => const SizedBox(height: 140),
           ),
         ),
       ],

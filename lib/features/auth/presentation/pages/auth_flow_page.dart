@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../auth_flow_mode.dart';
@@ -312,7 +313,9 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocProvider.value(
+      value: sl<AuthBloc>(),
+      child: BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           context.go('/home');
@@ -370,6 +373,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
           ),
         );
       },
+      ),
     );
   }
 }

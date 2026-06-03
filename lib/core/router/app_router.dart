@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,6 +21,13 @@ import '../../features/wallet/presentation/pages/finance_page.dart';
 import '../di/injection_container.dart';
 import '../presentation/app_shell_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+
+Widget _authFlowRoute(Widget child) {
+  return BlocProvider.value(
+    value: sl<AuthBloc>(),
+    child: child,
+  );
+}
 
 int shellBranchIndexForNav(int navIndex) {
   if (navIndex <= 1) {
@@ -48,16 +56,15 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/auth/riot-no-account',
-      builder: (_, state) => RiotRsoNoAccountPage(
-        riotLinkPendingCode: state.uri.queryParameters['riot_link_pending'],
+      builder: (_, state) => _authFlowRoute(
+        RiotRsoNoAccountPage(
+          riotLinkPendingCode: state.uri.queryParameters['riot_link_pending'],
+        ),
       ),
     ),
     GoRoute(
       path: '/auth/link-riot',
-      builder: (_, __) => BlocProvider.value(
-        value: sl<AuthBloc>(),
-        child: const LinkRiotPage(),
-      ),
+      builder: (_, __) => _authFlowRoute(const LinkRiotPage()),
     ),
     GoRoute(
       path: '/auth/riot-already-exists',
@@ -65,17 +72,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (_, __) => BlocProvider.value(
-        value: sl<AuthBloc>(),
-        child: const LoginPage(),
-      ),
+      builder: (_, __) => _authFlowRoute(const LoginPage()),
     ),
     GoRoute(
       path: '/register',
-      builder: (_, __) => BlocProvider.value(
-        value: sl<AuthBloc>(),
-        child: const RegisterPage(),
-      ),
+      builder: (_, __) => _authFlowRoute(const RegisterPage()),
     ),
     GoRoute(
       path: '/missions/pick',
