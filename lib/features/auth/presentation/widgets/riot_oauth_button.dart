@@ -4,11 +4,12 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 
+/// Icono Riot para OAuth (la imagen ya incluye el círculo rojo; sin contenedor extra).
 class RiotOAuthButton extends StatelessWidget {
   const RiotOAuthButton({
     super.key,
     required this.onPressed,
-    this.size = 56,
+    this.size = 80,
   });
 
   final VoidCallback? onPressed;
@@ -17,28 +18,21 @@ class RiotOAuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AuthUiColors.riotButtonRed,
-      shape: const CircleBorder(),
-      elevation: 4,
-      shadowColor: Colors.black.withValues(alpha: 0.4),
+      color: Colors.transparent,
       child: InkWell(
-        customBorder: const CircleBorder(),
         onTap: onPressed,
-        child: SizedBox(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size * 0.2),
+        ),
+        child: Image.asset(
+          AppAssets.riotIcon,
           width: size,
           height: size,
-          child: Center(
-            child: Image.asset(
-              AppAssets.riotIcon,
-              width: size * 0.55,
-              height: size * 0.55,
-              fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const Icon(
-                Icons.sports_martial_arts,
-                color: Colors.white,
-                size: 28,
-              ),
-            ),
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => Icon(
+            Icons.sports_martial_arts,
+            size: size * 0.5,
+            color: AuthUiColors.riotButtonRed,
           ),
         ),
       ),

@@ -92,7 +92,6 @@ class _LinkRiotScreenState extends State<LinkRiotScreen> {
                             color: AuthUiColors.accentRed,
                           )
                         : RiotOAuthButton(
-                            size: 64,
                             onPressed: () => _authBloc.add(
                               const RiotRsoLinkRequested(),
                             ),
