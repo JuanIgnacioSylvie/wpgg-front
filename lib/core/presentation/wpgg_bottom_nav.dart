@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../constants/wpgg_brand.dart';
 
 class WpggBottomNav extends StatelessWidget {
@@ -12,6 +14,9 @@ class WpggBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final VoidCallback onFabTap;
+
+  static const _fabSize = 50.0;
+  static const _fabLogoSize = 26.0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,35 +44,35 @@ class WpggBottomNav extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _NavItem(
-                    icon: Icons.home_rounded,
+                    assetPath: 'assets/icons/home.svg',
                     selected: currentIndex == 0,
                     onTap: () => onTap(0),
                   ),
                   _NavItem(
-                    icon: Icons.calendar_month_rounded,
+                    assetPath: 'assets/icons/calendar.svg',
                     selected: currentIndex == 1,
                     onTap: () => onTap(1),
                   ),
-                  const SizedBox(width: 56),
+                  const SizedBox(width: _fabSize),
                   _NavItem(
-                    icon: Icons.description_outlined,
+                    assetPath: 'assets/icons/chart_bar.svg',
                     selected: currentIndex == 3,
                     onTap: () => onTap(3),
                   ),
                   _NavItem(
-                    icon: Icons.people_outline,
+                    assetPath: 'assets/icons/profile.svg',
                     selected: currentIndex == 4,
                     onTap: () => onTap(4),
                   ),
                 ],
               ),
               Positioned(
-                top: -20,
+                top: -24,
                 child: GestureDetector(
                   onTap: onFabTap,
                   child: Container(
-                    width: 56,
-                    height: 56,
+                    width: _fabSize,
+                    height: _fabSize,
                     decoration: BoxDecoration(
                       color: WpggBrand.primary,
                       shape: BoxShape.circle,
@@ -77,17 +82,19 @@ class WpggBottomNav extends StatelessWidget {
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
                       ],
                     ),
-                    child: const Center(
-                      child: Text(
-                        'W',
-                        style: TextStyle(
-                          color: WpggBrand.white,
-                          fontFamily: 'Wallpoet',
-                          fontSize: 22,
-                          letterSpacing: 1,
-                        ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/icons/logo_w.png',
+                        width: _fabLogoSize,
+                        height: _fabLogoSize,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -103,23 +110,26 @@ class WpggBottomNav extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.icon,
+    required this.assetPath,
     required this.selected,
     required this.onTap,
   });
 
-  final IconData icon;
+  final String assetPath;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final color = selected ? WpggBrand.primary : const Color(0xFF6B7280);
+
     return IconButton(
       onPressed: onTap,
-      icon: Icon(
-        icon,
-        color: selected ? WpggBrand.primary : Colors.grey.shade600,
-        size: 28,
+      icon: SvgPicture.asset(
+        assetPath,
+        width: 28,
+        height: 28,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       ),
     );
   }

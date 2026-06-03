@@ -44,6 +44,7 @@ class MissionSecondaryCard extends StatelessWidget {
                 amount: mission.rewardWpgg,
                 color: color,
                 fontSize: 13,
+                coinSize: 24,
               ),
               const SizedBox(width: 8),
               MissionDifficultyIconBox(

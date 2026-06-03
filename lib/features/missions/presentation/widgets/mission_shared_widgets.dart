@@ -81,7 +81,7 @@ class MissionRewardRow extends StatelessWidget {
     required this.color,
     this.underlined = false,
     this.fontSize = 14,
-    this.coinSize = 20,
+    this.coinSize = 24,
   });
 
   final int amount;
@@ -90,7 +90,7 @@ class MissionRewardRow extends StatelessWidget {
   final double fontSize;
   final double coinSize;
 
-  static const String _coinAsset = 'assets/icons/wpgg-coin.png';
+  static const String _coinAsset = 'assets/images/wpgg-coin_24x24.png';
 
   @override
   Widget build(BuildContext context) {
