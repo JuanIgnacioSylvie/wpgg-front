@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/oauth/riot_rso_sign_in_url.dart';
 import '../../../../core/oauth/riot_sign_in_navigate.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
@@ -17,10 +18,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
     required RefreshTokenUseCase refreshTokenUseCase,
+    required AuthRepository authRepository,
   })  : _loginUseCase = loginUseCase,
         _registerUseCase = registerUseCase,
         _logoutUseCase = logoutUseCase,
         _refreshTokenUseCase = refreshTokenUseCase,
+        _authRepository = authRepository,
         super(const AuthInitial()) {
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
@@ -28,12 +31,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SessionChecked>(_onSessionChecked);
     on<RiotRsoSignInRequested>(_onRiotRsoSignIn);
     on<RiotRsoSignUpRequested>(_onRiotRsoSignUp);
+    on<RiotRsoLinkRequested>(_onRiotRsoLink);
   }
 
   final LoginUseCase _loginUseCase;
   final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
+  final AuthRepository _authRepository;
 
   Future<void> _onLogin(LoginRequested event, Emitter<AuthState> emit) async {
     emit(const AuthLoading());
@@ -56,10 +61,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _registerUseCase(
       email: event.email,
       password: event.password,
+      riotLinkPendingCode: event.riotLinkPendingCode,
     );
     result.fold(
       (f) => emit(AuthError(f.message)),
-      (user) => emit(AuthAuthenticated(user)),
+      (user) {
+        if (event.thenLinkRiot) {
+          emit(AuthRegisteredPendingRiotLink(user));
+        } else {
+          emit(AuthAuthenticated(user));
+        }
+      },
     );
   }
 
@@ -113,6 +125,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loginHint: event.loginHint,
         uiLocales: event.uiLocales,
       ),
+    );
+  }
+
+  Future<void> _onRiotRsoLink(
+    RiotRsoLinkRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await _authRepository.fetchRiotLinkAuthorizeUrl();
+    await result.fold(
+      (f) async => emit(AuthError(f.message)),
+      (url) async {
+        try {
+          await openRiotRsoSignInUrl(url);
+          if (!kIsWeb) emit(const AuthRiotRsoSignInLaunched());
+        } catch (e) {
+          emit(AuthError('$e'));
+        }
+      },
     );
   }
 

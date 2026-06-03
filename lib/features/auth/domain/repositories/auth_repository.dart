@@ -13,7 +13,11 @@ abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> register({
     required String email,
     required String password,
+    String? riotLinkPendingCode,
   });
+
+  /// URL de autorización Riot para vincular cuenta (`GET /riot/rso/link`).
+  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl();
 
   Future<Either<Failure, void>> logout();
 

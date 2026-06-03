@@ -18,7 +18,10 @@ abstract class AuthRemoteDataSource {
   Future<AuthRemoteSession> register({
     required String email,
     required String password,
+    String? riotLinkPendingCode,
   });
+
+  Future<String> fetchRiotLinkAuthorizeUrl();
 
   Future<void> logout();
 

@@ -42,14 +42,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthRemoteSession> register({
     required String email,
     required String password,
+    String? riotLinkPendingCode,
   }) async {
     try {
+      final data = <String, dynamic>{
+        'email': email,
+        'password': password,
+      };
+      if (riotLinkPendingCode != null && riotLinkPendingCode.isNotEmpty) {
+        data['riotLinkPendingCode'] = riotLinkPendingCode;
+      }
       final res = await _api.post<dynamic>(
         '/auth/register',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: data,
       );
       return _requireRefreshBody(
         _parseAuthSession(res.data, fallbackEmail: email),
@@ -66,6 +71,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await _api.post<dynamic>('/auth/logout');
     } on DioException catch (e) {
       throw ServerException(_message(e));
+    }
+  }
+
+  @override
+  Future<String> fetchRiotLinkAuthorizeUrl() async {
+    try {
+      final res = await _api.get<dynamic>('/riot/rso/link');
+      final data = res.data;
+      if (data is Map) {
+        final url = data['authorizeUrl'] as String?;
+        if (url != null && url.isNotEmpty) {
+          return url;
+        }
+      }
+      throw const AuthException('No se recibió authorizeUrl');
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
     }
   }
 

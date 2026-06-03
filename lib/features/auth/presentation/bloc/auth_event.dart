@@ -26,13 +26,21 @@ class RegisterRequested extends AuthEvent {
   const RegisterRequested({
     required this.email,
     required this.password,
+    this.riotLinkPendingCode,
+    this.thenLinkRiot = false,
   });
 
   final String email;
   final String password;
 
+  /// Código de `?riot_link_pending=` tras login Riot sin cuenta WPGG.
+  final String? riotLinkPendingCode;
+
+  /// Si true, tras registrar navegar a vincular Riot (flujo registro previo).
+  final bool thenLinkRiot;
+
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [email, password, riotLinkPendingCode, thenLinkRiot];
 }
 
 class LogoutRequested extends AuthEvent {
@@ -59,6 +67,20 @@ class RiotRsoSignInRequested extends AuthEvent {
 
   @override
   List<Object?> get props => [loginHint, uiLocales, requestRedirect];
+}
+
+/// [GET /riot/rso/link] — vincular Riot a usuario ya autenticado (JWT).
+class RiotRsoLinkRequested extends AuthEvent {
+  const RiotRsoLinkRequested({
+    this.loginHint,
+    this.uiLocales,
+  });
+
+  final String? loginHint;
+  final String? uiLocales;
+
+  @override
+  List<Object?> get props => [loginHint, uiLocales];
 }
 
 /// [GET /riot/rso/sign-up] — registro explícito con Riot (`intent=register` en OAuth state).

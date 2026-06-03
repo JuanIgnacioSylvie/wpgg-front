@@ -26,6 +26,16 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
+/// Registro OK; falta vincular Riot antes de entrar a la app.
+class AuthRegisteredPendingRiotLink extends AuthState {
+  const AuthRegisteredPendingRiotLink(this.user);
+
+  final UserEntity user;
+
+  @override
+  List<Object?> get props => [user];
+}
+
 class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }

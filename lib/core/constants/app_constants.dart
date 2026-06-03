@@ -31,6 +31,9 @@ abstract final class AppConstants {
   /// Local path strategy: `http://localhost:PUERTO/auth/riot-callback`
   static const String riotRsoWebSuccessPath = '/auth/riot-callback';
 
+  /// Query param con código de un solo uso para vincular Riot tras registro.
+  static const String riotLinkPendingQueryParam = 'riot_link_pending';
+
   static const String keyAccessToken = 'access_token';
   static const String keyUserEmail = 'user_email';
 

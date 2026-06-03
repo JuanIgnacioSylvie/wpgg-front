@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/link_riot_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_already_exists_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
@@ -47,7 +48,16 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/auth/riot-no-account',
-      builder: (_, __) => const RiotRsoNoAccountPage(),
+      builder: (_, state) => RiotRsoNoAccountPage(
+        riotLinkPendingCode: state.uri.queryParameters['riot_link_pending'],
+      ),
+    ),
+    GoRoute(
+      path: '/auth/link-riot',
+      builder: (_, __) => BlocProvider.value(
+        value: sl<AuthBloc>(),
+        child: const LinkRiotPage(),
+      ),
     ),
     GoRoute(
       path: '/auth/riot-already-exists',

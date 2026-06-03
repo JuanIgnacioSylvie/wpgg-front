@@ -12,7 +12,12 @@ class RegisterUseCase {
   Future<Either<Failure, UserEntity>> call({
     required String email,
     required String password,
+    String? riotLinkPendingCode,
   }) {
-    return _repository.register(email: email, password: password);
+    return _repository.register(
+      email: email,
+      password: password,
+      riotLinkPendingCode: riotLinkPendingCode,
+    );
   }
 }

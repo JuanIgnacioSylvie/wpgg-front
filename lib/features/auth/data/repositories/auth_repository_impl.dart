@@ -71,11 +71,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> register({
     required String email,
     required String password,
+    String? riotLinkPendingCode,
   }) async {
     try {
       final session = await _remote.register(
         email: email,
         password: password,
+        riotLinkPendingCode: riotLinkPendingCode,
       );
       await _persistAuthSession(session);
       return Right(session.user);
@@ -116,6 +118,18 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(e.message));
     } catch (e) {
       await _secure.clearSession();
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl() async {
+    try {
+      final url = await _remote.fetchRiotLinkAuthorizeUrl();
+      return Right(url);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
