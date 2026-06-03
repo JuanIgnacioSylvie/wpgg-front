@@ -180,32 +180,22 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   Widget _header() {
     switch (_mode) {
       case AuthFlowMode.riotNoAccount:
-        return Column(
-          children: [
-            Text(
-              AuthStrings.riotNoAccountTitle,
-              textAlign: TextAlign.center,
-              style: _titleStyle,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              AuthStrings.riotNoAccountBody,
-              textAlign: TextAlign.center,
-              style: _bodyMutedStyle,
-            ),
-            const SizedBox(height: 20),
-            AuthSwitchPrompt(
-              line1: AuthStrings.registerSwitchLine,
-              linkText: AuthStrings.registerSwitchLink,
-              onLinkTap: () => _setMode(AuthFlowMode.login),
-            ),
-          ],
+        return const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            AuthStrings.riotNoAccountMessage,
+            textAlign: TextAlign.left,
+            style: _bodyMutedStyle,
+          ),
         );
       case AuthFlowMode.linkRiot:
-        return Text(
-          AuthStrings.linkRiotBody,
-          textAlign: TextAlign.center,
-          style: _bodyStyle,
+        return const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            AuthStrings.linkRiotBody,
+            textAlign: TextAlign.left,
+            style: _bodyStyle,
+          ),
         );
       case AuthFlowMode.register:
         return AuthSwitchPrompt(
@@ -335,13 +325,6 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     );
   }
 
-  static const _titleStyle = TextStyle(
-    fontFamily: AppFonts.lexendDeca,
-    color: AuthUiColors.cardText,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-  );
-
   static const _bodyStyle = TextStyle(
     fontFamily: AppFonts.lexendDeca,
     color: AuthUiColors.cardText,
@@ -385,7 +368,6 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
                   )
                 : null,
             child: AuthCard(
-              topPadding: _mode == AuthFlowMode.linkRiot ? 88 : 72,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

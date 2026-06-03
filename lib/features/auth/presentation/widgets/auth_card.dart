@@ -8,11 +8,18 @@ class AuthCard extends StatelessWidget {
   const AuthCard({
     super.key,
     required this.child,
-    this.topPadding = 72,
   });
 
   final Widget child;
-  final double topPadding;
+
+  /// Altura de la ilustración (sobresale del borde superior).
+  static const double heroImageHeight = 162;
+
+  /// Desplazamiento vertical de la card respecto al stack.
+  static const double cardOffsetTop = 70;
+
+  /// Padding superior interno: el texto empieza debajo de la ilustración.
+  static const double contentTopPadding = 92;
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +28,11 @@ class AuthCard extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: topPadding * 0.55),
+          padding: const EdgeInsets.only(top: cardOffsetTop),
           child: Container(
             width: double.infinity,
             constraints: const BoxConstraints(maxWidth: 400),
-            padding: EdgeInsets.fromLTRB(24, topPadding, 24, 28),
+            padding: const EdgeInsets.fromLTRB(24, contentTopPadding, 24, 28),
             decoration: BoxDecoration(
               color: AuthUiColors.cardBackground,
               borderRadius: BorderRadius.circular(24),
@@ -44,10 +51,11 @@ class AuthCard extends StatelessWidget {
           top: 0,
           child: Image.asset(
             AppAssets.samira,
-            height: 140,
+            height: heroImageHeight,
             fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
-            errorBuilder: (_, __, ___) => const SizedBox(height: 140),
+            errorBuilder: (_, __, ___) =>
+                const SizedBox(height: heroImageHeight),
           ),
         ),
       ],

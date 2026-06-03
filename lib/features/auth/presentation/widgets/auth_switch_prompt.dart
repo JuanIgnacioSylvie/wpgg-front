@@ -25,22 +25,25 @@ class AuthSwitchPrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: _baseStyle,
-        children: [
-          TextSpan(text: '$line1\nPodés '),
-          TextSpan(
-            text: linkText,
-            style: const TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              color: AuthUiColors.accentRed,
-              fontWeight: FontWeight.w600,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        textAlign: TextAlign.left,
+        text: TextSpan(
+          style: _baseStyle,
+          children: [
+            TextSpan(text: '$line1\nPodés '),
+            TextSpan(
+              text: linkText,
+              style: const TextStyle(
+                fontFamily: AppFonts.lexendDeca,
+                color: AuthUiColors.accentRed,
+                fontWeight: FontWeight.w600,
+              ),
+              recognizer: TapGestureRecognizer()..onTap = onLinkTap,
             ),
-            recognizer: TapGestureRecognizer()..onTap = onLinkTap,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

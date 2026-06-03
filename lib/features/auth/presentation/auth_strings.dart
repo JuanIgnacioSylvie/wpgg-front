@@ -6,9 +6,8 @@ abstract final class AuthStrings {
   static const String registerSwitchLine = 'Si ya tenés una cuenta';
   static const String registerSwitchLink = 'Iniciá sesión acá !';
 
-  static const String riotNoAccountTitle = 'No encontramos su cuenta en WPGG';
-  static const String riotNoAccountBody =
-      'Iniciaste sesión con Riot correctamente. Completá el registro para vincular tu cuenta.';
+  static const String riotNoAccountMessage =
+      'Not account found, please fill the register and login!';
 
   static const String linkRiotBody =
       'Vinculá tu cuenta de Riot Games para completar tu registro.';

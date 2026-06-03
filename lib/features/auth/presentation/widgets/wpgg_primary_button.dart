@@ -16,6 +16,16 @@ class WpggPrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
 
+  static const double height = 44;
+
+  static const TextStyle labelStyle = TextStyle(
+    fontFamily: AppFonts.lexendDeca,
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+  );
+
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null && !isLoading;
@@ -23,7 +33,7 @@ class WpggPrimaryButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: height,
       child: CustomPaint(
         painter: _WpggBulgeButtonPainter(color: color),
         child: Material(
@@ -33,22 +43,14 @@ class WpggPrimaryButton extends StatelessWidget {
             child: Center(
               child: isLoading
                   ? const SizedBox(
-                      width: 22,
-                      height: 22,
+                      width: 20,
+                      height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         color: Colors.white,
                       ),
                     )
-                  : Text(
-                      label,
-                      style: const TextStyle(
-                        fontFamily: AppFonts.lexendDeca,
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                  : Text(label, style: labelStyle),
             ),
           ),
         ),
@@ -63,7 +65,7 @@ class _WpggBulgeButtonPainter extends CustomPainter {
   final Color color;
 
   static Path bulgePath(Size size) {
-    const bulge = 2.8;
+    const bulge = 2.2;
     final w = size.width;
     final h = size.height;
     final r = h / 2;
@@ -92,8 +94,8 @@ class _WpggBulgeButtonPainter extends CustomPainter {
     if (color == AuthUiColors.accentRed) {
       canvas.drawShadow(
         path,
-        Colors.black.withValues(alpha: 0.22),
-        5,
+        Colors.black.withValues(alpha: 0.2),
+        4,
         true,
       );
     }
