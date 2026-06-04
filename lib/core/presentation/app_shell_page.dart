@@ -6,6 +6,7 @@ import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_event.dart';
 import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
+import '../constants/wpgg_brand.dart';
 import '../router/app_router.dart';
 import 'wpgg_bottom_nav.dart';
 
@@ -31,18 +32,28 @@ class _AppShellPageState extends State<AppShellPage> {
     final location = GoRouterState.of(context).uri.path;
     final navIndex = wpggNavIndexForLocation(location);
 
-    return Scaffold(
-      body: widget.navigationShell,
-      bottomNavigationBar: WpggBottomNav(
-        currentIndex: navIndex,
-        onTap: (index) {
-          final branch = shellBranchIndexForNav(index);
-          widget.navigationShell.goBranch(branch);
-          if (index == 0) {
-            context.read<MissionsBloc>().add(const LoadMissionsHome());
-          }
-        },
-        onFabTap: () => context.push('/missions/pick'),
+    return Container(
+      decoration: const BoxDecoration(gradient: WpggBrand.scaffoldGradient),
+      child: Stack(
+        children: [
+          Positioned.fill(child: widget.navigationShell),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: WpggBottomNav(
+              currentIndex: navIndex,
+              onTap: (index) {
+                final branch = shellBranchIndexForNav(index);
+                widget.navigationShell.goBranch(branch);
+                if (index == 0) {
+                  context.read<MissionsBloc>().add(const LoadMissionsHome());
+                }
+              },
+              onFabTap: () => context.push('/missions/pick'),
+            ),
+          ),
+        ],
       ),
     );
   }
