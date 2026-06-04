@@ -36,8 +36,7 @@ class WpggBottomNav extends StatelessWidget {
     ),
     _NavIconPair(
       outline: 'assets/icons/profile.svg',
-      filled: 'assets/icons/profile_filled.png',
-      filledIsRaster: true,
+      filled: 'assets/icons/profile_filled.svg',
     ),
   ];
 
@@ -132,15 +131,10 @@ class WpggBottomNav extends StatelessWidget {
 }
 
 class _NavIconPair {
-  const _NavIconPair({
-    required this.outline,
-    required this.filled,
-    this.filledIsRaster = false,
-  });
+  const _NavIconPair({required this.outline, required this.filled});
 
   final String outline;
   final String filled;
-  final bool filledIsRaster;
 }
 
 class _NavItem extends StatelessWidget {
@@ -160,30 +154,20 @@ class _NavItem extends StatelessWidget {
         selected ? WpggBottomNav._navRed : WpggBottomNav._navInactive;
     final assetPath = selected ? icon.filled : icon.outline;
 
-    Widget navIcon;
-    if (selected && icon.filledIsRaster) {
-      navIcon = Image.asset(
-        assetPath,
-        width: 28,
-        height: 28,
-        fit: BoxFit.contain,
-      );
-    } else {
-      navIcon = SvgPicture.asset(
-        assetPath,
-        width: 28,
-        height: 28,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      );
-    }
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
           height: WpggBottomNav._barHeight,
-          child: Center(child: navIcon),
+          child: Center(
+            child: SvgPicture.asset(
+              assetPath,
+              width: 28,
+              height: 28,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
+          ),
         ),
       ),
     );
