@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/link_riot_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/reset_password_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_already_exists_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_no_account_page.dart';
@@ -86,6 +88,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (_, __) => _authFlowRoute(const RegisterPage()),
+    ),
+    GoRoute(
+      path: '/forgot-password',
+      builder: (_, __) => _authFlowRoute(const ForgotPasswordPage()),
+    ),
+    GoRoute(
+      path: '/reset-password',
+      builder: (_, __) => _authFlowRoute(const ResetPasswordPage()),
     ),
     GoRoute(
       path: '/missions/pick',

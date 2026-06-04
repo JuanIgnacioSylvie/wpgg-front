@@ -136,6 +136,48 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
+  @override
+  Future<void> requestPasswordReset({required String email}) async {
+    try {
+      await _api.post<dynamic>(
+        '/auth/forgot-password',
+        data: {'email': email},
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String token,
+    required String password,
+  }) async {
+    try {
+      await _api.post<dynamic>(
+        '/auth/reset-password',
+        data: {
+          'token': token,
+          'password': password,
+        },
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
+    }
+  }
+
   AuthRemoteSession _parseAuthSession(
     dynamic data, {
     String? fallbackEmail,

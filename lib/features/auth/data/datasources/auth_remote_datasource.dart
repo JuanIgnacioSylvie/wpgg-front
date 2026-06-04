@@ -30,4 +30,11 @@ abstract class AuthRemoteDataSource {
 
   /// [refreshToken] opcional: el back acepta cookie `refreshToken` o `body.refreshToken`.
   Future<AuthRemoteSession> refresh({String? refreshToken});
+
+  Future<void> requestPasswordReset({required String email});
+
+  Future<void> resetPassword({
+    required String token,
+    required String password,
+  });
 }

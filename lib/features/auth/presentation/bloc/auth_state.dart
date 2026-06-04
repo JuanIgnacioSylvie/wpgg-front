@@ -53,3 +53,11 @@ class AuthError extends AuthState {
 class AuthRiotRsoSignInLaunched extends AuthState {
   const AuthRiotRsoSignInLaunched();
 }
+
+class AuthPasswordResetEmailSent extends AuthState {
+  const AuthPasswordResetEmailSent();
+}
+
+class AuthPasswordResetCompleted extends AuthState {
+  const AuthPasswordResetCompleted();
+}

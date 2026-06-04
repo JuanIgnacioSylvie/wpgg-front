@@ -16,6 +16,8 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
 import '../../features/auth/domain/usecases/refresh_token_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
+import '../../features/auth/domain/usecases/request_password_reset_usecase.dart';
+import '../../features/auth/domain/usecases/reset_password_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/ddragon/data/datasources/ddragon_remote_datasource.dart';
 import '../../features/ddragon/data/repositories/ddragon_repository_impl.dart';
@@ -72,12 +74,16 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => RefreshTokenUseCase(sl()));
+  sl.registerLazySingleton(() => RequestPasswordResetUseCase(sl()));
+  sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(
     () => AuthBloc(
       loginUseCase: sl(),
       registerUseCase: sl(),
       logoutUseCase: sl(),
       refreshTokenUseCase: sl(),
+      requestPasswordResetUseCase: sl(),
+      resetPasswordUseCase: sl(),
       authRepository: sl(),
     ),
   );

@@ -9,6 +9,8 @@ import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
+import '../../domain/usecases/request_password_reset_usecase.dart';
+import '../../domain/usecases/reset_password_usecase.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -18,11 +20,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
     required RefreshTokenUseCase refreshTokenUseCase,
+    required RequestPasswordResetUseCase requestPasswordResetUseCase,
+    required ResetPasswordUseCase resetPasswordUseCase,
     required AuthRepository authRepository,
   })  : _loginUseCase = loginUseCase,
         _registerUseCase = registerUseCase,
         _logoutUseCase = logoutUseCase,
         _refreshTokenUseCase = refreshTokenUseCase,
+        _requestPasswordResetUseCase = requestPasswordResetUseCase,
+        _resetPasswordUseCase = resetPasswordUseCase,
         _authRepository = authRepository,
         super(const AuthInitial()) {
     on<LoginRequested>(_onLogin);
@@ -32,12 +38,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RiotRsoSignInRequested>(_onRiotRsoSignIn);
     on<RiotRsoSignUpRequested>(_onRiotRsoSignUp);
     on<RiotRsoLinkRequested>(_onRiotRsoLink);
+    on<PasswordResetRequested>(_onPasswordResetRequested);
+    on<PasswordResetConfirmRequested>(_onPasswordResetConfirm);
   }
 
   final LoginUseCase _loginUseCase;
   final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
+  final RequestPasswordResetUseCase _requestPasswordResetUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
   final AuthRepository _authRepository;
 
   Future<void> _onLogin(LoginRequested event, Emitter<AuthState> emit) async {
@@ -155,5 +165,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(AuthError('$e'));
     }
+  }
+
+  Future<void> _onPasswordResetRequested(
+    PasswordResetRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await _requestPasswordResetUseCase(email: event.email);
+    result.fold(
+      (f) => emit(AuthError(f.message)),
+      (_) => emit(const AuthPasswordResetEmailSent()),
+    );
+  }
+
+  Future<void> _onPasswordResetConfirm(
+    PasswordResetConfirmRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await _resetPasswordUseCase(
+      token: event.token,
+      password: event.password,
+    );
+    result.fold(
+      (f) => emit(AuthError(f.message)),
+      (_) => emit(const AuthPasswordResetCompleted()),
+    );
   }
 }

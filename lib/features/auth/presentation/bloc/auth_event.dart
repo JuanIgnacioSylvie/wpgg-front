@@ -98,3 +98,25 @@ class RiotRsoSignUpRequested extends AuthEvent {
   @override
   List<Object?> get props => [loginHint, uiLocales, requestRedirect];
 }
+
+class PasswordResetRequested extends AuthEvent {
+  const PasswordResetRequested({required this.email});
+
+  final String email;
+
+  @override
+  List<Object?> get props => [email];
+}
+
+class PasswordResetConfirmRequested extends AuthEvent {
+  const PasswordResetConfirmRequested({
+    required this.token,
+    required this.password,
+  });
+
+  final String token;
+  final String password;
+
+  @override
+  List<Object?> get props => [token, password];
+}

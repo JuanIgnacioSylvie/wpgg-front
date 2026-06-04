@@ -39,4 +39,21 @@ abstract final class AuthStrings {
   static const String riotFooter = 'o continuá con';
 
   static const String passwordsMismatch = 'Las contraseñas no coinciden';
+
+  static const String forgotPasswordTitle = '¿Olvidaste tu contraseña?';
+  static const String forgotPasswordBody =
+      'Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.';
+  static const String forgotPasswordSuccess =
+      'Si existe una cuenta con ese email, te enviamos un enlace para restablecer tu contraseña.';
+  static const String buttonSendResetLink = 'Enviar enlace';
+  static const String backToLogin = 'Volver al inicio de sesión';
+
+  static const String resetPasswordTitle = 'Nueva contraseña';
+  static const String resetPasswordBody =
+      'Elegí una contraseña nueva para tu cuenta.';
+  static const String buttonResetPassword = 'Restablecer contraseña';
+  static const String resetPasswordSuccess =
+      'Tu contraseña fue actualizada. Ya podés iniciar sesión.';
+  static const String resetPasswordInvalidLink =
+      'El enlace no es válido o expiró. Pedí uno nuevo desde el inicio de sesión.';
 }

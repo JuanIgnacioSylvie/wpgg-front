@@ -221,7 +221,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
               const Text(AuthStrings.rememberMe, style: _labelStyle),
               const Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.go('/forgot-password'),
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,
