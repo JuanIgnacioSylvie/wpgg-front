@@ -10,6 +10,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   WalletBloc(this._dataSource) : super(const WalletInitial()) {
     on<LoadWallet>(_onLoad);
     on<ChangeTransactionFilter>(_onFilter);
+    on<RequestWithdrawal>(_onWithdraw);
   }
 
   final WalletRemoteDataSource _dataSource;
@@ -50,6 +51,39 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       ));
     } catch (e) {
       emit(WalletError(e.toString()));
+    }
+  }
+
+  Future<void> _onWithdraw(
+    RequestWithdrawal event,
+    Emitter<WalletState> emit,
+  ) async {
+    final current = state;
+    if (current is! WalletLoaded) {
+      return;
+    }
+    emit(WalletWithdrawing(summary: current.summary));
+    try {
+      final result = await _dataSource.requestWithdrawal(
+        walletAddress: event.walletAddress,
+        amountWpgg: event.amountWpgg,
+      );
+      final summary = await _dataSource.fetchWallet();
+      emit(WalletWithdrawSuccess(
+        summary: summary,
+        chart: current.chart,
+        transactions: current.transactions,
+        filter: current.filter,
+        result: result,
+      ));
+    } catch (e) {
+      emit(WalletWithdrawError(
+        summary: current.summary,
+        chart: current.chart,
+        transactions: current.transactions,
+        filter: current.filter,
+        message: e.toString(),
+      ));
     }
   }
 }

@@ -2,49 +2,323 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/locale/locale_provider.dart';
-import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../../core/presentation/wpgg_profile_avatar.dart';
+import '../../../ddragon/presentation/providers/ddragon_provider.dart';
+import '../../../riot/domain/entities/summoner_entity.dart';
+import '../../../riot/presentation/bloc/riot_bloc.dart';
+import '../../../riot/presentation/bloc/riot_state.dart';
+import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
+import '../../../wallet/presentation/bloc/wallet_bloc.dart';
+import '../widgets/withdraw_sheet.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
+  static const _appBarAvatarSize = 40.0;
+  static const _profileAvatarSize = 112.0;
+
+  late final AnimationController _entranceController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<Alignment> _alignmentAnimation;
+  var _animateFromAppBar = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _entranceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+    _scaleAnimation = Tween<double>(
+      begin: _appBarAvatarSize / _profileAvatarSize,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: _entranceController,
+      curve: Curves.easeOutCubic,
+    ));
+    _alignmentAnimation = AlignmentTween(
+      begin: const Alignment(-0.92, -1.05),
+      end: const Alignment(0, -0.42),
+    ).animate(CurvedAnimation(
+      parent: _entranceController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    context.read<WalletBloc>().add(const LoadWallet());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final from = GoRouterState.of(context).uri.queryParameters['from'];
+      _animateFromAppBar = from == 'appbar';
+      if (_animateFromAppBar) {
+        _entranceController.forward();
+      } else {
+        _entranceController.value = 1;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _entranceController.dispose();
+    super.dispose();
+  }
+
+  WalletSummary? _summary(WalletState state) {
+    return switch (state) {
+      WalletLoaded(:final summary) => summary,
+      WalletWithdrawing(:final summary) => summary,
+      WalletWithdrawSuccess(:final summary) => summary,
+      WalletWithdrawError(:final summary) => summary,
+      _ => null,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final localeProvider = context.watch<LocaleProvider>();
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final ddragon = Provider.of<DDragonProvider>(context);
 
-    return WpggGradientScaffold(
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 100),
+    return BlocListener<WalletBloc, WalletState>(
+      listenWhen: (prev, curr) =>
+          curr is WalletWithdrawSuccess || curr is WalletWithdrawError,
+      listener: (context, state) {
+        if (state is WalletWithdrawSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.withdrawSuccess)),
+          );
+        } else if (state is WalletWithdrawError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.withdrawError)),
+          );
+        }
+        context.read<WalletBloc>().add(const LoadWallet());
+      },
+      child: BlocBuilder<RiotBloc, RiotState>(
+        builder: (context, riotState) {
+          SummonerEntity? summoner;
+          if (riotState is RiotLoaded) {
+            summoner = riotState.summoner;
+          }
+
+          return BlocBuilder<WalletBloc, WalletState>(
+            builder: (context, walletState) {
+              final summary = _summary(walletState);
+              final balance = summary?.balance ?? 0;
+              final minWithdraw = summary?.minWithdrawWpgg ?? 1000;
+              final withdrawing = walletState is WalletWithdrawing;
+
+              return Column(
+                children: [
+                  SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => context.go('/home'),
+                            icon: Image.asset(
+                              'assets/icons/arrow_left.png',
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              l10n.myProfile,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: AppFonts.lexendDeca,
+                                color: WpggBrand.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 48),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 200,
+                            child: AnimatedBuilder(
+                              animation: _entranceController,
+                              builder: (context, child) {
+                                return AlignTransition(
+                                  alignment: _alignmentAnimation,
+                                  child: ScaleTransition(
+                                    scale: _scaleAnimation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: summoner != null
+                                  ? WpggProfileAvatar(
+                                      summoner: summoner,
+                                      ddragon: ddragon,
+                                      size: _profileAvatarSize,
+                                      enableHero: _animateFromAppBar,
+                                    )
+                                  : const CircleAvatar(
+                                      radius: _profileAvatarSize / 2,
+                                      backgroundColor: WpggBrand.primary,
+                                      child: Icon(
+                                        Icons.person,
+                                        color: WpggBrand.white,
+                                        size: 48,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          if (summoner != null) ...[
+                            Text(
+                              summoner.gameName,
+                              style: const TextStyle(
+                                fontFamily: AppFonts.lexendDeca,
+                                color: WpggBrand.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _BalancePill(balance: balance),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _WithdrawPill(
+                                  loading: withdrawing,
+                                  enabled: balance >= minWithdraw,
+                                  onTap: () => showWithdrawSheet(
+                                    context,
+                                    balance: balance,
+                                    minWithdrawWpgg: minWithdraw,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 28),
+                          _SettingsCard(
+                            children: [
+                              _SettingsRow(
+                                icon: Icons.notifications_none,
+                                label: l10n.generalNotification,
+                                trailing: Switch(
+                                  value: true,
+                                  onChanged: null,
+                                  activeThumbColor: WpggBrand.white,
+                                  activeTrackColor: WpggBrand.primary,
+                                ),
+                              ),
+                              const Divider(height: 1),
+                              _SettingsRow(
+                                icon: Icons.translate,
+                                label: l10n.language,
+                                trailing: Text(
+                                  localeProvider.isSpanish
+                                      ? l10n.languageSpanish
+                                      : l10n.languageEnglish,
+                                  style: const TextStyle(
+                                    fontFamily: AppFonts.lexendDeca,
+                                    color: WpggBrand.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                onTap: () {
+                                  if (localeProvider.isSpanish) {
+                                    localeProvider.setEnglish();
+                                  } else {
+                                    localeProvider.setSpanish();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          _SettingsCard(
+                            children: [
+                              _SettingsRow(
+                                icon: Icons.support_agent_outlined,
+                                label: l10n.helpSupport,
+                              ),
+                              const Divider(height: 1),
+                              _SettingsRow(
+                                icon: Icons.chat_bubble_outline,
+                                label: l10n.contactUs,
+                              ),
+                              const Divider(height: 1),
+                              _SettingsRow(
+                                icon: Icons.lock_outline,
+                                label: l10n.privacyPolicy,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _BalancePill extends StatelessWidget {
+  const _BalancePill({required this.balance});
+
+  final int balance;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: WpggBrand.primary, width: 1.5),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Image.asset(
+            'assets/icons/wpgg-coin.png',
+            width: 22,
+            height: 22,
+          ),
+          const SizedBox(width: 8),
           Text(
-            l10n.profile,
+            '$balance',
             style: const TextStyle(
               fontFamily: AppFonts.lexendDeca,
               color: WpggBrand.white,
-              fontSize: 22,
+              fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
-          ),
-          const SizedBox(height: 24),
-          _LanguageCard(localeProvider: localeProvider),
-          const SizedBox(height: 32),
-          OutlinedButton(
-            onPressed: () {
-              context.read<AuthBloc>().add(const LogoutRequested());
-              context.go('/login');
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: WpggBrand.white,
-              side: const BorderSide(color: WpggBrand.white),
-            ),
-            child: Text(l10n.logOut),
           ),
         ],
       ),
@@ -52,57 +326,121 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class _LanguageCard extends StatelessWidget {
-  const _LanguageCard({required this.localeProvider});
+class _WithdrawPill extends StatelessWidget {
+  const _WithdrawPill({
+    required this.onTap,
+    required this.enabled,
+    required this.loading,
+  });
 
-  final LocaleProvider localeProvider;
+  final VoidCallback onTap;
+  final bool enabled;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isEnglish = localeProvider.locale.languageCode == 'en';
 
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: enabled && !loading ? onTap : null,
+        borderRadius: BorderRadius.circular(28),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.35),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: enabled ? WpggBrand.primary : WpggBrand.textMuted,
+              width: 1.5,
+            ),
+          ),
+          child: Center(
+            child: loading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: WpggBrand.primary,
+                    ),
+                  )
+                : Text(
+                    l10n.withdraw,
+                    style: TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: enabled ? WpggBrand.primary : WpggBrand.textMuted,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsCard extends StatelessWidget {
+  const _SettingsCard({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: WpggBrand.cardSurface,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.language,
-            style: const TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SegmentedButton<bool>(
-            segments: [
-              ButtonSegment(
-                value: false,
-                label: Text(l10n.languageSpanish),
+      child: Column(children: children),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    required this.icon,
+    required this.label,
+    this.trailing,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          child: Row(
+            children: [
+              Icon(icon, color: WpggBrand.cardTextDark, size: 24),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.lexendDeca,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: WpggBrand.cardTextDark,
+                  ),
+                ),
               ),
-              ButtonSegment(
-                value: true,
-                label: Text(l10n.languageEnglish),
-              ),
+              if (trailing != null) trailing!,
             ],
-            selected: {isEnglish},
-            onSelectionChanged: (selected) {
-              final english = selected.first;
-              if (english) {
-                localeProvider.setEnglish();
-              } else {
-                localeProvider.setSpanish();
-              }
-            },
           ),
-        ],
+        ),
       ),
     );
   }

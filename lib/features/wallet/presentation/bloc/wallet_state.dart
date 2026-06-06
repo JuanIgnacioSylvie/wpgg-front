@@ -54,3 +54,50 @@ class WalletError extends WalletState {
   @override
   List<Object?> get props => [message];
 }
+
+class WalletWithdrawing extends WalletState {
+  const WalletWithdrawing({required this.summary});
+
+  final WalletSummary summary;
+
+  @override
+  List<Object?> get props => [summary];
+}
+
+class WalletWithdrawSuccess extends WalletState {
+  const WalletWithdrawSuccess({
+    required this.summary,
+    required this.chart,
+    required this.transactions,
+    required this.filter,
+    required this.result,
+  });
+
+  final WalletSummary summary;
+  final List<MarketChartPoint> chart;
+  final List<WalletTransaction> transactions;
+  final String filter;
+  final WithdrawalResult result;
+
+  @override
+  List<Object?> get props => [summary, chart, transactions, filter, result];
+}
+
+class WalletWithdrawError extends WalletState {
+  const WalletWithdrawError({
+    required this.summary,
+    required this.chart,
+    required this.transactions,
+    required this.filter,
+    required this.message,
+  });
+
+  final WalletSummary summary;
+  final List<MarketChartPoint> chart;
+  final List<WalletTransaction> transactions;
+  final String filter;
+  final String message;
+
+  @override
+  List<Object?> get props => [summary, chart, transactions, filter, message];
+}

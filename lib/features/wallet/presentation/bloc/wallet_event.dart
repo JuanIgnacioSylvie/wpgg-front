@@ -24,3 +24,16 @@ class ChangeTransactionFilter extends WalletEvent {
   @override
   List<Object?> get props => [filter];
 }
+
+class RequestWithdrawal extends WalletEvent {
+  const RequestWithdrawal({
+    required this.walletAddress,
+    required this.amountWpgg,
+  });
+
+  final String walletAddress;
+  final int amountWpgg;
+
+  @override
+  List<Object?> get props => [walletAddress, amountWpgg];
+}

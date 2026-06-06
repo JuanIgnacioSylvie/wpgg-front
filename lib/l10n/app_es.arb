@@ -44,5 +44,21 @@
   "linkRiotSheetAction": "Vincular",
   "summonerNameLabel": "Nombre de invocador",
   "tagLabel": "Tag (#TAG sin #)",
-  "regionLabel": "Región (ej. LA2)"
+  "regionLabel": "Región (ej. LA2)",
+  "myProfile": "Mi perfil",
+  "withdraw": "RETIRAR",
+  "generalNotification": "Notificación general",
+  "helpSupport": "Ayuda y soporte",
+  "contactUs": "Contáctanos",
+  "privacyPolicy": "Política de privacidad",
+  "withdrawTitle": "Retirar WPGG",
+  "withdrawMinHint": "El retiro mínimo es {amount} WPGG",
+  "walletAddressLabel": "Dirección de wallet Polygon",
+  "walletAddressRequired": "La dirección es obligatoria",
+  "walletAddressInvalid": "Ingresá una dirección Polygon válida (0x...)",
+  "withdrawAmountLabel": "Monto (WPGG)",
+  "withdrawAmountInvalid": "Ingresá un monto válido",
+  "withdrawInsufficientBalance": "Saldo insuficiente",
+  "withdrawSuccess": "Retiro enviado correctamente",
+  "withdrawError": "No se pudo completar el retiro. Intentá de nuevo."
 }

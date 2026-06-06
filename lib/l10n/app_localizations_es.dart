@@ -154,4 +154,56 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get regionLabel => 'Región (ej. LA2)';
+
+  @override
+  String get myProfile => 'Mi perfil';
+
+  @override
+  String get withdraw => 'RETIRAR';
+
+  @override
+  String get generalNotification => 'Notificación general';
+
+  @override
+  String get helpSupport => 'Ayuda y soporte';
+
+  @override
+  String get contactUs => 'Contáctanos';
+
+  @override
+  String get privacyPolicy => 'Política de privacidad';
+
+  @override
+  String get withdrawTitle => 'Retirar WPGG';
+
+  @override
+  String withdrawMinHint(int amount) {
+    return 'El retiro mínimo es $amount WPGG';
+  }
+
+  @override
+  String get walletAddressLabel => 'Dirección de wallet Polygon';
+
+  @override
+  String get walletAddressRequired => 'La dirección es obligatoria';
+
+  @override
+  String get walletAddressInvalid =>
+      'Ingresá una dirección Polygon válida (0x...)';
+
+  @override
+  String get withdrawAmountLabel => 'Monto (WPGG)';
+
+  @override
+  String get withdrawAmountInvalid => 'Ingresá un monto válido';
+
+  @override
+  String get withdrawInsufficientBalance => 'Saldo insuficiente';
+
+  @override
+  String get withdrawSuccess => 'Retiro enviado correctamente';
+
+  @override
+  String get withdrawError =>
+      'No se pudo completar el retiro. Intentá de nuevo.';
 }

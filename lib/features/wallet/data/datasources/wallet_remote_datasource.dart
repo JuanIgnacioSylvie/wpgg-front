@@ -35,10 +35,30 @@ class MarketChartPoint {
   final double priceUsd;
 }
 
+class WithdrawalResult {
+  WithdrawalResult({
+    required this.id,
+    required this.walletAddress,
+    required this.amountWpgg,
+    required this.txHash,
+    required this.status,
+  });
+
+  final String id;
+  final String walletAddress;
+  final int amountWpgg;
+  final String? txHash;
+  final String status;
+}
+
 abstract class WalletRemoteDataSource {
   Future<WalletSummary> fetchWallet();
   Future<List<WalletTransaction>> fetchTransactions(String filter);
   Future<List<MarketChartPoint>> fetchMarketChart(int days);
+  Future<WithdrawalResult> requestWithdrawal({
+    required String walletAddress,
+    required int amountWpgg,
+  });
 }
 
 class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
@@ -89,5 +109,27 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
         priceUsd: (m['priceUsd'] as num).toDouble(),
       );
     }).toList();
+  }
+
+  @override
+  Future<WithdrawalResult> requestWithdrawal({
+    required String walletAddress,
+    required int amountWpgg,
+  }) async {
+    final res = await _client.post<Map<String, dynamic>>(
+      '/withdrawals',
+      data: {
+        'walletAddress': walletAddress,
+        'amountWpgg': amountWpgg,
+      },
+    );
+    final data = res.data!;
+    return WithdrawalResult(
+      id: data['id'] as String,
+      walletAddress: data['walletAddress'] as String,
+      amountWpgg: (data['amountWpgg'] as num).toInt(),
+      txHash: data['txHash'] as String?,
+      status: data['status'] as String,
+    );
   }
 }

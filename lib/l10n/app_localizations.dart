@@ -367,6 +367,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Region (e.g. LA2)'**
   String get regionLabel;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get myProfile;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'WITHDRAW'**
+  String get withdraw;
+
+  /// No description provided for @generalNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'General Notification'**
+  String get generalNotification;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us'**
+  String get contactUs;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @withdrawTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw WPGG'**
+  String get withdrawTitle;
+
+  /// No description provided for @withdrawMinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum withdrawal is {amount} WPGG'**
+  String withdrawMinHint(int amount);
+
+  /// No description provided for @walletAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Polygon wallet address'**
+  String get walletAddressLabel;
+
+  /// No description provided for @walletAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet address is required'**
+  String get walletAddressRequired;
+
+  /// No description provided for @walletAddressInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid Polygon address (0x...)'**
+  String get walletAddressInvalid;
+
+  /// No description provided for @withdrawAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount (WPGG)'**
+  String get withdrawAmountLabel;
+
+  /// No description provided for @withdrawAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount'**
+  String get withdrawAmountInvalid;
+
+  /// No description provided for @withdrawInsufficientBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient balance'**
+  String get withdrawInsufficientBalance;
+
+  /// No description provided for @withdrawSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal submitted successfully'**
+  String get withdrawSuccess;
+
+  /// No description provided for @withdrawError.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal failed. Please try again.'**
+  String get withdrawError;
 }
 
 class _AppLocalizationsDelegate

@@ -1,11 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../constants/app_fonts.dart';
 import '../constants/wpgg_brand.dart';
 import '../l10n/l10n_extension.dart';
 import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../features/riot/domain/entities/summoner_entity.dart';
+import 'wpgg_profile_avatar.dart';
 
 class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
   const WpggAppBar({
@@ -54,9 +55,13 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 12),
                   child: Center(
-                    child: _ProfileIcon(
-                      summoner: summoner!,
-                      ddragon: ddragon,
+                    child: GestureDetector(
+                      onTap: () => context.go('/profile?from=appbar'),
+                      child: WpggProfileAvatar(
+                        summoner: summoner!,
+                        ddragon: ddragon,
+                        size: _profileIconSize,
+                      ),
                     ),
                   ),
                 )
@@ -113,57 +118,6 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _ProfileIcon extends StatelessWidget {
-  const _ProfileIcon({
-    required this.summoner,
-    required this.ddragon,
-  });
-
-  final SummonerEntity summoner;
-  final DDragonProvider? ddragon;
-
-  @override
-  Widget build(BuildContext context) {
-    if (ddragon == null) {
-      return const SizedBox(
-        width: WpggAppBar._profileIconSize,
-        height: WpggAppBar._profileIconSize,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: WpggBrand.primary,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(Icons.person, color: WpggBrand.white, size: 24),
-        ),
-      );
-    }
-
-    return SizedBox(
-      width: WpggAppBar._profileIconSize,
-      height: WpggAppBar._profileIconSize,
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: WpggBrand.primary,
-        ),
-        child: ClipOval(
-          child: CachedNetworkImage(
-            imageUrl: ddragon!.profileIconUrl(summoner.profileIconId),
-            width: WpggAppBar._profileIconSize,
-            height: WpggAppBar._profileIconSize,
-            fit: BoxFit.contain,
-            errorWidget: (_, __, ___) => const Icon(
-              Icons.person,
-              color: WpggBrand.white,
-              size: 24,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

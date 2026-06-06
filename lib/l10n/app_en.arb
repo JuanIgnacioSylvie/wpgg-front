@@ -67,5 +67,26 @@
   "linkRiotSheetAction": "Link",
   "summonerNameLabel": "Summoner name",
   "tagLabel": "Tag (#TAG without #)",
-  "regionLabel": "Region (e.g. LA2)"
+  "regionLabel": "Region (e.g. LA2)",
+  "myProfile": "My profile",
+  "withdraw": "WITHDRAW",
+  "generalNotification": "General Notification",
+  "helpSupport": "Help & Support",
+  "contactUs": "Contact us",
+  "privacyPolicy": "Privacy policy",
+  "withdrawTitle": "Withdraw WPGG",
+  "withdrawMinHint": "Minimum withdrawal is {amount} WPGG",
+  "@withdrawMinHint": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "walletAddressLabel": "Polygon wallet address",
+  "walletAddressRequired": "Wallet address is required",
+  "walletAddressInvalid": "Enter a valid Polygon address (0x...)",
+  "withdrawAmountLabel": "Amount (WPGG)",
+  "withdrawAmountInvalid": "Enter a valid amount",
+  "withdrawInsufficientBalance": "Insufficient balance",
+  "withdrawSuccess": "Withdrawal submitted successfully",
+  "withdrawError": "Withdrawal failed. Please try again."
 }
