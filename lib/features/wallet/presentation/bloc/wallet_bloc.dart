@@ -59,10 +59,36 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     Emitter<WalletState> emit,
   ) async {
     final current = state;
-    if (current is! WalletLoaded) {
+    if (current is WalletWithdrawing) {
       return;
     }
-    emit(WalletWithdrawing(summary: current.summary));
+
+    final snapshot = switch (current) {
+      WalletLoaded() => (
+          summary: current.summary,
+          chart: current.chart,
+          transactions: current.transactions,
+          filter: current.filter,
+        ),
+      WalletWithdrawSuccess() => (
+          summary: current.summary,
+          chart: current.chart,
+          transactions: current.transactions,
+          filter: current.filter,
+        ),
+      WalletWithdrawError() => (
+          summary: current.summary,
+          chart: current.chart,
+          transactions: current.transactions,
+          filter: current.filter,
+        ),
+      _ => null,
+    };
+    if (snapshot == null) {
+      return;
+    }
+
+    emit(WalletWithdrawing(summary: snapshot.summary));
     try {
       final result = await _dataSource.requestWithdrawal(
         walletAddress: event.walletAddress,
@@ -71,17 +97,17 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       final summary = await _dataSource.fetchWallet();
       emit(WalletWithdrawSuccess(
         summary: summary,
-        chart: current.chart,
-        transactions: current.transactions,
-        filter: current.filter,
+        chart: snapshot.chart,
+        transactions: snapshot.transactions,
+        filter: snapshot.filter,
         result: result,
       ));
     } catch (e) {
       emit(WalletWithdrawError(
-        summary: current.summary,
-        chart: current.chart,
-        transactions: current.transactions,
-        filter: current.filter,
+        summary: snapshot.summary,
+        chart: snapshot.chart,
+        transactions: snapshot.transactions,
+        filter: snapshot.filter,
         message: e.toString(),
       ));
     }

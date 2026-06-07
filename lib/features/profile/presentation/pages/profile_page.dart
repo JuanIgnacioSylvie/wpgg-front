@@ -99,7 +99,13 @@ class _ProfilePageState extends State<ProfilePage>
           );
         } else if (state is WalletWithdrawError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.withdrawError)),
+            SnackBar(
+              content: Text(
+                state.message.contains('Exception')
+                    ? l10n.withdrawError
+                    : state.message,
+              ),
+            ),
           );
         }
         context.read<WalletBloc>().add(const LoadWallet());

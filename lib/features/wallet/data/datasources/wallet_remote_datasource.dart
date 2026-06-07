@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
 
 class WalletSummary {
@@ -116,20 +118,32 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
     required String walletAddress,
     required int amountWpgg,
   }) async {
-    final res = await _client.post<Map<String, dynamic>>(
-      '/withdrawals',
-      data: {
-        'walletAddress': walletAddress,
-        'amountWpgg': amountWpgg,
-      },
-    );
-    final data = res.data!;
-    return WithdrawalResult(
-      id: data['id'] as String,
-      walletAddress: data['walletAddress'] as String,
-      amountWpgg: (data['amountWpgg'] as num).toInt(),
-      txHash: data['txHash'] as String?,
-      status: data['status'] as String,
-    );
+    try {
+      final res = await _client.post<Map<String, dynamic>>(
+        '/withdrawals',
+        data: {
+          'walletAddress': walletAddress,
+          'amountWpgg': amountWpgg,
+        },
+      );
+      final data = res.data!;
+      return WithdrawalResult(
+        id: data['id'] as String,
+        walletAddress: data['walletAddress'] as String,
+        amountWpgg: (data['amountWpgg'] as num).toInt(),
+        txHash: data['txHash'] as String?,
+        status: data['status'] as String,
+      );
+    } on DioException catch (e) {
+      final body = e.response?.data;
+      if (body is Map && body['message'] != null) {
+        final msg = body['message'];
+        if (msg is List) {
+          throw Exception(msg.join(', '));
+        }
+        throw Exception(msg.toString());
+      }
+      rethrow;
+    }
   }
 }
