@@ -13,7 +13,7 @@ import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
-import '../widgets/withdraw_sheet.dart';
+import '../widgets/withdraw_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 child: _WithdrawPill(
                                   loading: withdrawing,
                                   enabled: balance >= minWithdraw,
-                                  onTap: () => showWithdrawSheet(
+                                  onTap: () => showWithdrawDialog(
                                     context,
                                     balance: balance,
                                     minWithdrawWpgg: minWithdraw,
