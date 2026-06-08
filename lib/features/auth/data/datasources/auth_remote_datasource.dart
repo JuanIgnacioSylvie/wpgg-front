@@ -21,7 +21,7 @@ abstract class AuthRemoteDataSource {
     String? riotLinkPendingCode,
   });
 
-  Future<String> fetchRiotLinkAuthorizeUrl();
+  Future<String> fetchRiotLinkAuthorizeUrl({bool mobilePlatform = false});
 
   Future<void> logout();
 

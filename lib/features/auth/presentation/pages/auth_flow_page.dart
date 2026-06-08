@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
@@ -19,6 +17,8 @@ import '../widgets/auth_lexend_scope.dart';
 import '../widgets/auth_screen_scaffold.dart';
 import '../widgets/auth_switch_prompt.dart';
 import '../widgets/auth_underline_field.dart';
+import '../widgets/riot_account_already_exists_dialog.dart';
+import '../widgets/riot_account_not_found_dialog.dart';
 import '../widgets/riot_oauth_button.dart';
 import '../widgets/wpgg_primary_button.dart';
 
@@ -71,17 +71,12 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       context.go('/auth/link-riot');
       return;
     }
-    if (state is AuthRiotRsoSignInLaunched) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            kIsWeb
-                ? 'Se abrió Riot. Al volver, deberías aterrizar en ${Uri.base.origin}${AppConstants.riotRsoWebSuccessPath}.'
-                : 'Se abrió la página de Riot.',
-            style: const TextStyle(fontFamily: AppFonts.lexendDeca),
-          ),
-        ),
-      );
+    if (state is AuthRiotOAuthUserNotFound) {
+      showRiotAccountNotFoundDialog(context);
+      return;
+    }
+    if (state is AuthRiotOAuthUserAlreadyExists) {
+      showRiotAccountAlreadyExistsDialog(context);
       return;
     }
     if (state is AuthError) {

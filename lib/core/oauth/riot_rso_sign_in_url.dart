@@ -11,9 +11,11 @@ Map<String, dynamic> riotRsoSignInQueryParameters({
   bool requestRedirect = false,
   String? loginHint,
   String? uiLocales,
+  bool mobilePlatform = false,
 }) {
   final qp = <String, dynamic>{};
   if (requestRedirect) qp['redirect'] = 'true';
+  if (mobilePlatform) qp['platform'] = 'mobile';
   if (loginHint != null && loginHint.isNotEmpty) {
     qp['loginHint'] = loginHint;
   }
@@ -29,11 +31,13 @@ String _buildRiotRsoAbsoluteUrl(
   bool requestRedirect = false,
   String? loginHint,
   String? uiLocales,
+  bool mobilePlatform = false,
 }) {
   final qp = riotRsoSignInQueryParameters(
     requestRedirect: requestRedirect,
     loginHint: loginHint,
     uiLocales: uiLocales,
+    mobilePlatform: mobilePlatform,
   );
   final base = apiBaseUrl.trim().replaceAll(RegExp(r'/+$'), '');
   return Uri.parse('$base$path')
@@ -51,6 +55,7 @@ String buildRiotRsoSignInAbsoluteUrl(
   bool requestRedirect = false,
   String? loginHint,
   String? uiLocales,
+  bool mobilePlatform = false,
 }) =>
     _buildRiotRsoAbsoluteUrl(
       apiBaseUrl,
@@ -58,6 +63,7 @@ String buildRiotRsoSignInAbsoluteUrl(
       requestRedirect: requestRedirect,
       loginHint: loginHint,
       uiLocales: uiLocales,
+      mobilePlatform: mobilePlatform,
     );
 
 /// URL absoluta del sign-up RSO (`intent=register` en el state OAuth del back).
@@ -66,6 +72,7 @@ String buildRiotRsoSignUpAbsoluteUrl(
   bool requestRedirect = false,
   String? loginHint,
   String? uiLocales,
+  bool mobilePlatform = false,
 }) =>
     _buildRiotRsoAbsoluteUrl(
       apiBaseUrl,
@@ -73,4 +80,5 @@ String buildRiotRsoSignUpAbsoluteUrl(
       requestRedirect: requestRedirect,
       loginHint: loginHint,
       uiLocales: uiLocales,
+      mobilePlatform: mobilePlatform,
     );

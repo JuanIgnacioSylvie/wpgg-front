@@ -123,9 +123,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl() async {
+  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl({
+    bool mobilePlatform = false,
+  }) async {
     try {
-      final url = await _remote.fetchRiotLinkAuthorizeUrl();
+      final url = await _remote.fetchRiotLinkAuthorizeUrl(
+        mobilePlatform: mobilePlatform,
+      );
       return Right(url);
     } on AuthException catch (e) {
       return Left(AuthFailure(e.message));

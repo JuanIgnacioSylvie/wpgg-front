@@ -22,4 +22,15 @@ void main() {
       'https://api.example/riot/rso/sign-up?redirect=true',
     );
   });
+
+  test('buildRiotRsoSignInAbsoluteUrl adds platform=mobile', () {
+    expect(
+      buildRiotRsoSignInAbsoluteUrl(
+        'https://api.example',
+        requestRedirect: true,
+        mobilePlatform: true,
+      ),
+      'https://api.example/riot/rso/sign-in?redirect=true&platform=mobile',
+    );
+  });
 }

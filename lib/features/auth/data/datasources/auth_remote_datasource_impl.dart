@@ -75,9 +75,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<String> fetchRiotLinkAuthorizeUrl() async {
+  Future<String> fetchRiotLinkAuthorizeUrl({bool mobilePlatform = false}) async {
     try {
-      final res = await _api.get<dynamic>('/riot/rso/link');
+      final res = await _api.get<dynamic>(
+        '/riot/rso/link',
+        queryParameters: mobilePlatform ? const {'platform': 'mobile'} : null,
+      );
       final data = res.data;
       if (data is Map) {
         final url = data['authorizeUrl'] as String?;

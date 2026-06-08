@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/oauth/riot_rso_mobile_auth.dart';
 import '../../../../core/oauth/riot_rso_sign_in_url.dart';
 import '../../../../core/oauth/riot_sign_in_navigate.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -106,8 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  /// Nunca [GET /riot/rso/sign-in|sign-up] vía Dio: solo navegación documento (web) o
-  /// [launchUrl] externo (móvil/desktop).
+  /// Web: navegación documento. Móvil: Custom Tab + deep link `wpgg://`.
   Future<void> _onRiotRsoSignIn(
     RiotRsoSignInRequested event,
     Emitter<AuthState> emit,
@@ -119,6 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         requestRedirect: event.requestRedirect,
         loginHint: event.loginHint,
         uiLocales: event.uiLocales,
+        mobilePlatform: !kIsWeb,
       ),
     );
   }
@@ -134,6 +135,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         requestRedirect: event.requestRedirect,
         loginHint: event.loginHint,
         uiLocales: event.uiLocales,
+        mobilePlatform: !kIsWeb,
       ),
     );
   }
@@ -143,13 +145,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
-    final result = await _authRepository.fetchRiotLinkAuthorizeUrl();
+    final result = await _authRepository.fetchRiotLinkAuthorizeUrl(
+      mobilePlatform: !kIsWeb,
+    );
     await result.fold(
       (f) async => emit(AuthError(f.message)),
       (url) async {
         try {
-          await openRiotRsoSignInUrl(url);
-          if (!kIsWeb) emit(const AuthRiotRsoSignInLaunched());
+          if (kIsWeb) {
+            await openRiotRsoSignInUrl(url);
+          } else {
+            await _completeMobileRiotOAuth(emit, url);
+          }
         } catch (e) {
           emit(AuthError('$e'));
         }
@@ -160,11 +167,55 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _launchRiotRso(Emitter<AuthState> emit, String url) async {
     emit(const AuthLoading());
     try {
-      await openRiotRsoSignInUrl(url);
-      if (!kIsWeb) emit(const AuthRiotRsoSignInLaunched());
+      if (kIsWeb) {
+        await openRiotRsoSignInUrl(url);
+      } else {
+        await _completeMobileRiotOAuth(emit, url);
+      }
     } catch (e) {
       emit(AuthError('$e'));
     }
+  }
+
+  Future<void> _completeMobileRiotOAuth(
+    Emitter<AuthState> emit,
+    String signInUrl,
+  ) async {
+    final outcome = await authenticateRiotRsoMobile(signInUrl);
+    if (outcome.cancelled) {
+      emit(const AuthUnauthenticated());
+      return;
+    }
+    if (outcome.oauthError == 'user_not_found') {
+      emit(AuthRiotOAuthUserNotFound(
+        riotLinkPendingCode: outcome.riotLinkPendingCode,
+      ));
+      return;
+    }
+    if (outcome.oauthError == 'user_already_exists') {
+      emit(const AuthRiotOAuthUserAlreadyExists());
+      return;
+    }
+    if (outcome.hasOAuthError) {
+      final desc = outcome.oauthErrorDescription;
+      final msg = desc != null && desc.isNotEmpty
+          ? '${outcome.oauthError}: $desc'
+          : outcome.oauthError!;
+      emit(AuthError(msg));
+      return;
+    }
+    if (!outcome.hasRiotSessionCode) {
+      emit(const AuthError('No se recibió sesión tras el login con Riot.'));
+      return;
+    }
+
+    final exchanged = await _authRepository.exchangeRiotSession(
+      code: outcome.riotSessionCode!,
+    );
+    exchanged.fold(
+      (f) => emit(AuthError(f.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
   }
 
   Future<void> _onPasswordResetRequested(

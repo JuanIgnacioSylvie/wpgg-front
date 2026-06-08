@@ -54,6 +54,21 @@ class AuthRiotRsoSignInLaunched extends AuthState {
   const AuthRiotRsoSignInLaunched();
 }
 
+/// Login Riot sin cuenta WPGG (móvil).
+class AuthRiotOAuthUserNotFound extends AuthState {
+  const AuthRiotOAuthUserNotFound({this.riotLinkPendingCode});
+
+  final String? riotLinkPendingCode;
+
+  @override
+  List<Object?> get props => [riotLinkPendingCode];
+}
+
+/// Registro Riot con cuenta WPGG ya existente (móvil).
+class AuthRiotOAuthUserAlreadyExists extends AuthState {
+  const AuthRiotOAuthUserAlreadyExists();
+}
+
 class AuthPasswordResetEmailSent extends AuthState {
   const AuthPasswordResetEmailSent();
 }

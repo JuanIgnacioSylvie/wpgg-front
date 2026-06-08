@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_constants.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
@@ -36,17 +35,9 @@ class _LinkRiotScreenState extends State<LinkRiotScreen> {
 
   void _onAuthState(AuthState state) {
     if (!mounted) return;
-    if (state is AuthRiotRsoSignInLaunched) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            kIsWeb
-                ? 'Se abrió Riot. Al volver, deberías aterrizar en ${Uri.base.origin}${AppConstants.riotRsoWebSuccessPath}.'
-                : 'Se abrió la página de Riot.',
-            style: const TextStyle(fontFamily: AppFonts.lexendDeca),
-          ),
-        ),
-      );
+    if (state is AuthAuthenticated) {
+      context.go('/home');
+      return;
     }
     if (state is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -31,6 +31,12 @@ abstract final class AppConstants {
   /// Local path strategy: `http://localhost:PUERTO/auth/riot-callback`
   static const String riotRsoWebSuccessPath = '/auth/riot-callback';
 
+  /// Deep link tras Riot OAuth en móvil (`RIOT_RSO_MOBILE_SUCCESS_REDIRECT_URL` en el back).
+  static const String riotRsoMobileCallbackScheme = 'wpgg';
+
+  static const String riotRsoMobileCallbackUrl =
+      '$riotRsoMobileCallbackScheme://auth/riot-callback';
+
   /// Query param con código de un solo uso para vincular Riot tras registro.
   static const String riotLinkPendingQueryParam = 'riot_link_pending';
 

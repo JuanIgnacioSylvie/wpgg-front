@@ -17,7 +17,9 @@ abstract class AuthRepository {
   });
 
   /// URL de autorización Riot para vincular cuenta (`GET /riot/rso/link`).
-  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl();
+  Future<Either<Failure, String>> fetchRiotLinkAuthorizeUrl({
+    bool mobilePlatform = false,
+  });
 
   Future<Either<Failure, void>> logout();
 
