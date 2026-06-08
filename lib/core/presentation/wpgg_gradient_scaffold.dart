@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../constants/wpgg_brand.dart';
+import 'web/web_colors.dart';
+import 'web/web_shell_scope.dart';
 
 class WpggGradientScaffold extends StatelessWidget {
   const WpggGradientScaffold({
@@ -20,6 +22,13 @@ class WpggGradientScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (WebShellScope.isActive(context)) {
+      return ColoredBox(
+        color: WebColors.background,
+        child: body,
+      );
+    }
+
     return Container(
       decoration: const BoxDecoration(gradient: WpggBrand.scaffoldGradient),
       child: Scaffold(

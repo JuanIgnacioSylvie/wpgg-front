@@ -100,15 +100,9 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
         return true;
       }());
 
-      if (!kIsWeb) {
-        setState(() {
-          _status = 'El login con Riot por redirect solo está soportado en web.';
-          _done = true;
-        });
-        return;
-      }
-
-      final locationUri = _oauthLocationUri ?? browserOAuthLocationUri();
+      final locationUri = kIsWeb
+          ? (_oauthLocationUri ?? browserOAuthLocationUri())
+          : GoRouterState.of(context).uri;
       final parsed = parseRiotRsoCallbackUri(locationUri);
 
       if (parsed.hasOAuthError) {

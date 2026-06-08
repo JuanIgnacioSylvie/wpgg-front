@@ -1,0 +1,272 @@
+import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/extensions/mission_card_l10n.dart';
+import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../core/presentation/web/web_colors.dart';
+import '../../domain/entities/mission_card_entity.dart';
+import 'mission_ui_helpers.dart';
+
+enum WebMissionCardVariant { active, past, empty }
+
+class WebMissionCard extends StatefulWidget {
+  const WebMissionCard({
+    super.key,
+    required this.mission,
+    this.endsInSeconds,
+    this.variant = WebMissionCardVariant.active,
+    this.onTap,
+  });
+
+  const WebMissionCard.empty({super.key, this.onTap})
+      : mission = null,
+        endsInSeconds = null,
+        variant = WebMissionCardVariant.empty;
+
+  final MissionCardEntity? mission;
+  final int? endsInSeconds;
+  final WebMissionCardVariant variant;
+  final VoidCallback? onTap;
+
+  @override
+  State<WebMissionCard> createState() => _WebMissionCardState();
+}
+
+class _WebMissionCardState extends State<WebMissionCard> {
+  var _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.variant == WebMissionCardVariant.empty) {
+      return _EmptyCard(onTap: widget.onTap, hovered: _hovered, onHover: _setHovered);
+    }
+
+    final mission = widget.mission!;
+    final color = difficultyColor(mission.difficulty);
+    final isPast = widget.variant == WebMissionCardVariant.past;
+    final isCompleted = mission.status == MissionStatus.completed ||
+        mission.progressPercent >= 100;
+
+    return MouseRegion(
+      onEnter: (_) => _setHovered(true),
+      onExit: (_) => _setHovered(false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 280,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: _hovered
+                ? WebColors.surfaceElevated
+                : WebColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _hovered ? WebColors.border : WebColors.borderSubtle,
+            ),
+            boxShadow: _hovered
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      difficultyIcon(mission.difficulty),
+                      color: color,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          mission.localizedTitle(context),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontFamily: AppFonts.lexendDeca,
+                            color: WebColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          difficultyLabel(mission.difficulty, context.l10n),
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: isPast
+                          ? (isCompleted
+                              ? WebColors.online
+                              : WebColors.textMuted)
+                          : WebColors.online,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    isPast
+                        ? statusLabel(mission.status, context.l10n)
+                        : context.l10n.statusInProgress,
+                    style: const TextStyle(
+                      color: WebColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/icons/wpgg-coin.png',
+                        width: 16,
+                        height: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${mission.rewardWpgg}',
+                        style: const TextStyle(
+                          color: WebColors.textPrimary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              if (!isPast) ...[
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: mission.progressPercent / 100,
+                    minHeight: 4,
+                    backgroundColor: WebColors.border,
+                    color: color,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${mission.progressPercent}%',
+                  style: const TextStyle(
+                    color: WebColors.textMuted,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _setHovered(bool value) {
+    if (_hovered != value) setState(() => _hovered = value);
+  }
+}
+
+class _EmptyCard extends StatelessWidget {
+  const _EmptyCard({
+    required this.onTap,
+    required this.hovered,
+    required this.onHover,
+  });
+
+  final VoidCallback? onTap;
+  final bool hovered;
+  final ValueChanged<bool> onHover;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return MouseRegion(
+      onEnter: (_) => onHover(true),
+      onExit: (_) => onHover(false),
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 280,
+          height: 160,
+          decoration: BoxDecoration(
+            color: hovered
+                ? WebColors.surfaceElevated
+                : WebColors.surface.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: hovered ? WebColors.accent : WebColors.border,
+              style: BorderStyle.solid,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Symbols.add_circle_outline,
+                color: hovered ? WebColors.accent : WebColors.textMuted,
+                size: 32,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.pickMissions,
+                style: TextStyle(
+                  color: hovered ? WebColors.textPrimary : WebColors.textSecondary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.noActiveMissions,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: WebColors.textMuted,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

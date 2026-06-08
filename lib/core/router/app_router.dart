@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ import '../../features/auth/presentation/pages/riot_rso_already_exists_page.dart
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_no_account_page.dart';
 import '../constants/app_constants.dart';
+import 'oauth_deep_link_redirect.dart';
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/missions/presentation/pages/home_page.dart';
 import '../../features/missions/presentation/pages/missions_by_day_page.dart';
@@ -22,6 +24,8 @@ import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/wallet/presentation/pages/finance_page.dart';
 import '../di/injection_container.dart';
 import '../presentation/app_shell_page.dart';
+import '../presentation/web/web_app_shell_page.dart';
+import '../../features/missions/presentation/pages/web_dashboard_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 
 Widget _authFlowRoute(Widget child) {
@@ -46,7 +50,9 @@ int shellBranchIndexForNav(int navIndex) {
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
-  redirect: (context, state) => null,
+  redirect: (context, state) {
+    return normalizeOAuthDeepLinkLocation(state.uri.toString());
+  },
   errorBuilder: (context, state) => Scaffold(
     backgroundColor: const Color(0xFF1A1A1A),
     body: Center(
@@ -116,7 +122,9 @@ final GoRouter appRouter = GoRouter(
             BlocProvider.value(value: sl<MissionsBloc>()),
             BlocProvider.value(value: sl<WalletBloc>()),
           ],
-          child: AppShellPage(navigationShell: navigationShell),
+          child: kIsWeb
+              ? WebAppShellPage(navigationShell: navigationShell)
+              : AppShellPage(navigationShell: navigationShell),
         );
       },
       branches: [
@@ -124,7 +132,9 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/home',
-              builder: (_, __) => const HomePage(),
+              builder: (_, __) => kIsWeb
+                  ? const WebDashboardPage()
+                  : const HomePage(),
             ),
           ],
         ),
