@@ -56,11 +56,28 @@
     }
   },
   "rerollMissionTitle": "Reroll mission?",
-  "rerollMissionBody": "This will cost 5 WPGG from your balance.",
+  "rerollMissionBody": "This will cost {cost} WPGG from your balance.",
+  "@rerollMissionBody": {
+    "placeholders": {
+      "cost": {"type": "int"}
+    }
+  },
+  "missionSpendBalanceHint": "Current balance: {balance} WPGG",
+  "@missionSpendBalanceHint": {
+    "placeholders": {
+      "balance": {"type": "int"}
+    }
+  },
+  "missionInsufficientBalance": "You don't have enough WPGG for this action",
   "cancel": "Cancel",
   "reroll": "Reroll",
   "cancelMissionTitle": "Delete mission?",
-  "cancelMissionBody": "This will cost 5 WPGG from your balance.",
+  "cancelMissionBody": "This will cost {cost} WPGG from your balance.",
+  "@cancelMissionBody": {
+    "placeholders": {
+      "cost": {"type": "int"}
+    }
+  },
   "deleteMission": "Delete",
   "dropToDeleteMission": "Drop here to delete",
   "summonerLevel": "Level {level}",
@@ -100,5 +117,30 @@
   "withdrawSuccess": "Withdrawal submitted successfully",
   "withdrawError": "Withdrawal failed. Please try again.",
   "pageUnavailableTitle": "This page is not available",
-  "pageUnavailableBody": "We're working on it. Please check back later."
+  "pageUnavailableBody": "We're working on it. Please check back later.",
+  "faqsMenuItem": "FAQs",
+  "faqsTitle": "Frequently asked questions",
+  "faqsIntro": "Everything you need to know about WPGG — missions, rewards, withdrawals and more.",
+  "faqWhatIsWpggQ": "What is WPGG?",
+  "faqWhatIsWpggA": "WPGG is a League of Legends stats platform that rewards you for playing. Complete daily missions, earn WPGG tokens, and redeem them for Riot Points gift cards or other real-world rewards.",
+  "faqHowMissionsWorkQ": "How do missions work?",
+  "faqHowMissionsWorkA": "Each day you get a set of missions: easy, medium, and hard. Easy ones are simple — play a match or win with a specific champion. Medium and hard missions require better performance: hit a certain KDA, get X assists, win streaks, and so on. Complete the mission, earn tokens. That's it.",
+  "faqRerollQ": "Can I reroll missions?",
+  "faqRerollA": "Yes. If a mission doesn't suit you or you can't complete it, you have daily rerolls to swap it for another random one of the same tier.",
+  "faqWithdrawQ": "How do I withdraw WPGG to my wallet?",
+  "faqWithdrawA": "You need to accumulate a minimum of 1,000 WPGG to withdraw. Once you reach it, you can start a withdrawal from the finance section. Tokens are transferred to your wallet on the Polygon network. You need a compatible wallet (like MetaMask) and to cover the transaction gas fee — on Polygon it's practically nothing.",
+  "faqWhatCanIDoQ": "What can I do with WPGG?",
+  "faqWhatCanIDoA": "For now you can redeem them in the in-app store for Riot Points gift cards. The idea is that with what you earn over a few weeks of normal play you can buy a skin, treat your girlfriend, or grab beers with the boys. It's not about getting rich — it's a real reward for what you already do.",
+  "faqTokenPriceQ": "How much is one WPGG worth?",
+  "faqTokenPriceA": "The token trades on the market, so the price varies. But the app isn't built for speculation — it's built for you to use it. The real value is in redeeming for concrete products.",
+  "faqGetRichQ": "Will WPGG make me rich?",
+  "faqGetRichA": "No. And we say it straight because transparency is part of the project. WPGG is not an investment scheme or a speculation game. It's a rewards system backed by a fixed liquidity pool on QuickSwap (WPGG/USDC). The pool is what it is — it doesn't grow magically, there are no return promises. What you earn playing has real, redeemable value, but don't expect to multiply your money here.",
+  "faqTransparencyQ": "Is it safe? Is the project transparent?",
+  "faqTransparencyA": "Yes. The WPGG token contract is deployed on Polygon Mainnet and is publicly verifiable on PolygonScan. The liquidity pool is on QuickSwap. Everything backing the system is on-chain and anyone can audit it. No black box.",
+  "faqCryptoKnowledgeQ": "Do I need to know crypto to use the app?",
+  "faqCryptoKnowledgeA": "To play missions and earn WPGG, you don't need to know anything about crypto. Complexity only shows up when you want to withdraw to your wallet — and even then the process is guided step by step inside the app.",
+  "faqLoLAccountQ": "Which LoL account do I connect with?",
+  "faqLoLAccountA": "The app uses Riot Sign On (Riot Games' official system), so you sign in with your Riot account directly. You don't need to give us your password or anything like that — it's the same OAuth used by apps like op.gg or u.gg.",
+  "faqAvailabilityQ": "Is the app available on iOS and Android?",
+  "faqAvailabilityA": "It's currently in active development. More info on availability coming soon."
 }

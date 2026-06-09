@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/network/network_error_message.dart';
+import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../data/datasources/missions_remote_datasource.dart';
 import '../../domain/entities/mission_card_entity.dart';
 
@@ -19,6 +21,12 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
   }
 
   final MissionsRemoteDataSource _dataSource;
+
+  void _refreshWallet() {
+    sl<WalletBloc>().add(const LoadWallet());
+  }
+
+  String _missionErrorMessage(Object error) => networkErrorMessage(error);
 
   Future<void> _onHome(
     LoadMissionsHome event,
@@ -122,10 +130,11 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
   ) async {
     try {
       await _dataSource.acceptOffer(event.offerId);
+      _refreshWallet();
       add(const LoadPickToday());
       add(const LoadMissionsHome());
     } catch (e) {
-      emit(state.copyWith(pickError: e.toString()));
+      emit(state.copyWith(pickError: _missionErrorMessage(e)));
     }
   }
 
@@ -135,9 +144,10 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
   ) async {
     try {
       await _dataSource.rerollOffer(event.offerId);
+      _refreshWallet();
       add(const LoadPickToday());
     } catch (e) {
-      emit(state.copyWith(pickError: e.toString()));
+      emit(state.copyWith(pickError: _missionErrorMessage(e)));
     }
   }
 
@@ -147,10 +157,11 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
   ) async {
     try {
       await _dataSource.cancelActiveMission(event.missionId);
+      _refreshWallet();
       add(const LoadMissionsHome());
       add(const LoadPickToday());
     } catch (e) {
-      emit(state.copyWith(homeError: networkErrorMessage(e)));
+      emit(state.copyWith(homeError: _missionErrorMessage(e)));
     }
   }
 }

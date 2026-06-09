@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
+import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_event.dart';
 import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
@@ -24,6 +25,7 @@ class _AppShellPageState extends State<AppShellPage> {
     super.initState();
     context.read<RiotBloc>().add(const LoadDashboard());
     context.read<DDragonProvider>().ensureLoaded();
+    context.read<WalletBloc>().add(const LoadWallet());
   }
 
   @override

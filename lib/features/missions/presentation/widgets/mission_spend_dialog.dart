@@ -8,14 +8,11 @@ import '../../../../core/presentation/web/web_colors.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 
-Future<bool> showCancelMissionDialog(
-  BuildContext context, {
-  required String missionId,
-}) async {
+Future<bool> showRerollMissionDialog(BuildContext context) async {
   final l10n = context.l10n;
   final walletState = context.read<WalletBloc>().state;
   final balance = WpggEconomy.balanceFromState(walletState);
-  final cost = WpggEconomy.cancelCostFromState(walletState);
+  final cost = WpggEconomy.rerollCostFromState(walletState);
   final canAfford = WpggEconomy.canAfford(balance, cost);
 
   final ok = await showWebDialog<bool>(
@@ -27,7 +24,7 @@ Future<bool> showCancelMissionDialog(
         side: const BorderSide(color: WebColors.border),
       ),
       title: Text(
-        l10n.cancelMissionTitle,
+        l10n.rerollMissionTitle,
         style: const TextStyle(color: WebColors.textPrimary),
       ),
       content: Column(
@@ -35,7 +32,7 @@ Future<bool> showCancelMissionDialog(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.cancelMissionBody(cost),
+            l10n.rerollMissionBody(cost),
             style: const TextStyle(color: WebColors.textSecondary),
           ),
           if (balance != null) ...[
@@ -61,7 +58,7 @@ Future<bool> showCancelMissionDialog(
         ),
         WpggPrimaryButton(
           onPressed: canAfford ? () => Navigator.pop(ctx, true) : null,
-          label: l10n.deleteMission,
+          label: l10n.reroll,
         ),
       ],
     ),

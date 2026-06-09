@@ -7,13 +7,13 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
-import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import 'day_carousel.dart';
 import 'filter_pills.dart';
 import 'mission_pick_card.dart';
+import 'mission_spend_dialog.dart';
 
 Future<void> showPickMissionsDialog(BuildContext context) {
   return showWebDialog<void>(
@@ -232,35 +232,8 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
     AppLocalizations l10n,
     String offerId,
   ) async {
-    final ok = await showWebDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: WebColors.surfaceElevated,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: WebColors.border),
-        ),
-        title: Text(
-          l10n.rerollMissionTitle,
-          style: const TextStyle(color: WebColors.textPrimary),
-        ),
-        content: Text(
-          l10n.rerollMissionBody,
-          style: const TextStyle(color: WebColors.textSecondary),
-        ),
-        actions: [
-          WpggCancelButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            label: l10n.cancel,
-          ),
-          WpggPrimaryButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            label: l10n.reroll,
-          ),
-        ],
-      ),
-    );
-    if (ok == true && context.mounted) {
+    final ok = await showRerollMissionDialog(context);
+    if (ok && context.mounted) {
       context.read<MissionsBloc>().add(RerollMissionOffer(offerId));
     }
   }

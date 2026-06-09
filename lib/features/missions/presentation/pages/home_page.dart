@@ -210,9 +210,9 @@ class _HomePageState extends State<HomePage> {
                           child: MissionPrimaryCard(
                             mission: home.primary!,
                             endsInSeconds: home.endsInSeconds,
-                            onCancel: () => showCancelMissionDialog(
+                            onCancel: () => _cancelMission(
                               context,
-                              missionId: home.primary!.id,
+                              home.primary!.id,
                             ),
                           ),
                         )
@@ -247,9 +247,9 @@ class _HomePageState extends State<HomePage> {
                               final mission = home.secondary[i];
                               return MissionSecondaryCard(
                                 mission: mission,
-                                onCancel: () => showCancelMissionDialog(
+                                onCancel: () => _cancelMission(
                                   context,
-                                  missionId: mission.id,
+                                  mission.id,
                                 ),
                               );
                             },
@@ -309,5 +309,14 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  Future<void> _cancelMission(BuildContext context, String missionId) async {
+    final ok = await showCancelMissionDialog(
+      context,
+      missionId: missionId,
+    );
+    if (!ok || !context.mounted) return;
+    context.read<MissionsBloc>().add(CancelActiveMission(missionId));
   }
 }

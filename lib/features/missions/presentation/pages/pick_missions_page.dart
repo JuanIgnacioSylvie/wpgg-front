@@ -16,6 +16,7 @@ import '../bloc/missions_bloc.dart';
 import '../widgets/day_carousel.dart';
 import '../widgets/filter_pills.dart';
 import '../widgets/mission_pick_card.dart';
+import '../widgets/mission_spend_dialog.dart';
 
 class PickMissionsPage extends StatefulWidget {
   const PickMissionsPage({super.key});
@@ -145,24 +146,8 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                                 );
                           },
                           onReroll: () async {
-                            final ok = await showDialog<bool>(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: Text(l10n.rerollMissionTitle),
-                                content: Text(l10n.rerollMissionBody),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(ctx, false),
-                                    child: Text(l10n.cancel),
-                                  ),
-                                  FilledButton(
-                                    onPressed: () => Navigator.pop(ctx, true),
-                                    child: Text(l10n.reroll),
-                                  ),
-                                ],
-                              ),
-                            );
-                            if (ok == true && context.mounted) {
+                            final ok = await showRerollMissionDialog(context);
+                            if (ok && context.mounted) {
                               context.read<MissionsBloc>().add(
                                     RerollMissionOffer(oid),
                                   );

@@ -6,8 +6,10 @@ String networkErrorMessage(
 }) {
   if (error is DioException) {
     final data = error.response?.data;
-    if (data is Map && data['message'] is String) {
-      return data['message'] as String;
+    if (data is Map && data['message'] != null) {
+      final msg = data['message'];
+      if (msg is String) return msg;
+      if (msg is List) return msg.join(', ');
     }
     final message = error.message;
     if (message != null && message.isNotEmpty) {

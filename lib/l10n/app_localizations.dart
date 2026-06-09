@@ -299,8 +299,20 @@ abstract class AppLocalizations {
   /// No description provided for @rerollMissionBody.
   ///
   /// In en, this message translates to:
-  /// **'This will cost 5 WPGG from your balance.'**
-  String get rerollMissionBody;
+  /// **'This will cost {cost} WPGG from your balance.'**
+  String rerollMissionBody(int cost);
+
+  /// No description provided for @missionSpendBalanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance: {balance} WPGG'**
+  String missionSpendBalanceHint(int balance);
+
+  /// No description provided for @missionInsufficientBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have enough WPGG for this action'**
+  String get missionInsufficientBalance;
 
   /// No description provided for @cancel.
   ///
@@ -323,8 +335,8 @@ abstract class AppLocalizations {
   /// No description provided for @cancelMissionBody.
   ///
   /// In en, this message translates to:
-  /// **'This will cost 5 WPGG from your balance.'**
-  String get cancelMissionBody;
+  /// **'This will cost {cost} WPGG from your balance.'**
+  String cancelMissionBody(int cost);
 
   /// No description provided for @deleteMission.
   ///
@@ -505,6 +517,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We\'re working on it. Please check back later.'**
   String get pageUnavailableBody;
+
+  /// No description provided for @faqsMenuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQs'**
+  String get faqsMenuItem;
+
+  /// No description provided for @faqsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get faqsTitle;
+
+  /// No description provided for @faqsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you need to know about WPGG — missions, rewards, withdrawals and more.'**
+  String get faqsIntro;
+
+  /// No description provided for @faqWhatIsWpggQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What is WPGG?'**
+  String get faqWhatIsWpggQ;
+
+  /// No description provided for @faqWhatIsWpggA.
+  ///
+  /// In en, this message translates to:
+  /// **'WPGG is a League of Legends stats platform that rewards you for playing. Complete daily missions, earn WPGG tokens, and redeem them for Riot Points gift cards or other real-world rewards.'**
+  String get faqWhatIsWpggA;
+
+  /// No description provided for @faqHowMissionsWorkQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do missions work?'**
+  String get faqHowMissionsWorkQ;
+
+  /// No description provided for @faqHowMissionsWorkA.
+  ///
+  /// In en, this message translates to:
+  /// **'Each day you get a set of missions: easy, medium, and hard. Easy ones are simple — play a match or win with a specific champion. Medium and hard missions require better performance: hit a certain KDA, get X assists, win streaks, and so on. Complete the mission, earn tokens. That\'s it.'**
+  String get faqHowMissionsWorkA;
+
+  /// No description provided for @faqRerollQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I reroll missions?'**
+  String get faqRerollQ;
+
+  /// No description provided for @faqRerollA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. If a mission doesn\'t suit you or you can\'t complete it, you have daily rerolls to swap it for another random one of the same tier.'**
+  String get faqRerollA;
+
+  /// No description provided for @faqWithdrawQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I withdraw WPGG to my wallet?'**
+  String get faqWithdrawQ;
+
+  /// No description provided for @faqWithdrawA.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to accumulate a minimum of 1,000 WPGG to withdraw. Once you reach it, you can start a withdrawal from the finance section. Tokens are transferred to your wallet on the Polygon network. You need a compatible wallet (like MetaMask) and to cover the transaction gas fee — on Polygon it\'s practically nothing.'**
+  String get faqWithdrawA;
+
+  /// No description provided for @faqWhatCanIDoQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What can I do with WPGG?'**
+  String get faqWhatCanIDoQ;
+
+  /// No description provided for @faqWhatCanIDoA.
+  ///
+  /// In en, this message translates to:
+  /// **'For now you can redeem them in the in-app store for Riot Points gift cards. The idea is that with what you earn over a few weeks of normal play you can buy a skin, treat your girlfriend, or grab beers with the boys. It\'s not about getting rich — it\'s a real reward for what you already do.'**
+  String get faqWhatCanIDoA;
+
+  /// No description provided for @faqTokenPriceQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How much is one WPGG worth?'**
+  String get faqTokenPriceQ;
+
+  /// No description provided for @faqTokenPriceA.
+  ///
+  /// In en, this message translates to:
+  /// **'The token trades on the market, so the price varies. But the app isn\'t built for speculation — it\'s built for you to use it. The real value is in redeeming for concrete products.'**
+  String get faqTokenPriceA;
+
+  /// No description provided for @faqGetRichQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Will WPGG make me rich?'**
+  String get faqGetRichQ;
+
+  /// No description provided for @faqGetRichA.
+  ///
+  /// In en, this message translates to:
+  /// **'No. And we say it straight because transparency is part of the project. WPGG is not an investment scheme or a speculation game. It\'s a rewards system backed by a fixed liquidity pool on QuickSwap (WPGG/USDC). The pool is what it is — it doesn\'t grow magically, there are no return promises. What you earn playing has real, redeemable value, but don\'t expect to multiply your money here.'**
+  String get faqGetRichA;
+
+  /// No description provided for @faqTransparencyQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Is it safe? Is the project transparent?'**
+  String get faqTransparencyQ;
+
+  /// No description provided for @faqTransparencyA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. The WPGG token contract is deployed on Polygon Mainnet and is publicly verifiable on PolygonScan. The liquidity pool is on QuickSwap. Everything backing the system is on-chain and anyone can audit it. No black box.'**
+  String get faqTransparencyA;
+
+  /// No description provided for @faqCryptoKnowledgeQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Do I need to know crypto to use the app?'**
+  String get faqCryptoKnowledgeQ;
+
+  /// No description provided for @faqCryptoKnowledgeA.
+  ///
+  /// In en, this message translates to:
+  /// **'To play missions and earn WPGG, you don\'t need to know anything about crypto. Complexity only shows up when you want to withdraw to your wallet — and even then the process is guided step by step inside the app.'**
+  String get faqCryptoKnowledgeA;
+
+  /// No description provided for @faqLoLAccountQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Which LoL account do I connect with?'**
+  String get faqLoLAccountQ;
+
+  /// No description provided for @faqLoLAccountA.
+  ///
+  /// In en, this message translates to:
+  /// **'The app uses Riot Sign On (Riot Games\' official system), so you sign in with your Riot account directly. You don\'t need to give us your password or anything like that — it\'s the same OAuth used by apps like op.gg or u.gg.'**
+  String get faqLoLAccountA;
+
+  /// No description provided for @faqAvailabilityQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Is the app available on iOS and Android?'**
+  String get faqAvailabilityQ;
+
+  /// No description provided for @faqAvailabilityA.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s currently in active development. More info on availability coming soon.'**
+  String get faqAvailabilityA;
 }
 
 class _AppLocalizationsDelegate

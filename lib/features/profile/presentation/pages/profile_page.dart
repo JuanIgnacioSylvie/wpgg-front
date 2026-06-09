@@ -13,6 +13,7 @@ import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
+import 'faqs_page.dart';
 import '../widgets/withdraw_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -311,6 +312,15 @@ class _ProfilePageState extends State<ProfilePage>
                           const SizedBox(height: 16),
                           _SettingsCard(
                             children: [
+                              _SettingsRow(
+                                icon: Icons.quiz_outlined,
+                                label: l10n.faqsMenuItem,
+                                onTap: () => openFaqsPage(
+                                  context,
+                                  embeddedInPanel: widget.embeddedInPanel,
+                                ),
+                              ),
+                              const Divider(height: 1),
                               _SettingsRow(
                                 icon: Icons.support_agent_outlined,
                                 label: l10n.helpSupport,

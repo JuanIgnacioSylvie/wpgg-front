@@ -118,7 +118,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rerollMissionTitle => '¿Cambiar misión?';
 
   @override
-  String get rerollMissionBody => 'Esto costará 5 WPGG de tu saldo.';
+  String rerollMissionBody(int cost) {
+    return 'Esto costará $cost WPGG de tu saldo.';
+  }
+
+  @override
+  String missionSpendBalanceHint(int balance) {
+    return 'Saldo actual: $balance WPGG';
+  }
+
+  @override
+  String get missionInsufficientBalance =>
+      'No tenés suficiente WPGG para esta acción';
 
   @override
   String get cancel => 'Cancelar';
@@ -130,7 +141,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancelMissionTitle => '¿Eliminar misión?';
 
   @override
-  String get cancelMissionBody => 'Esto costará 5 WPGG de tu saldo.';
+  String cancelMissionBody(int cost) {
+    return 'Esto costará $cost WPGG de tu saldo.';
+  }
 
   @override
   String get deleteMission => 'Eliminar';
@@ -230,4 +243,92 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get pageUnavailableBody =>
       'Estamos trabajando en ello. Volvé a intentar más tarde.';
+
+  @override
+  String get faqsMenuItem => 'Preguntas frecuentes';
+
+  @override
+  String get faqsTitle => 'Preguntas frecuentes';
+
+  @override
+  String get faqsIntro =>
+      'Todo lo que necesitás saber sobre WPGG: misiones, recompensas, retiros y más.';
+
+  @override
+  String get faqWhatIsWpggQ => '¿Qué es WPGG?';
+
+  @override
+  String get faqWhatIsWpggA =>
+      'WPGG es una plataforma de estadísticas de League of Legends que te recompensa por jugar. Completás misiones diarias, acumulás tokens WPGG y podés canjearlos por gift cards de Riot Points u otros premios reales.';
+
+  @override
+  String get faqHowMissionsWorkQ => '¿Cómo funcionan las misiones?';
+
+  @override
+  String get faqHowMissionsWorkA =>
+      'Cada día tenés un set de misiones disponibles: fáciles, medias y difíciles. Las fáciles son cosas simples como jugar una partida o ganar con un campeón específico. Las medias y difíciles implican mejor rendimiento: superar cierto KDA, hacer X cantidad de asistencias, ganar seguidas, etc. Completás la misión, sumás tokens. Así de simple.';
+
+  @override
+  String get faqRerollQ => '¿Puedo rerollear misiones?';
+
+  @override
+  String get faqRerollA =>
+      'Sí. Si una misión no te conviene o no podés completarla, tenés rerolls disponibles por día para cambiarla por otra aleatoria del mismo tier.';
+
+  @override
+  String get faqWithdrawQ => '¿Cómo retiro mis WPGG a la wallet?';
+
+  @override
+  String get faqWithdrawA =>
+      'Para poder retirar necesitás acumular un mínimo de 1.000 WPGG. Una vez que llegás, podés iniciar el retiro desde la sección de finanzas. Los tokens se transfieren a tu wallet en la red de Polygon. Necesitás tener una wallet compatible (como MetaMask) y cubrir el gas fee de la transacción, que en Polygon es prácticamente nada.';
+
+  @override
+  String get faqWhatCanIDoQ => '¿Qué puedo hacer con los WPGG?';
+
+  @override
+  String get faqWhatCanIDoA =>
+      'Por ahora podés canjearlos en la tienda de la app por gift cards de Riot Points. La idea es que con lo que acumulás en semanas de juego normal puedas comprarte una skin, invitarle algo a tu novia o tomarle unas cervezas a los pibes. No es para hacerse millonario — es un premio real por lo que ya hacés.';
+
+  @override
+  String get faqTokenPriceQ => '¿Cuánto vale un WPGG en plata?';
+
+  @override
+  String get faqTokenPriceA =>
+      'El token cotiza en el mercado, así que el precio varía. Pero la app no está pensada para que especules con él: está pensada para que lo uses. El valor real está en el canje por productos concretos.';
+
+  @override
+  String get faqGetRichQ => '¿WPGG me va a hacer rico?';
+
+  @override
+  String get faqGetRichA =>
+      'No. Y lo decimos sin rodeos porque la transparencia es parte del proyecto. WPGG no es un esquema de inversión ni un juego de especulación. Es un sistema de recompensas respaldado por un pool de liquidez fijo en QuickSwap (WPGG/USDC). El pool es lo que es — no crece mágicamente, no hay promesas de retornos. Lo que ganás jugando tiene un valor real y canjeable, pero no esperés multiplicar plata acá.';
+
+  @override
+  String get faqTransparencyQ => '¿Es seguro? ¿El proyecto es transparente?';
+
+  @override
+  String get faqTransparencyA =>
+      'Sí. El contrato del token WPGG está deployado en Polygon Mainnet y es verificable públicamente en PolygonScan. El pool de liquidez está en QuickSwap. Todo lo que respalda el sistema está on-chain y cualquiera puede auditarlo. No hay caja negra.';
+
+  @override
+  String get faqCryptoKnowledgeQ =>
+      '¿Necesito saber de cripto para usar la app?';
+
+  @override
+  String get faqCryptoKnowledgeA =>
+      'Para jugar misiones y acumular WPGG, no necesitás saber nada de cripto. La complejidad aparece recién cuando querés retirar a tu wallet — y aun así el proceso está guiado paso a paso dentro de la app.';
+
+  @override
+  String get faqLoLAccountQ => '¿Con qué cuenta de LoL me conecto?';
+
+  @override
+  String get faqLoLAccountA =>
+      'La app usa Riot Sign On (el sistema oficial de Riot Games), así que iniciás sesión con tu cuenta de Riot directamente. No necesitás darnos tu contraseña ni nada por el estilo — es el mismo OAuth que usan apps como op.gg o u.gg.';
+
+  @override
+  String get faqAvailabilityQ => '¿La app está disponible para iOS y Android?';
+
+  @override
+  String get faqAvailabilityA =>
+      'Actualmente está en desarrollo activo. Más info sobre disponibilidad próximamente.';
 }

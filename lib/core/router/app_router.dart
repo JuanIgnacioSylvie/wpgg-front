@@ -18,6 +18,7 @@ import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/missions/presentation/pages/home_page.dart';
 import '../../features/missions/presentation/pages/missions_by_day_page.dart';
 import '../../features/missions/presentation/pages/pick_missions_page.dart';
+import '../../features/profile/presentation/pages/faqs_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
@@ -100,6 +101,13 @@ final GoRouter appRouter = GoRouter(
           BlocProvider.value(value: sl<MissionsBloc>()),
         ],
         child: const PickMissionsPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/profile/faqs',
+      builder: (_, __) => BlocProvider.value(
+        value: sl<RiotBloc>(),
+        child: const FaqsPage(),
       ),
     ),
     StatefulShellRoute.indexedStack(

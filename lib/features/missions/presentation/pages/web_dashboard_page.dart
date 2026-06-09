@@ -13,7 +13,6 @@ import '../../../riot/presentation/bloc/riot_event.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../riot/presentation/widgets/riot_link_sheet.dart';
 import '../../../riot/presentation/widgets/stats_header.dart';
-import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
@@ -69,7 +68,6 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
     if (!mounted) return;
 
     context.read<MissionsBloc>().add(CancelActiveMission(missionId));
-    context.read<WalletBloc>().add(const LoadWallet());
     setState(() => _removingMissionIds.remove(missionId));
   }
 

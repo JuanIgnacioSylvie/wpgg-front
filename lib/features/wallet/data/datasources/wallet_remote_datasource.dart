@@ -6,11 +6,15 @@ class WalletSummary {
   WalletSummary({
     required this.balance,
     required this.minWithdrawWpgg,
+    required this.rerollCostWpgg,
+    required this.cancelCostWpgg,
     required this.latestPriceUsd,
   });
 
   final int balance;
   final int minWithdrawWpgg;
+  final int rerollCostWpgg;
+  final int cancelCostWpgg;
   final double latestPriceUsd;
 }
 
@@ -75,6 +79,8 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
     return WalletSummary(
       balance: (data['balance'] as num?)?.toInt() ?? 0,
       minWithdrawWpgg: (data['minWithdrawWpgg'] as num?)?.toInt() ?? 1000,
+      rerollCostWpgg: (data['rerollCostWpgg'] as num?)?.toInt() ?? 5,
+      cancelCostWpgg: (data['cancelCostWpgg'] as num?)?.toInt() ?? 5,
       latestPriceUsd: (data['latestPriceUsd'] as num?)?.toDouble() ?? 0,
     );
   }
