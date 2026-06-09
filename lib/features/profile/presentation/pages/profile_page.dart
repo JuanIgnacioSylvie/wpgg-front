@@ -359,9 +359,10 @@ class _BalancePill extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/icons/wpgg-coin.png',
+            'assets/images/wpgg-coin_24x24.png',
             width: 22,
             height: 22,
+            filterQuality: FilterQuality.high,
           ),
           const SizedBox(width: 8),
           Text(

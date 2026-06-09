@@ -66,7 +66,7 @@ class WebSidebar extends StatelessWidget {
               ),
               child: Center(
                 child: Image.asset(
-                  'assets/icons/wpgg-coin.png',
+                  'assets/images/wpgg-coin_200x200.png',
                   width: 28,
                   height: 28,
                   filterQuality: FilterQuality.high,
