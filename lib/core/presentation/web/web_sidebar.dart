@@ -9,14 +9,12 @@ class WebSidebar extends StatelessWidget {
     super.key,
     required this.currentIndex,
     required this.onTap,
-    required this.onAddTap,
     required this.onProfileTap,
     this.profileSelected = false,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
-  final VoidCallback onAddTap;
   final VoidCallback onProfileTap;
   final bool profileSelected;
 
@@ -58,10 +56,24 @@ class WebSidebar extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(height: 12),
-          _AddButton(onTap: onAddTap),
-          const SizedBox(height: 8),
-          const Divider(height: 1, color: WebColors.borderSubtle),
+          SizedBox(
+            height: WebColors.shellHeaderHeight,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: WebColors.borderSubtle),
+                ),
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/icons/wpgg-coin.png',
+                  width: 28,
+                  height: 28,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
+            ),
+          ),
           const SizedBox(height: 8),
           for (var i = 0; i < _items.length; i++)
             _SidebarItem(
@@ -89,43 +101,6 @@ class WebSidebar extends StatelessWidget {
           ),
           const SizedBox(height: 12),
         ],
-      ),
-    );
-  }
-}
-
-class _AddButton extends StatefulWidget {
-  const _AddButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  State<_AddButton> createState() => _AddButtonState();
-}
-
-class _AddButtonState extends State<_AddButton> {
-  var _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: Tooltip(
-        message: 'Agregar misión',
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: _hovered ? WebColors.accentHover : WebColors.accent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.add, color: Colors.white, size: 20),
-          ),
-        ),
       ),
     );
   }

@@ -73,6 +73,9 @@ class _AvatarBody extends StatelessWidget {
       );
     }
 
+    final dpr = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 3.0);
+    final cachePx = (size * dpr).round();
+
     return SizedBox(
       width: size,
       height: size,
@@ -87,6 +90,9 @@ class _AvatarBody extends StatelessWidget {
             width: size,
             height: size,
             fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
+            memCacheWidth: cachePx,
+            memCacheHeight: cachePx,
             errorWidget: (_, __, ___) => Icon(
               Icons.person,
               color: WpggBrand.white,

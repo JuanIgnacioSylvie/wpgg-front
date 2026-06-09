@@ -15,6 +15,7 @@ class WebTopBar extends StatelessWidget {
     this.ddragon,
     this.sectionTitle = 'Dashboard',
     this.showAddButton = true,
+    this.addButtonEnabled = true,
     this.showDayCountdown = false,
     this.dayEndsInSeconds,
     required this.onAddTap,
@@ -25,6 +26,7 @@ class WebTopBar extends StatelessWidget {
   final DDragonProvider? ddragon;
   final String sectionTitle;
   final bool showAddButton;
+  final bool addButtonEnabled;
   final bool showDayCountdown;
   final int? dayEndsInSeconds;
   final VoidCallback onAddTap;
@@ -35,7 +37,7 @@ class WebTopBar extends StatelessWidget {
     final l10n = context.l10n;
 
     return Container(
-      height: 48,
+      height: WebColors.shellHeaderHeight,
       decoration: const BoxDecoration(
         color: WebColors.topBar,
         border: Border(
@@ -85,7 +87,10 @@ class WebTopBar extends StatelessWidget {
             const SizedBox(width: 16),
           ],
           if (showAddButton) ...[
-            _TopBarAddButton(onTap: onAddTap),
+            _TopBarAddButton(
+              onTap: onAddTap,
+              enabled: addButtonEnabled,
+            ),
             const SizedBox(width: 12),
           ],
           if (summoner != null && ddragon != null)
@@ -96,7 +101,7 @@ class WebTopBar extends StatelessWidget {
                 child: WpggProfileAvatar(
                   summoner: summoner!,
                   ddragon: ddragon!,
-                  size: 28,
+                  size: 32,
                   enableHero: false,
                 ),
               ),
@@ -108,9 +113,13 @@ class WebTopBar extends StatelessWidget {
 }
 
 class _TopBarAddButton extends StatefulWidget {
-  const _TopBarAddButton({required this.onTap});
+  const _TopBarAddButton({
+    required this.onTap,
+    required this.enabled,
+  });
 
   final VoidCallback onTap;
+  final bool enabled;
 
   @override
   State<_TopBarAddButton> createState() => _TopBarAddButtonState();
@@ -121,27 +130,38 @@ class _TopBarAddButtonState extends State<_TopBarAddButton> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = !widget.enabled
+        ? WebColors.surface
+        : _hovered
+            ? WebColors.accentHover
+            : WebColors.accent;
+    final fgColor =
+        widget.enabled ? Colors.white : WebColors.textMuted;
+
     return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
+      onEnter: widget.enabled ? (_) => setState(() => _hovered = true) : null,
+      onExit: widget.enabled ? (_) => setState(() => _hovered = false) : null,
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: widget.enabled ? widget.onTap : null,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _hovered ? WebColors.accentHover : WebColors.accent,
+            color: bgColor,
             borderRadius: BorderRadius.circular(6),
+            border: widget.enabled
+                ? null
+                : Border.all(color: WebColors.border),
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.add, color: Colors.white, size: 16),
-              SizedBox(width: 4),
+              Icon(Icons.add, color: fgColor, size: 16),
+              const SizedBox(width: 4),
               Text(
                 'Agregar',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: fgColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),

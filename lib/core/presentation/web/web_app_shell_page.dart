@@ -92,7 +92,6 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                 WebSidebar(
                   currentIndex: sidebarIndex,
                   onTap: _onSidebarTap,
-                  onAddTap: _openPickMissions,
                   onProfileTap: _openProfilePanel,
                   profileSelected: _profilePanelOpen,
                 ),
@@ -104,17 +103,23 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                           BlocBuilder<MissionsBloc, MissionsState>(
                             buildWhen: (prev, curr) =>
                                 prev.home?.endsInSeconds !=
-                                curr.home?.endsInSeconds,
+                                    curr.home?.endsInSeconds ||
+                                prev.home != curr.home,
                             builder: (context, missionsState) {
-                              final endsIn = isDashboard
-                                  ? missionsState.home?.endsInSeconds
-                                  : null;
+                              final home = missionsState.home;
+                              final endsIn =
+                                  isDashboard ? home?.endsInSeconds : null;
+                              final activeCount = home == null
+                                  ? 0
+                                  : (home.primary != null ? 1 : 0) +
+                                      home.secondary.length;
 
                               return WebTopBar(
                                 summoner: summoner,
                                 ddragon: ddragon,
                                 sectionTitle: sectionTitle,
                                 showAddButton: isDashboard,
+                                addButtonEnabled: activeCount < 3,
                                 showDayCountdown: isDashboard &&
                                     endsIn != null &&
                                     endsIn > 0,
