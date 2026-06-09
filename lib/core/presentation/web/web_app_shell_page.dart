@@ -127,6 +127,8 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                         onTap: _onSidebarTap,
                         onProfileTap: _openProfileDialog,
                         profileSelected: _profileDialogOpen,
+                        summoner: summoner,
+                        ddragon: ddragon,
                         balance: _walletBalance(walletState),
                         onLogout: _logout,
                       );
@@ -150,8 +152,6 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                                     home.secondary.length;
 
                             return WebTopBar(
-                              summoner: summoner,
-                              ddragon: ddragon,
                               sectionTitle: sectionTitle,
                               showAddButton: isDashboard,
                               addButtonEnabled: activeCount < 3,
@@ -160,7 +160,6 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                                   endsIn > 0,
                               dayEndsInSeconds: endsIn,
                               onAddTap: _openPickMissions,
-                              onProfileTap: _openProfileDialog,
                             );
                           },
                         ),

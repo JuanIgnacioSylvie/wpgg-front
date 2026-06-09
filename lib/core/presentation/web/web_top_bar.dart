@@ -2,35 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../constants/app_fonts.dart';
 import '../../l10n/l10n_extension.dart';
-import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
-import '../../../features/riot/domain/entities/summoner_entity.dart';
 import '../widgets/mission_day_countdown.dart';
-import '../wpgg_profile_avatar.dart';
 import 'web_colors.dart';
 
 class WebTopBar extends StatelessWidget {
   const WebTopBar({
     super.key,
-    this.summoner,
-    this.ddragon,
     this.sectionTitle = 'Dashboard',
     this.showAddButton = true,
     this.addButtonEnabled = true,
     this.showDayCountdown = false,
     this.dayEndsInSeconds,
     required this.onAddTap,
-    this.onProfileTap,
   });
 
-  final SummonerEntity? summoner;
-  final DDragonProvider? ddragon;
   final String sectionTitle;
   final bool showAddButton;
   final bool addButtonEnabled;
   final bool showDayCountdown;
   final int? dayEndsInSeconds;
   final VoidCallback onAddTap;
-  final VoidCallback? onProfileTap;
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +38,6 @@ class WebTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          if (summoner != null && ddragon != null) ...[
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: onProfileTap,
-                child: WpggProfileAvatar(
-                  summoner: summoner!,
-                  ddragon: ddragon!,
-                  size: 32,
-                  enableHero: false,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-          ],
           Text(
             'WPGG',
             style: const TextStyle(

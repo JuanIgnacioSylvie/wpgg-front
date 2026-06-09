@@ -4,6 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../constants/app_fonts.dart';
 import '../../constants/wpgg_brand.dart';
 import '../../l10n/l10n_extension.dart';
+import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
+import '../../../features/riot/domain/entities/summoner_entity.dart';
+import '../wpgg_profile_avatar.dart';
 import 'web_colors.dart';
 
 class WebSidebar extends StatelessWidget {
@@ -15,6 +18,8 @@ class WebSidebar extends StatelessWidget {
     required this.onTap,
     required this.onProfileTap,
     this.profileSelected = false,
+    this.summoner,
+    this.ddragon,
     this.balance,
     required this.onLogout,
   });
@@ -25,6 +30,8 @@ class WebSidebar extends StatelessWidget {
   final ValueChanged<int> onTap;
   final VoidCallback onProfileTap;
   final bool profileSelected;
+  final SummonerEntity? summoner;
+  final DDragonProvider? ddragon;
   final int? balance;
   final VoidCallback onLogout;
 
@@ -76,9 +83,11 @@ class WebSidebar extends StatelessWidget {
                   bottom: BorderSide(color: WebColors.borderSubtle),
                 ),
               ),
-              child: _SidebarToggle(
+              child: _SidebarProfileHeader(
                 expanded: expanded,
-                onTap: onToggleExpanded,
+                summoner: summoner,
+                ddragon: ddragon,
+                onTap: onProfileTap,
               ),
             ),
           ),
@@ -112,6 +121,10 @@ class WebSidebar extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
+          _SidebarToggleRow(
+            expanded: expanded,
+            onTap: onToggleExpanded,
+          ),
           const Divider(height: 1, color: WebColors.borderSubtle),
           const SizedBox(height: 8),
           _SidebarNavRow(
@@ -132,43 +145,49 @@ class WebSidebar extends StatelessWidget {
   }
 }
 
-class _SidebarToggle extends StatefulWidget {
-  const _SidebarToggle({
+class _SidebarProfileHeader extends StatefulWidget {
+  const _SidebarProfileHeader({
     required this.expanded,
+    required this.summoner,
+    required this.ddragon,
     required this.onTap,
   });
 
   final bool expanded;
+  final SummonerEntity? summoner;
+  final DDragonProvider? ddragon;
   final VoidCallback onTap;
 
   @override
-  State<_SidebarToggle> createState() => _SidebarToggleState();
+  State<_SidebarProfileHeader> createState() => _SidebarProfileHeaderState();
 }
 
-class _SidebarToggleState extends State<_SidebarToggle> {
+class _SidebarProfileHeaderState extends State<_SidebarProfileHeader> {
   var _hovered = false;
-
-  Widget _toggleIcon() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: _hovered ? WebColors.sidebarHover : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(
-        widget.expanded
-            ? Icons.keyboard_double_arrow_left
-            : Icons.keyboard_double_arrow_right,
-        color: WebColors.textSecondary,
-        size: 20,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    const avatarSize = 32.0;
+
+    final avatar = widget.summoner != null
+        ? WpggProfileAvatar(
+            summoner: widget.summoner!,
+            ddragon: widget.ddragon,
+            size: avatarSize,
+            enableHero: false,
+          )
+        : SizedBox(
+            width: avatarSize,
+            height: avatarSize,
+            child: const DecoratedBox(
+              decoration: BoxDecoration(
+                color: WpggBrand.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.person, color: WpggBrand.white, size: 18),
+            ),
+          );
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -181,21 +200,116 @@ class _SidebarToggleState extends State<_SidebarToggle> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      _toggleIcon(),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'WPGG',
-                        style: TextStyle(
-                          fontFamily: AppFonts.lexendDeca,
-                          color: WebColors.textPrimary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                      avatar,
+                      if (widget.summoner != null) ...[
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.summoner!.gameName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: AppFonts.lexendDeca,
+                                  color: _hovered
+                                      ? WebColors.textPrimary
+                                      : WebColors.textSecondary,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                '#${widget.summoner!.tagLine}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: AppFonts.lexendDeca,
+                                  color: WebColors.textMuted,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 )
-              : Center(child: _toggleIcon()),
+              : Center(child: avatar),
+        ),
+      ),
+    );
+  }
+}
+
+class _SidebarToggleRow extends StatefulWidget {
+  const _SidebarToggleRow({
+    required this.expanded,
+    required this.onTap,
+  });
+
+  final bool expanded;
+  final VoidCallback onTap;
+
+  @override
+  State<_SidebarToggleRow> createState() => _SidebarToggleRowState();
+}
+
+class _SidebarToggleRowState extends State<_SidebarToggleRow> {
+  var _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = Icon(
+      widget.expanded
+          ? Icons.keyboard_double_arrow_left
+          : Icons.keyboard_double_arrow_right,
+      color: WebColors.textSecondary,
+      size: 20,
+    );
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.expanded ? 8 : 0,
+        vertical: 2,
+      ),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: Tooltip(
+          message: widget.expanded ? '' : 'Expandir menú',
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              height: 40,
+              decoration: BoxDecoration(
+                color: _hovered ? WebColors.sidebarHover : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: widget.expanded
+                  ? Row(
+                      children: [
+                        SizedBox(width: 40, child: Center(child: icon)),
+                        const Expanded(
+                          child: Text(
+                            'Colapsar',
+                            style: TextStyle(
+                              fontFamily: AppFonts.lexendDeca,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: WebColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Center(child: icon),
+            ),
+          ),
         ),
       ),
     );
