@@ -38,6 +38,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String dayEndsIn(String time) {
+    return 'Day ends in: $time';
+  }
+
+  @override
   String get noActiveMissions =>
       'No active missions yet. Pick up to 3 for today!';
 

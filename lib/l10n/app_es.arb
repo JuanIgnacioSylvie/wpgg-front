@@ -9,6 +9,12 @@
   "retry": "Reintentar",
   "inProgress": "En progreso",
   "missionDayResets": "Día de misión {date} · reinicia 00:00 {timezone}",
+  "dayEndsIn": "Día termina en: {time}",
+  "@dayEndsIn": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
   "noActiveMissions": "No tenés misiones activas. ¡Elegí hasta 3 para hoy!",
   "pickMissions": "Elegir misiones",
   "passMissions": "Misiones pasadas",

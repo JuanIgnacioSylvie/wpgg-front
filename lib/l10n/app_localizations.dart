@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Mission day {date} · resets 00:00 {timezone}'**
   String missionDayResets(String date, String timezone);
 
+  /// No description provided for @dayEndsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Day ends in: {time}'**
+  String dayEndsIn(String time);
+
   /// No description provided for @noActiveMissions.
   ///
   /// In en, this message translates to:

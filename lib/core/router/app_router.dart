@@ -158,7 +158,9 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/profile',
-              builder: (_, __) => const ProfilePage(),
+              builder: (_, __) => kIsWeb
+                  ? const SizedBox.shrink()
+                  : const ProfilePage(),
             ),
           ],
         ),

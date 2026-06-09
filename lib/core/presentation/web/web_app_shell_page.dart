@@ -9,6 +9,7 @@ import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/riot/presentation/bloc/riot_event.dart';
 import '../../../features/riot/presentation/bloc/riot_state.dart';
 import 'web_dot_grid_background.dart';
+import 'web_profile_panel.dart';
 import 'web_shell_scope.dart';
 import 'web_sidebar.dart';
 import 'web_top_bar.dart';
@@ -23,11 +24,24 @@ class WebAppShellPage extends StatefulWidget {
 }
 
 class _WebAppShellPageState extends State<WebAppShellPage> {
+  var _profilePanelOpen = false;
+
   @override
   void initState() {
     super.initState();
     context.read<RiotBloc>().add(const LoadDashboard());
     context.read<DDragonProvider>().ensureLoaded();
+    context.read<MissionsBloc>().add(const LoadMissionsHome());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final location = GoRouterState.of(context).uri.path;
+      if (location.startsWith('/profile')) {
+        setState(() => _profilePanelOpen = true);
+        if (widget.navigationShell.currentIndex == 3) {
+          widget.navigationShell.goBranch(0, initialLocation: true);
+        }
+      }
+    });
   }
 
   void _openPickMissions() {
@@ -35,6 +49,7 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
   }
 
   void _onSidebarTap(int branchIndex) {
+    setState(() => _profilePanelOpen = false);
     widget.navigationShell.goBranch(
       branchIndex,
       initialLocation: branchIndex == widget.navigationShell.currentIndex,
@@ -42,6 +57,14 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
     if (branchIndex == 0) {
       context.read<MissionsBloc>().add(const LoadMissionsHome());
     }
+  }
+
+  void _openProfilePanel() {
+    setState(() => _profilePanelOpen = true);
+  }
+
+  void _closeProfilePanel() {
+    setState(() => _profilePanelOpen = false);
   }
 
   @override
@@ -70,22 +93,51 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                   currentIndex: sidebarIndex,
                   onTap: _onSidebarTap,
                   onAddTap: _openPickMissions,
+                  onProfileTap: _openProfilePanel,
+                  profileSelected: _profilePanelOpen,
                 ),
                 Expanded(
-                  child: Column(
+                  child: Stack(
                     children: [
-                      WebTopBar(
-                        summoner: summoner,
-                        ddragon: ddragon,
-                        sectionTitle: sectionTitle,
-                        showAddButton: isDashboard,
-                        onAddTap: _openPickMissions,
+                      Column(
+                        children: [
+                          BlocBuilder<MissionsBloc, MissionsState>(
+                            buildWhen: (prev, curr) =>
+                                prev.home?.endsInSeconds !=
+                                curr.home?.endsInSeconds,
+                            builder: (context, missionsState) {
+                              final endsIn = isDashboard
+                                  ? missionsState.home?.endsInSeconds
+                                  : null;
+
+                              return WebTopBar(
+                                summoner: summoner,
+                                ddragon: ddragon,
+                                sectionTitle: sectionTitle,
+                                showAddButton: isDashboard,
+                                showDayCountdown: isDashboard &&
+                                    endsIn != null &&
+                                    endsIn > 0,
+                                dayEndsInSeconds: endsIn,
+                                onAddTap: _openPickMissions,
+                                onProfileTap: _openProfilePanel,
+                              );
+                            },
+                          ),
+                          Expanded(
+                            child: WebDotGridBackground(
+                              child: widget.navigationShell,
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: WebDotGridBackground(
-                          child: widget.navigationShell,
+                      if (_profilePanelOpen)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: WebProfilePanel(onClose: _closeProfilePanel),
                         ),
-                      ),
                     ],
                   ),
                 ),

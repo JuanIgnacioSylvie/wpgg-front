@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/app_fonts.dart';
+import '../../l10n/l10n_extension.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/riot/domain/entities/summoner_entity.dart';
+import '../widgets/mission_day_countdown.dart';
 import '../wpgg_profile_avatar.dart';
 import 'web_colors.dart';
 
@@ -13,17 +15,25 @@ class WebTopBar extends StatelessWidget {
     this.ddragon,
     this.sectionTitle = 'Dashboard',
     this.showAddButton = true,
+    this.showDayCountdown = false,
+    this.dayEndsInSeconds,
     required this.onAddTap,
+    this.onProfileTap,
   });
 
   final SummonerEntity? summoner;
   final DDragonProvider? ddragon;
   final String sectionTitle;
   final bool showAddButton;
+  final bool showDayCountdown;
+  final int? dayEndsInSeconds;
   final VoidCallback onAddTap;
+  final VoidCallback? onProfileTap;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Container(
       height: 48,
       decoration: const BoxDecoration(
@@ -35,17 +45,6 @@ class WebTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Image.asset(
-            'assets/images/wpgg_logo.png',
-            height: 22,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(width: 12),
-          const Text(
-            '/',
-            style: TextStyle(color: WebColors.textMuted, fontSize: 14),
-          ),
-          const SizedBox(width: 12),
           Text(
             'WPGG',
             style: const TextStyle(
@@ -72,15 +71,35 @@ class WebTopBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
+          if (showDayCountdown && dayEndsInSeconds != null) ...[
+            MissionDayCountdown(
+              initialSeconds: dayEndsInSeconds!,
+              labelBuilder: l10n.dayEndsIn,
+              style: const TextStyle(
+                fontFamily: AppFonts.lexendDeca,
+                color: WebColors.textSecondary,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: 16),
+          ],
           if (showAddButton) ...[
             _TopBarAddButton(onTap: onAddTap),
             const SizedBox(width: 12),
           ],
           if (summoner != null && ddragon != null)
-            WpggProfileAvatar(
-              summoner: summoner!,
-              ddragon: ddragon!,
-              size: 28,
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onProfileTap,
+                child: WpggProfileAvatar(
+                  summoner: summoner!,
+                  ddragon: ddragon!,
+                  size: 28,
+                  enableHero: false,
+                ),
+              ),
             ),
         ],
       ),
@@ -141,9 +160,6 @@ String webSectionTitleForLocation(String location) {
   }
   if (location.startsWith('/finance')) {
     return 'Finanzas';
-  }
-  if (location.startsWith('/profile')) {
-    return 'Perfil';
   }
   return 'Dashboard';
 }

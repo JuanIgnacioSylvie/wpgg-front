@@ -10,11 +10,15 @@ class WebSidebar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     required this.onAddTap,
+    required this.onProfileTap,
+    this.profileSelected = false,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
   final VoidCallback onAddTap;
+  final VoidCallback onProfileTap;
+  final bool profileSelected;
 
   static const _items = [
     _NavIconPair(
@@ -32,14 +36,15 @@ class WebSidebar extends StatelessWidget {
       filled: 'assets/icons/chart_bar_filled.svg',
       tooltip: 'Finanzas',
     ),
-    _NavIconPair(
-      outline: 'assets/icons/profile.svg',
-      filled: 'assets/icons/profile_filled.svg',
-      tooltip: 'Perfil',
-    ),
   ];
 
-  static const _branchIndices = [0, 1, 2, 3];
+  static const _branchIndices = [0, 1, 2];
+
+  static const _profileIcon = _NavIconPair(
+    outline: 'assets/icons/profile.svg',
+    filled: 'assets/icons/profile_filled.svg',
+    tooltip: 'Perfil',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +69,11 @@ class WebSidebar extends StatelessWidget {
               selected: currentIndex == _branchIndices[i],
               onTap: () => onTap(_branchIndices[i]),
             ),
+          _SidebarItem(
+            icon: _profileIcon,
+            selected: profileSelected,
+            onTap: onProfileTap,
+          ),
           const Spacer(),
           const Divider(height: 1, color: WebColors.borderSubtle),
           const SizedBox(height: 8),
@@ -207,9 +217,6 @@ int webSidebarIndexForLocation(String location) {
   }
   if (location.startsWith('/finance')) {
     return 2;
-  }
-  if (location.startsWith('/profile')) {
-    return 3;
   }
   return 0;
 }

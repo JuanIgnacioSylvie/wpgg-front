@@ -42,7 +42,10 @@ class DayCarousel extends StatelessWidget {
           final isSelected = MissionDay.isSameMissionDay(d, selectedDate);
           final isToday = MissionDay.isSameMissionDay(d, today);
           final canTap = !lockToToday || isToday;
-          const textColor = WpggBrand.cardTextDark;
+          final bgColor =
+              isSelected ? WpggBrand.primary : WpggBrand.cardSurface;
+          final textColor =
+              isSelected ? WpggBrand.white : WpggBrand.cardTextDark;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -52,18 +55,15 @@ class DayCarousel extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 width: 72,
                 decoration: BoxDecoration(
-                  color: WpggBrand.cardSurface,
+                  color: bgColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: isSelected
-                      ? Border.all(color: WpggBrand.primary, width: 2)
-                      : null,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       _capitalize(DateFormat('MMM', locale).format(d)),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.lexendDeca,
                         fontSize: 11,
                         color: textColor,
@@ -71,7 +71,7 @@ class DayCarousel extends StatelessWidget {
                     ),
                     Text(
                       DateFormat('d').format(d),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.lexendDeca,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -80,7 +80,7 @@ class DayCarousel extends StatelessWidget {
                     ),
                     Text(
                       _capitalize(DateFormat('EEE', locale).format(d)),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.lexendDeca,
                         fontSize: 11,
                         color: textColor,

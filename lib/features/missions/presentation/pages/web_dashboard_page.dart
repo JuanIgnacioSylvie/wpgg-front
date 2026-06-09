@@ -149,10 +149,6 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                     children: [
                       _SectionHeader(
                         title: l10n.inProgress,
-                        subtitle: l10n.missionDayResets(
-                          home.missionDate,
-                          home.missionDayTimezone,
-                        ),
                         count: (home.primary != null ? 1 : 0) +
                             home.secondary.length,
                       ),
@@ -226,12 +222,10 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
     required this.title,
-    this.subtitle,
     this.count,
   });
 
   final String title;
-  final String? subtitle;
   final int? count;
 
   @override
@@ -263,16 +257,6 @@ class _SectionHeader extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
-            ),
-          ),
-        ],
-        if (subtitle != null) ...[
-          const SizedBox(width: 12),
-          Text(
-            subtitle!,
-            style: const TextStyle(
-              color: WebColors.textMuted,
-              fontSize: 12,
             ),
           ),
         ],

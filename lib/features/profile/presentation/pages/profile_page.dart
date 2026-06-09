@@ -16,7 +16,14 @@ import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../widgets/withdraw_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({
+    super.key,
+    this.embeddedInPanel = false,
+    this.onClose,
+  });
+
+  final bool embeddedInPanel;
+  final VoidCallback? onClose;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -57,6 +64,10 @@ class _ProfilePageState extends State<ProfilePage>
     context.read<WalletBloc>().add(const LoadWallet());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.embeddedInPanel) {
+        _entranceController.value = 1;
+        return;
+      }
       final from = GoRouterState.of(context).uri.queryParameters['from'];
       _animateFromAppBar = from == 'appbar';
       if (_animateFromAppBar) {
@@ -126,40 +137,72 @@ class _ProfilePageState extends State<ProfilePage>
 
               return Column(
                 children: [
-                  SafeArea(
-                    bottom: false,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+                  if (widget.embeddedInPanel)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 8, 0),
                       child: Row(
                         children: [
-                          IconButton(
-                            onPressed: () => context.go('/home'),
-                            icon: Image.asset(
-                              'assets/icons/arrow_left.png',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
                           Expanded(
                             child: Text(
                               l10n.myProfile,
-                              textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontFamily: AppFonts.lexendDeca,
-                                color: WpggBrand.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
+                                color: WpggBrand.cardTextDark,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 48),
+                          IconButton(
+                            onPressed: widget.onClose,
+                            icon: const Icon(
+                              Icons.close,
+                              color: WpggBrand.cardTextDark,
+                            ),
+                          ),
                         ],
                       ),
+                    )
+                  else
+                    SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => context.go('/home'),
+                              icon: Image.asset(
+                                'assets/icons/arrow_left.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                l10n.myProfile,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: AppFonts.lexendDeca,
+                                  color: WpggBrand.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 48),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                      padding: EdgeInsets.fromLTRB(
+                        20,
+                        8,
+                        20,
+                        widget.embeddedInPanel ? 24 : 120,
+                      ),
                       child: Column(
                         children: [
                           SizedBox(
@@ -180,7 +223,9 @@ class _ProfilePageState extends State<ProfilePage>
                                       summoner: summoner,
                                       ddragon: ddragon,
                                       size: _profileAvatarSize,
-                                      enableHero: _animateFromAppBar,
+                                      enableHero:
+                                          !widget.embeddedInPanel &&
+                                              _animateFromAppBar,
                                     )
                                   : const CircleAvatar(
                                       radius: _profileAvatarSize / 2,
@@ -196,9 +241,11 @@ class _ProfilePageState extends State<ProfilePage>
                           if (summoner != null) ...[
                             Text(
                               summoner.gameName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: AppFonts.lexendDeca,
-                                color: WpggBrand.white,
+                                color: widget.embeddedInPanel
+                                    ? WpggBrand.cardTextDark
+                                    : WpggBrand.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
