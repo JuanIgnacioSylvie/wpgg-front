@@ -10,10 +10,12 @@ class MissionSecondaryCard extends StatelessWidget {
     super.key,
     required this.mission,
     this.width = 280,
+    this.onCancel,
   });
 
   final MissionCardEntity mission;
   final double width;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,18 @@ class MissionSecondaryCard extends StatelessWidget {
                 fontSize: 13,
               ),
               const Spacer(),
+              if (onCancel != null)
+                IconButton(
+                  onPressed: onCancel,
+                  icon: const Icon(Icons.close, size: 18),
+                  color: Colors.black45,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 28,
+                    minHeight: 28,
+                  ),
+                ),
               MissionRewardRow(
                 amount: mission.rewardWpgg,
                 color: color,

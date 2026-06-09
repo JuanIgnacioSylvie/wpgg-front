@@ -41,3 +41,12 @@ class RerollMissionOffer extends MissionsEvent {
   @override
   List<Object?> get props => [offerId];
 }
+
+class CancelActiveMission extends MissionsEvent {
+  const CancelActiveMission(this.missionId);
+
+  final String missionId;
+
+  @override
+  List<Object?> get props => [missionId];
+}

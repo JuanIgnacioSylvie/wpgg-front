@@ -17,6 +17,9 @@ abstract final class WebColors {
   static const Color sidebarHover = Color(0xFF1A1A22);
   static const Color topBar = Color(0xFF0E0E13);
 
-  /// Altura compartida del logo en sidebar y de [WebTopBar].
+  /// Altura compartida del header en sidebar y de [WebTopBar].
   static const double shellHeaderHeight = 48;
+
+  static const double sidebarCollapsedWidth = 56;
+  static const double sidebarExpandedWidth = 220;
 }

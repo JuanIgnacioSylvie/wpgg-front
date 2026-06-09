@@ -14,10 +14,12 @@ class MissionPrimaryCard extends StatelessWidget {
     super.key,
     required this.mission,
     this.endsInSeconds,
+    this.onCancel,
   });
 
   final MissionCardEntity mission;
   final int? endsInSeconds;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,18 @@ class MissionPrimaryCard extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+          if (onCancel != null)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: IconButton(
+                onPressed: onCancel,
+                icon: const Icon(Icons.close, size: 20),
+                color: Colors.black54,
+                tooltip: context.l10n.deleteMission,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 120, 20),
             child: Row(

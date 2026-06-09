@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
@@ -126,11 +127,7 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                   builder: (context, state) {
                     if (state.pickStatus == MissionsLoadStatus.loading ||
                         state.pickStatus == MissionsLoadStatus.initial) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: WebColors.accent,
-                        ),
-                      );
+                      return const WebPickMissionsSkeleton();
                     }
                     if (state.pickStatus == MissionsLoadStatus.error) {
                       return Center(

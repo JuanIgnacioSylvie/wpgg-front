@@ -314,6 +314,30 @@ abstract class AppLocalizations {
   /// **'Reroll'**
   String get reroll;
 
+  /// No description provided for @cancelMissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete mission?'**
+  String get cancelMissionTitle;
+
+  /// No description provided for @cancelMissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will cost 5 WPGG from your balance.'**
+  String get cancelMissionBody;
+
+  /// No description provided for @deleteMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteMission;
+
+  /// No description provided for @dropToDeleteMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop here to delete'**
+  String get dropToDeleteMission;
+
   /// No description provided for @summonerLevel.
   ///
   /// In en, this message translates to:

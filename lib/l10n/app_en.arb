@@ -59,6 +59,10 @@
   "rerollMissionBody": "This will cost 5 WPGG from your balance.",
   "cancel": "Cancel",
   "reroll": "Reroll",
+  "cancelMissionTitle": "Delete mission?",
+  "cancelMissionBody": "This will cost 5 WPGG from your balance.",
+  "deleteMission": "Delete",
+  "dropToDeleteMission": "Drop here to delete",
   "summonerLevel": "Level {level}",
   "@summonerLevel": {
     "placeholders": {

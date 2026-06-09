@@ -15,6 +15,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     on<LoadMissionsByDay>(_onByDay);
     on<AcceptMissionOffer>(_onAccept);
     on<RerollMissionOffer>(_onReroll);
+    on<CancelActiveMission>(_onCancel);
   }
 
   final MissionsRemoteDataSource _dataSource;
@@ -137,6 +138,19 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
       add(const LoadPickToday());
     } catch (e) {
       emit(state.copyWith(pickError: e.toString()));
+    }
+  }
+
+  Future<void> _onCancel(
+    CancelActiveMission event,
+    Emitter<MissionsState> emit,
+  ) async {
+    try {
+      await _dataSource.cancelActiveMission(event.missionId);
+      add(const LoadMissionsHome());
+      add(const LoadPickToday());
+    } catch (e) {
+      emit(state.copyWith(homeError: networkErrorMessage(e)));
     }
   }
 }

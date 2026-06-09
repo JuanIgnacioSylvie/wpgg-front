@@ -10,23 +10,28 @@ import 'mission_ui_helpers.dart';
 
 enum WebMissionCardVariant { active, past, empty }
 
+enum WebMissionCardVisualState { normal, placeholder, dragFeedback }
+
 class WebMissionCard extends StatefulWidget {
   const WebMissionCard({
     super.key,
     required this.mission,
     this.endsInSeconds,
     this.variant = WebMissionCardVariant.active,
+    this.visualState = WebMissionCardVisualState.normal,
     this.onTap,
   });
 
   const WebMissionCard.empty({super.key, this.onTap})
       : mission = null,
         endsInSeconds = null,
-        variant = WebMissionCardVariant.empty;
+        variant = WebMissionCardVariant.empty,
+        visualState = WebMissionCardVisualState.normal;
 
   final MissionCardEntity? mission;
   final int? endsInSeconds;
   final WebMissionCardVariant variant;
+  final WebMissionCardVisualState visualState;
   final VoidCallback? onTap;
 
   @override
@@ -39,7 +44,11 @@ class _WebMissionCardState extends State<WebMissionCard> {
   @override
   Widget build(BuildContext context) {
     if (widget.variant == WebMissionCardVariant.empty) {
-      return _EmptyCard(onTap: widget.onTap, hovered: _hovered, onHover: _setHovered);
+      return _EmptyCard(
+        onTap: widget.onTap,
+        hovered: _hovered,
+        onHover: _setHovered,
+      );
     }
 
     final mission = widget.mission!;
@@ -47,152 +56,175 @@ class _WebMissionCardState extends State<WebMissionCard> {
     final isPast = widget.variant == WebMissionCardVariant.past;
     final isCompleted = mission.status == MissionStatus.completed ||
         mission.progressPercent >= 100;
+    final isPlaceholder =
+        widget.visualState == WebMissionCardVisualState.placeholder;
+    final isDragFeedback =
+        widget.visualState == WebMissionCardVisualState.dragFeedback;
+    final interactive = !isPlaceholder && !isDragFeedback;
 
     return MouseRegion(
-      onEnter: (_) => _setHovered(true),
-      onExit: (_) => _setHovered(false),
+      onEnter: interactive ? (_) => _setHovered(true) : null,
+      onExit: interactive ? (_) => _setHovered(false) : null,
       child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
+        onTap: interactive ? widget.onTap : null,
+        child: AnimatedOpacity(
+          opacity: isPlaceholder ? 0.35 : 1,
           duration: const Duration(milliseconds: 150),
-          width: 280,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _hovered
-                ? WebColors.surfaceElevated
-                : WebColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _hovered ? WebColors.border : WebColors.borderSubtle,
-            ),
-            boxShadow: _hovered
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      difficultyIcon(mission.difficulty),
-                      color: color,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          mission.localizedTitle(context),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: AppFonts.lexendDeca,
-                            color: WebColors.textPrimary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            width: 280,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _hovered && interactive
+                  ? WebColors.surfaceElevated
+                  : WebColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isPlaceholder
+                    ? WebColors.border
+                    : (_hovered && interactive
+                        ? WebColors.border
+                        : WebColors.borderSubtle),
+                width: isPlaceholder ? 1.5 : 1,
+                strokeAlign: BorderSide.strokeAlignOutside,
+              ),
+              boxShadow: isDragFeedback
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                  : (_hovered && interactive
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
                           ),
+                        ]
+                      : null),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        difficultyIcon(mission.difficulty),
+                        color: color,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mission.localizedTitle(context),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: AppFonts.lexendDeca,
+                              color: WebColors.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            difficultyLabel(mission.difficulty, context.l10n),
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: isPast
+                            ? (isCompleted
+                                ? WebColors.online
+                                : WebColors.textMuted)
+                            : WebColors.online,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      isPast
+                          ? statusLabel(mission.status, context.l10n)
+                          : context.l10n.statusInProgress,
+                      style: const TextStyle(
+                        color: WebColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/wpgg-coin_24x24.png',
+                          width: 16,
+                          height: 16,
+                          filterQuality: FilterQuality.high,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(width: 4),
                         Text(
-                          difficultyLabel(mission.difficulty, context.l10n),
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
+                          '${mission.rewardWpgg}',
+                          style: const TextStyle(
+                            color: WebColors.textPrimary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: isPast
-                          ? (isCompleted
-                              ? WebColors.online
-                              : WebColors.textMuted)
-                          : WebColors.online,
-                      shape: BoxShape.circle,
+                  ],
+                ),
+                if (!isPast) ...[
+                  const SizedBox(height: 12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: mission.progressPercent / 100,
+                      minHeight: 4,
+                      backgroundColor: WebColors.border,
+                      color: color,
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(height: 6),
                   Text(
-                    isPast
-                        ? statusLabel(mission.status, context.l10n)
-                        : context.l10n.statusInProgress,
+                    '${mission.progressPercent}%',
                     style: const TextStyle(
-                      color: WebColors.textSecondary,
-                      fontSize: 12,
+                      color: WebColors.textMuted,
+                      fontSize: 11,
                     ),
                   ),
-                  const Spacer(),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/wpgg-coin_24x24.png',
-                        width: 16,
-                        height: 16,
-                        filterQuality: FilterQuality.high,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${mission.rewardWpgg}',
-                        style: const TextStyle(
-                          color: WebColors.textPrimary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
-              ),
-              if (!isPast) ...[
-                const SizedBox(height: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: mission.progressPercent / 100,
-                    minHeight: 4,
-                    backgroundColor: WebColors.border,
-                    color: color,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '${mission.progressPercent}%',
-                  style: const TextStyle(
-                    color: WebColors.textMuted,
-                    fontSize: 11,
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -250,7 +282,8 @@ class _EmptyCard extends StatelessWidget {
               Text(
                 l10n.pickMissions,
                 style: TextStyle(
-                  color: hovered ? WebColors.textPrimary : WebColors.textSecondary,
+                  color:
+                      hovered ? WebColors.textPrimary : WebColors.textSecondary,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),

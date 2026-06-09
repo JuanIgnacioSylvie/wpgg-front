@@ -17,6 +17,7 @@ import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../riot/presentation/widgets/riot_link_sheet.dart';
 import '../../../riot/presentation/widgets/stats_header.dart';
 import '../bloc/missions_bloc.dart';
+import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_tertiary_card.dart';
@@ -209,6 +210,10 @@ class _HomePageState extends State<HomePage> {
                           child: MissionPrimaryCard(
                             mission: home.primary!,
                             endsInSeconds: home.endsInSeconds,
+                            onCancel: () => showCancelMissionDialog(
+                              context,
+                              missionId: home.primary!.id,
+                            ),
                           ),
                         )
                       else
@@ -238,9 +243,16 @@ class _HomePageState extends State<HomePage> {
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.only(left: 16),
                             itemCount: home.secondary.length,
-                            itemBuilder: (_, i) => MissionSecondaryCard(
-                              mission: home.secondary[i],
-                            ),
+                            itemBuilder: (_, i) {
+                              final mission = home.secondary[i];
+                              return MissionSecondaryCard(
+                                mission: mission,
+                                onCancel: () => showCancelMissionDialog(
+                                  context,
+                                  missionId: mission.id,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],

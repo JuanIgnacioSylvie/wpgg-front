@@ -47,6 +47,21 @@ class WebTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
+          if (summoner != null && ddragon != null) ...[
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onProfileTap,
+                child: WpggProfileAvatar(
+                  summoner: summoner!,
+                  ddragon: ddragon!,
+                  size: 32,
+                  enableHero: false,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
           Text(
             'WPGG',
             style: const TextStyle(
@@ -93,19 +108,12 @@ class WebTopBar extends StatelessWidget {
             ),
             const SizedBox(width: 12),
           ],
-          if (summoner != null && ddragon != null)
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: onProfileTap,
-                child: WpggProfileAvatar(
-                  summoner: summoner!,
-                  ddragon: ddragon!,
-                  size: 32,
-                  enableHero: false,
-                ),
-              ),
-            ),
+          Image.asset(
+            'assets/images/wpgg-coin_200x200.png',
+            width: 28,
+            height: 28,
+            filterQuality: FilterQuality.high,
+          ),
         ],
       ),
     );

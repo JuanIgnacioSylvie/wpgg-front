@@ -41,6 +41,7 @@ abstract class MissionsRemoteDataSource {
   Future<List<MissionCardModel>> fetchByDay(String? date);
   Future<MissionCardModel> acceptOffer(String offerId);
   Future<MissionCardModel> rerollOffer(String offerId);
+  Future<void> cancelActiveMission(String missionId);
   Future<void> syncMatches();
 }
 
@@ -113,6 +114,11 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
       '/missions/pick/$offerId/reroll',
     );
     return MissionCardModel.fromJson(res.data!);
+  }
+
+  @override
+  Future<void> cancelActiveMission(String missionId) async {
+    await _client.post<void>('/missions/active/$missionId/cancel');
   }
 
   @override

@@ -127,6 +127,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reroll => 'Reroll';
 
   @override
+  String get cancelMissionTitle => 'Delete mission?';
+
+  @override
+  String get cancelMissionBody => 'This will cost 5 WPGG from your balance.';
+
+  @override
+  String get deleteMission => 'Delete';
+
+  @override
+  String get dropToDeleteMission => 'Drop here to delete';
+
+  @override
   String summonerLevel(int level) {
     return 'Level $level';
   }
