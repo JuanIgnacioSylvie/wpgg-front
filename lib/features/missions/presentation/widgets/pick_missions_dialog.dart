@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
+import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
@@ -13,9 +16,8 @@ import 'filter_pills.dart';
 import 'mission_pick_card.dart';
 
 Future<void> showPickMissionsDialog(BuildContext context) {
-  return showDialog<void>(
+  return showWebDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.7),
     builder: (ctx) => BlocProvider.value(
       value: context.read<MissionsBloc>(),
       child: const PickMissionsDialog(),
@@ -125,110 +127,8 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                     }
                   },
                   builder: (context, state) {
-                    if (state.pickStatus == MissionsLoadStatus.loading ||
-                        state.pickStatus == MissionsLoadStatus.initial) {
-                      return const WebPickMissionsSkeleton();
-                    }
-                    if (state.pickStatus == MissionsLoadStatus.error) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Text(
-                            state.pickError ?? l10n.errorLoadingOffers,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: WebColors.textSecondary),
-                          ),
-                        ),
-                      );
-                    }
-
-                    final pick = state.pick;
-                    if (pick == null) return const SizedBox.shrink();
-
-                    final offers = _filterOffers(pick.offers);
-                    final acceptedIds = pick.offers
-                        .where((o) => o.status != MissionStatus.offer)
-                        .map((o) => o.offerId ?? o.id)
-                        .toSet();
-                    final canPickMore = pick.selectedCount < pick.maxSelectable;
-
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            l10n.selectedMissionsCount(
-                              pick.selectedCount,
-                              pick.maxSelectable,
-                              pick.maxHard,
-                            ),
-                            style: const TextStyle(color: WebColors.textMuted),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            itemCount: offers.length,
-                            itemBuilder: (_, i) {
-                              final m = offers[i];
-                              final oid = m.offerId ?? m.id;
-                              final accepted = acceptedIds.contains(oid);
-                              return MissionPickCard(
-                                mission: m,
-                                accepted: accepted,
-                                onAccept: () {
-                                  context.read<MissionsBloc>().add(
-                                        AcceptMissionOffer(oid),
-                                      );
-                                  context.read<MissionsBloc>().add(
-                                        const LoadMissionsHome(),
-                                      );
-                                  if (!canPickMore) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                onReroll: () async {
-                                  final ok = await showDialog<bool>(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      backgroundColor: WebColors.surfaceElevated,
-                                      title: Text(
-                                        l10n.rerollMissionTitle,
-                                        style: const TextStyle(
-                                          color: WebColors.textPrimary,
-                                        ),
-                                      ),
-                                      content: Text(
-                                        l10n.rerollMissionBody,
-                                        style: const TextStyle(
-                                          color: WebColors.textSecondary,
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(ctx, false),
-                                          child: Text(l10n.cancel),
-                                        ),
-                                        FilledButton(
-                                          onPressed: () =>
-                                              Navigator.pop(ctx, true),
-                                          child: Text(l10n.reroll),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                  if (ok == true && context.mounted) {
-                                    context.read<MissionsBloc>().add(
-                                          RerollMissionOffer(oid),
-                                        );
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                    return WebAnimatedSwitcher(
+                      child: _buildPickBody(context, state, l10n),
                     );
                   },
                 ),
@@ -238,5 +138,130 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
         ),
       ),
     );
+  }
+
+  Widget _buildPickBody(
+    BuildContext context,
+    MissionsState state,
+    AppLocalizations l10n,
+  ) {
+    if (state.pickStatus == MissionsLoadStatus.loading ||
+        state.pickStatus == MissionsLoadStatus.initial) {
+      return const WebPickMissionsSkeleton(
+        key: ValueKey('pick-skeleton'),
+      );
+    }
+
+    if (state.pickStatus == MissionsLoadStatus.error) {
+      return Center(
+        key: const ValueKey('pick-error'),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            state.pickError ?? l10n.errorLoadingOffers,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: WebColors.textSecondary),
+          ),
+        ),
+      );
+    }
+
+    final pick = state.pick;
+    if (pick == null) {
+      return const SizedBox.shrink(key: ValueKey('pick-empty'));
+    }
+
+    final offers = _filterOffers(pick.offers);
+    final acceptedIds = pick.offers
+        .where((o) => o.status != MissionStatus.offer)
+        .map((o) => o.offerId ?? o.id)
+        .toSet();
+    final canPickMore = pick.selectedCount < pick.maxSelectable;
+
+    return Column(
+      key: const ValueKey('pick-content'),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            l10n.selectedMissionsCount(
+              pick.selectedCount,
+              pick.maxSelectable,
+              pick.maxHard,
+            ),
+            style: const TextStyle(color: WebColors.textMuted),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 16),
+            itemCount: offers.length,
+            itemBuilder: (_, i) {
+              final m = offers[i];
+              final oid = m.offerId ?? m.id;
+              final accepted = acceptedIds.contains(oid);
+              return WebAnimatedAppear(
+                key: ValueKey('pick-offer-$oid'),
+                staggerIndex: i,
+                child: MissionPickCard(
+                  mission: m,
+                  accepted: accepted,
+                  onAccept: () {
+                    context.read<MissionsBloc>().add(
+                          AcceptMissionOffer(oid),
+                        );
+                    context.read<MissionsBloc>().add(
+                          const LoadMissionsHome(),
+                        );
+                    if (!canPickMore) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  onReroll: () => _confirmReroll(context, l10n, oid),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmReroll(
+    BuildContext context,
+    AppLocalizations l10n,
+    String offerId,
+  ) async {
+    final ok = await showWebDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: WebColors.surfaceElevated,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: WebColors.border),
+        ),
+        title: Text(
+          l10n.rerollMissionTitle,
+          style: const TextStyle(color: WebColors.textPrimary),
+        ),
+        content: Text(
+          l10n.rerollMissionBody,
+          style: const TextStyle(color: WebColors.textSecondary),
+        ),
+        actions: [
+          WpggCancelButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            label: l10n.cancel,
+          ),
+          WpggPrimaryButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            label: l10n.reroll,
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      context.read<MissionsBloc>().add(RerollMissionOffer(offerId));
+    }
   }
 }

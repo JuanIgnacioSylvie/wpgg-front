@@ -21,7 +21,7 @@ class _WebShimmerScopeState extends State<WebShimmerScope>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: const Duration(milliseconds: 1200),
     )..repeat();
   }
 
@@ -33,8 +33,14 @@ class _WebShimmerScopeState extends State<WebShimmerScope>
 
   @override
   Widget build(BuildContext context) {
-    return _WebShimmerInherited(
+    return AnimatedBuilder(
       animation: _controller,
+      builder: (context, child) {
+        return _WebShimmerInherited(
+          shimmer: _controller.value,
+          child: child!,
+        );
+      },
       child: widget.child,
     );
   }
@@ -42,22 +48,22 @@ class _WebShimmerScopeState extends State<WebShimmerScope>
 
 class _WebShimmerInherited extends InheritedWidget {
   const _WebShimmerInherited({
-    required this.animation,
+    required this.shimmer,
     required super.child,
   });
 
-  final Animation<double> animation;
+  final double shimmer;
 
-  static Animation<double> of(BuildContext context) {
+  static double of(BuildContext context) {
     final scope =
         context.dependOnInheritedWidgetOfExactType<_WebShimmerInherited>();
     assert(scope != null, 'WebShimmerScope not found in widget tree');
-    return scope!.animation;
+    return scope!.shimmer;
   }
 
   @override
   bool updateShouldNotify(_WebShimmerInherited oldWidget) =>
-      oldWidget.animation != animation;
+      oldWidget.shimmer != shimmer;
 }
 
 class WebSkeletonBox extends StatelessWidget {
@@ -72,9 +78,13 @@ class WebSkeletonBox extends StatelessWidget {
   final double height;
   final BorderRadius borderRadius;
 
+  static const _base = Color(0xFF18181F);
+  static const _highlight = Color(0xFF2E2E3A);
+
   @override
   Widget build(BuildContext context) {
-    final shimmer = _WebShimmerInherited.of(context).value;
+    final shimmer = _WebShimmerInherited.of(context);
+    final slide = -1.2 + shimmer * 2.4;
 
     return Container(
       width: width,
@@ -82,14 +92,10 @@ class WebSkeletonBox extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         gradient: LinearGradient(
-          begin: Alignment(-1.5 + shimmer * 3, 0),
-          end: Alignment(-0.5 + shimmer * 3, 0),
-          colors: const [
-            WebColors.surface,
-            WebColors.surfaceElevated,
-            WebColors.surface,
-          ],
-          stops: const [0.25, 0.5, 0.75],
+          begin: Alignment(slide - 0.6, 0),
+          end: Alignment(slide + 0.6, 0),
+          colors: const [_base, _highlight, _base],
+          stops: const [0.35, 0.5, 0.65],
         ),
       ),
     );
@@ -125,9 +131,9 @@ class WebMissionCardSkeleton extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     WebSkeletonBox(width: double.infinity, height: 14),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     WebSkeletonBox(width: 72, height: 10),
                   ],
                 ),
@@ -135,15 +141,15 @@ class WebMissionCardSkeleton extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          const WebSkeletonBox(width: 120, height: 10),
+          WebSkeletonBox(width: 120, height: 10),
           const SizedBox(height: 12),
-          const WebSkeletonBox(
+          WebSkeletonBox(
             width: double.infinity,
             height: 4,
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.circular(4),
           ),
           const SizedBox(height: 8),
-          const WebSkeletonBox(width: 36, height: 10),
+          WebSkeletonBox(width: 36, height: 10),
         ],
       ),
     );
@@ -163,13 +169,13 @@ class WebDashboardSkeleton extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
+              children: [
                 WebSkeletonBox(width: 110, height: 16),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 WebSkeletonBox(
                   width: 24,
                   height: 20,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ],
             ),
@@ -177,19 +183,19 @@ class WebDashboardSkeleton extends StatelessWidget {
             Wrap(
               spacing: 20,
               runSpacing: 20,
-              children: const [
+              children: [
                 WebMissionCardSkeleton(),
                 WebMissionCardSkeleton(),
                 WebMissionCardSkeleton(),
               ],
             ),
             const SizedBox(height: 48),
-            const WebSkeletonBox(width: 130, height: 16),
+            WebSkeletonBox(width: 130, height: 16),
             const SizedBox(height: 20),
             Wrap(
               spacing: 20,
               runSpacing: 20,
-              children: const [
+              children: [
                 WebMissionCardSkeleton(),
                 WebMissionCardSkeleton(),
               ],
@@ -220,23 +226,23 @@ class WebPickMissionsSkeleton extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Row(
                 children: [
                   WebSkeletonBox(width: 80, height: 12),
-                  Spacer(),
+                  const Spacer(),
                   WebSkeletonBox(width: 48, height: 12),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               WebSkeletonBox(width: double.infinity, height: 14),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               WebSkeletonBox(width: 200, height: 14),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               WebSkeletonBox(
                 width: double.infinity,
                 height: 40,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: BorderRadius.circular(20),
               ),
             ],
           ),

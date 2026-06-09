@@ -7,12 +7,12 @@ import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/profile/presentation/pages/profile_page.dart';
 import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'web_animations.dart';
 import 'web_colors.dart';
 
 Future<void> showWebProfileDialog(BuildContext context) {
-  return showDialog<void>(
+  return showWebDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.7),
     builder: (ctx) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: context.read<RiotBloc>()),

@@ -4,7 +4,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_ui_helpers.dart';
 
@@ -205,22 +207,14 @@ class _WebMissionCardState extends State<WebMissionCard> {
                 ),
                 if (!isPast) ...[
                   const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: mission.progressPercent / 100,
-                      minHeight: 4,
-                      backgroundColor: WebColors.border,
-                      color: color,
-                    ),
+                  WebAnimatedProgressBar(
+                    value: mission.progressPercent / 100,
+                    color: color,
+                    backgroundColor: WebColors.border,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    '${mission.progressPercent}%',
-                    style: const TextStyle(
-                      color: WebColors.textMuted,
-                      fontSize: 11,
-                    ),
+                  _AnimatedPercentLabel(
+                    percent: mission.progressPercent,
                   ),
                 ],
               ],
@@ -233,6 +227,67 @@ class _WebMissionCardState extends State<WebMissionCard> {
 
   void _setHovered(bool value) {
     if (_hovered != value) setState(() => _hovered = value);
+  }
+}
+
+class _AnimatedPercentLabel extends StatefulWidget {
+  const _AnimatedPercentLabel({required this.percent});
+
+  final int percent;
+
+  @override
+  State<_AnimatedPercentLabel> createState() => _AnimatedPercentLabelState();
+}
+
+class _AnimatedPercentLabelState extends State<_AnimatedPercentLabel>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: WebMotion.progress,
+    );
+    _animation = Tween<double>(begin: 0, end: widget.percent.toDouble())
+        .animate(CurvedAnimation(parent: _controller, curve: WebMotion.curve));
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedPercentLabel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.percent != widget.percent) {
+      _animation = Tween<double>(
+        begin: _animation.value,
+        end: widget.percent.toDouble(),
+      ).animate(CurvedAnimation(parent: _controller, curve: WebMotion.curve));
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, _) {
+        return Text(
+          '${_animation.value.round()}%',
+          style: const TextStyle(
+            color: WebColors.textMuted,
+            fontSize: 11,
+          ),
+        );
+      },
+    );
   }
 }
 
