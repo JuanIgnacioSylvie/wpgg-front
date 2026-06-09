@@ -98,5 +98,7 @@
   "withdrawAmountInvalid": "Enter a valid amount",
   "withdrawInsufficientBalance": "Insufficient balance",
   "withdrawSuccess": "Withdrawal submitted successfully",
-  "withdrawError": "Withdrawal failed. Please try again."
+  "withdrawError": "Withdrawal failed. Please try again.",
+  "pageUnavailableTitle": "This page is not available",
+  "pageUnavailableBody": "We're working on it. Please check back later."
 }

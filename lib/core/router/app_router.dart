@@ -24,6 +24,7 @@ import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/wallet/presentation/pages/finance_page.dart';
 import '../di/injection_container.dart';
 import '../presentation/app_shell_page.dart';
+import '../presentation/pages/unavailable_page.dart';
 import '../presentation/web/web_app_shell_page.dart';
 import '../../features/missions/presentation/pages/web_dashboard_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
@@ -53,19 +54,7 @@ final GoRouter appRouter = GoRouter(
   redirect: (context, state) {
     return normalizeOAuthDeepLinkLocation(state.uri.toString());
   },
-  errorBuilder: (context, state) => Scaffold(
-    backgroundColor: const Color(0xFF1A1A1A),
-    body: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          state.error?.toString() ?? 'Ruta no encontrada',
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white70),
-        ),
-      ),
-    ),
-  ),
+  errorBuilder: (context, state) => const UnavailablePage(),
   routes: [
     GoRoute(
       path: '/splash',
@@ -150,7 +139,9 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/finance',
-              builder: (_, __) => const FinancePage(),
+              builder: (_, __) => kIsWeb
+                  ? const UnavailablePage(embedded: true)
+                  : const FinancePage(),
             ),
           ],
         ),

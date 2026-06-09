@@ -70,5 +70,7 @@
   "withdrawAmountInvalid": "Ingresá un monto válido",
   "withdrawInsufficientBalance": "Saldo insuficiente",
   "withdrawSuccess": "Retiro enviado correctamente",
-  "withdrawError": "No se pudo completar el retiro. Intentá de nuevo."
+  "withdrawError": "No se pudo completar el retiro. Intentá de nuevo.",
+  "pageUnavailableTitle": "Esta página no está disponible",
+  "pageUnavailableBody": "Estamos trabajando en ello. Volvé a intentar más tarde."
 }

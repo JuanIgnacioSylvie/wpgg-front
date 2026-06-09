@@ -223,4 +223,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get withdrawError =>
       'No se pudo completar el retiro. Intentá de nuevo.';
+
+  @override
+  String get pageUnavailableTitle => 'Esta página no está disponible';
+
+  @override
+  String get pageUnavailableBody =>
+      'Estamos trabajando en ello. Volvé a intentar más tarde.';
 }

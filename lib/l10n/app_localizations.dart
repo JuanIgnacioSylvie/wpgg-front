@@ -493,6 +493,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Withdrawal failed. Please try again.'**
   String get withdrawError;
+
+  /// No description provided for @pageUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This page is not available'**
+  String get pageUnavailableTitle;
+
+  /// No description provided for @pageUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re working on it. Please check back later.'**
+  String get pageUnavailableBody;
 }
 
 class _AppLocalizationsDelegate
