@@ -34,10 +34,18 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
   final LinkRiotAccountUseCase _linkRiotAccount;
 
   Future<void> _onLoad(LoadDashboard event, Emitter<RiotState> emit) async {
-    emit(const RiotLoading());
+    final previous = state;
+    if (previous is! RiotLoaded) {
+      emit(const RiotLoading());
+    }
+
     final summonerRes = await _getSummonerProfile();
     final summonerFail = summonerRes.fold<Failure?>((f) => f, (_) => null);
     if (summonerFail != null) {
+      if (previous is RiotLoaded) {
+        emit(previous);
+        return;
+      }
       emit(RiotError(summonerFail.message));
       return;
     }
@@ -46,6 +54,7 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
       emit(const RiotNoAccount());
       return;
     }
+
     final results = await Future.wait([
       _getMatchHistory(limit: 10),
       _getRankedStats(),
@@ -53,25 +62,15 @@ class RiotBloc extends Bloc<RiotEvent, RiotState> {
     final matchesRes = results[0] as Either<Failure, List<MatchEntity>>;
     final rankedRes = results[1] as Either<Failure, List<RankedEntryEntity>>;
 
-    final matchesFail = matchesRes.fold<Failure?>((f) => f, (_) => null);
-    if (matchesFail != null) {
-      emit(RiotError(matchesFail.message));
-      return;
-    }
     final matches = matchesRes.fold<List<MatchEntity>>(
-      (_) => const [],
+      (_) => previous is RiotLoaded ? previous.matches : const [],
       (m) => m,
     );
-
-    final rankedFail = rankedRes.fold<Failure?>((f) => f, (_) => null);
-    if (rankedFail != null) {
-      emit(RiotError(rankedFail.message));
-      return;
-    }
     final ranked = rankedRes.fold<List<RankedEntryEntity>>(
-      (_) => const [],
+      (_) => previous is RiotLoaded ? previous.rankedEntries : const [],
       (r) => r,
     );
+
     emit(
       RiotLoaded(
         summoner: summoner,

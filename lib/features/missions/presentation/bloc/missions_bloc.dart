@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/network/network_error_message.dart';
 import '../../data/datasources/missions_remote_datasource.dart';
 import '../../domain/entities/mission_card_entity.dart';
 
@@ -22,10 +23,13 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     LoadMissionsHome event,
     Emitter<MissionsState> emit,
   ) async {
-    emit(state.copyWith(
-      homeStatus: MissionsLoadStatus.loading,
-      clearHomeError: true,
-    ));
+    final hasCachedHome = state.home != null;
+    if (!hasCachedHome) {
+      emit(state.copyWith(
+        homeStatus: MissionsLoadStatus.loading,
+        clearHomeError: true,
+      ));
+    }
     try {
       final home = await _dataSource.fetchHome();
       emit(state.copyWith(
@@ -41,9 +45,17 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
         clearHomeError: true,
       ));
     } catch (e) {
+      if (hasCachedHome) {
+        // Mantener datos visibles si un refresh en segundo plano falla.
+        emit(state.copyWith(
+          homeStatus: MissionsLoadStatus.loaded,
+          clearHomeError: true,
+        ));
+        return;
+      }
       emit(state.copyWith(
         homeStatus: MissionsLoadStatus.error,
-        homeError: e.toString(),
+        homeError: networkErrorMessage(e),
       ));
     }
   }

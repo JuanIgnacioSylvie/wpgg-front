@@ -22,12 +22,6 @@ class WebDashboardPage extends StatefulWidget {
 }
 
 class _WebDashboardPageState extends State<WebDashboardPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<MissionsBloc>().add(const LoadMissionsHome());
-  }
-
   void _openPickMissions() {
     showPickMissionsDialog(context);
   }

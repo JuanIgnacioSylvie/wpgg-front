@@ -27,10 +27,19 @@ class MissionsByDayPage extends StatefulWidget {
 class _MissionsByDayPageState extends State<MissionsByDayPage> {
   var _selectedDate = MissionDay.todayUtc();
   var _filterIndex = 0;
+  var _initialLoadRequested = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadWhenVisible();
+  }
+
+  void _loadWhenVisible() {
+    if (_initialLoadRequested) return;
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isCurrent) return;
+    _initialLoadRequested = true;
     _load();
   }
 
@@ -62,6 +71,7 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadWhenVisible();
     final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
     return BlocBuilder<RiotBloc, RiotState>(

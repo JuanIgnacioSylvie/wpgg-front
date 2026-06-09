@@ -23,10 +23,19 @@ class FinancePage extends StatefulWidget {
 
 class _FinancePageState extends State<FinancePage> {
   var _tabIndex = 0;
+  var _walletRequested = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _requestWalletIfVisible();
+  }
+
+  void _requestWalletIfVisible() {
+    if (_walletRequested) return;
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isCurrent) return;
+    _walletRequested = true;
     context.read<WalletBloc>().add(const LoadWallet());
   }
 
@@ -43,6 +52,7 @@ class _FinancePageState extends State<FinancePage> {
 
   @override
   Widget build(BuildContext context) {
+    _requestWalletIfVisible();
     final ddragon = context.watch<DDragonProvider>();
     return BlocBuilder<RiotBloc, RiotState>(
       builder: (context, riotState) {
