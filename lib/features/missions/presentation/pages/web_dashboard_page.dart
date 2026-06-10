@@ -43,8 +43,16 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
     return activeCount < 3;
   }
 
-  int _standardActiveCount(MissionsHomeData home) {
-    return (home.primary != null ? 1 : 0) + home.secondary.length;
+  int _inProgressCount(MissionsHomeData home) {
+    return (home.welcome != null ? 1 : 0) +
+        (home.primary != null ? 1 : 0) +
+        home.secondary.length;
+  }
+
+  bool _hasInProgressMissions(MissionsHomeData home) {
+    return home.welcome != null ||
+        home.primary != null ||
+        home.secondary.isNotEmpty;
   }
 
   List<MissionCardEntity> _activeMissions(MissionsHomeData home) {
@@ -200,24 +208,27 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (home.welcome != null) ...[
-                              _SectionHeader(title: l10n.welcomeMissionSection),
-                              const SizedBox(height: 16),
-                              WebMissionWelcomeCard(mission: home.welcome!),
-                              const SizedBox(height: 32),
-                            ],
                             _SectionHeader(
                               title: l10n.inProgress,
-                              count: _standardActiveCount(home),
+                              count: _inProgressCount(home),
                             ),
                             const SizedBox(height: 20),
                             Wrap(
                               spacing: 20,
                               runSpacing: 20,
                               children: [
+                                if (home.welcome != null)
+                                  WebAnimatedAppear(
+                                    key: ValueKey('welcome-${home.welcome!.id}'),
+                                    staggerIndex: 0,
+                                    child: WebMissionWelcomeCard(
+                                      mission: home.welcome!,
+                                    ),
+                                  ),
                                 ...activeMissions.asMap().entries.map(
                                   (entry) {
-                                    final index = entry.key;
+                                    final index = entry.key +
+                                        (home.welcome != null ? 1 : 0);
                                     final m = entry.value;
                                     return WebAnimatedAppear(
                                       key: ValueKey('active-${m.id}'),
@@ -241,12 +252,13 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                     key: ValueKey(
                                       'empty-slot-${activeMissions.length}',
                                     ),
-                                    staggerIndex: activeMissions.length,
+                                    staggerIndex: activeMissions.length +
+                                        (home.welcome != null ? 1 : 0),
                                     child: WebMissionCard.empty(onTap: onAdd),
                                   ),
                               ],
                             ),
-                            if (activeMissions.isEmpty)
+                            if (!_hasInProgressMissions(home))
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(

@@ -178,8 +178,6 @@ class _HomePageState extends State<HomePage> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 100),
                     children: [
-                    if (home.welcome != null)
-                      MissionWelcomeCard(mission: home.welcome!),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                       child: Column(
@@ -207,6 +205,8 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
+                      if (home.welcome != null)
+                        MissionWelcomeCard(mission: home.welcome!),
                       if (home.primary != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
@@ -219,7 +219,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         )
-                      else
+                      else if (home.welcome == null &&
+                          home.secondary.isEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Column(
