@@ -13,6 +13,7 @@ import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../data/datasources/wallet_remote_datasource.dart';
 import '../bloc/wallet_bloc.dart';
+import '../widgets/wpgg_price_widget.dart';
 
 class FinancePage extends StatefulWidget {
   const FinancePage({super.key});
@@ -107,22 +108,7 @@ class _FinancePageState extends State<FinancePage> {
                                 ),
                               ),
                               const Spacer(),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  '\$ ${state.summary.latestPriceUsd.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    color: WpggBrand.white,
-                                  ),
-                                ),
-                              ),
+                              const WpggPriceWidget(compact: true),
                             ],
                           ),
                           const SizedBox(height: 8),

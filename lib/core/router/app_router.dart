@@ -25,6 +25,7 @@ import '../../features/profile/presentation/pages/terms_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/wallet/presentation/pages/finance_page.dart';
+import '../../features/wallet/presentation/pages/web_finance_page.dart';
 import '../di/injection_container.dart';
 import '../presentation/app_shell_page.dart';
 import '../presentation/pages/unavailable_page.dart';
@@ -159,7 +160,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/finance',
               builder: (_, __) => kIsWeb
-                  ? const UnavailablePage(embedded: true)
+                  ? const WebFinancePage()
                   : const FinancePage(),
             ),
           ],
