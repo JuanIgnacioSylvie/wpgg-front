@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="wpgg_flutter"
+        android:label="WPGG"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
