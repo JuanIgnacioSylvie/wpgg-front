@@ -793,6 +793,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not complete the purchase. Please try again.'**
   String get storePurchaseError;
+
+  /// No description provided for @transactionProcessingAcceptMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting mission…'**
+  String get transactionProcessingAcceptMission;
+
+  /// No description provided for @transactionProcessingRerollMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Rerolling mission…'**
+  String get transactionProcessingRerollMission;
+
+  /// No description provided for @transactionProcessingCancelMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting mission…'**
+  String get transactionProcessingCancelMission;
+
+  /// No description provided for @transactionProcessingPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing purchase…'**
+  String get transactionProcessingPurchase;
+
+  /// No description provided for @transactionSuccessAcceptMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission accepted'**
+  String get transactionSuccessAcceptMission;
+
+  /// No description provided for @transactionSuccessRerollMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission rerolled'**
+  String get transactionSuccessRerollMission;
+
+  /// No description provided for @transactionSuccessCancelMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission deleted'**
+  String get transactionSuccessCancelMission;
+
+  /// No description provided for @transactionFailedGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The action could not be completed. Please try again.'**
+  String get transactionFailedGeneric;
 }
 
 class _AppLocalizationsDelegate

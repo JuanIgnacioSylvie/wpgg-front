@@ -2,6 +2,23 @@ part of 'missions_bloc.dart';
 
 enum MissionsLoadStatus { initial, loading, loaded, error }
 
+enum MissionActionType { accept, reroll, cancel }
+
+class MissionActionFeedback extends Equatable {
+  const MissionActionFeedback({
+    required this.type,
+    required this.success,
+    this.message,
+  });
+
+  final MissionActionType type;
+  final bool success;
+  final String? message;
+
+  @override
+  List<Object?> get props => [type, success, message];
+}
+
 class MissionsHomeData extends Equatable {
   const MissionsHomeData({
     this.welcome,
@@ -76,6 +93,8 @@ class MissionsState extends Equatable {
     this.byDayStatus = MissionsLoadStatus.initial,
     this.byDay,
     this.byDayError,
+    this.actionInProgress,
+    this.actionFeedback,
   });
 
   final MissionsLoadStatus homeStatus;
@@ -90,6 +109,9 @@ class MissionsState extends Equatable {
   final MissionsByDayData? byDay;
   final String? byDayError;
 
+  final MissionActionType? actionInProgress;
+  final MissionActionFeedback? actionFeedback;
+
   MissionsState copyWith({
     MissionsLoadStatus? homeStatus,
     MissionsHomeData? home,
@@ -103,6 +125,10 @@ class MissionsState extends Equatable {
     MissionsByDayData? byDay,
     String? byDayError,
     bool clearByDayError = false,
+    MissionActionType? actionInProgress,
+    bool clearActionInProgress = false,
+    MissionActionFeedback? actionFeedback,
+    bool clearActionFeedback = false,
   }) {
     return MissionsState(
       homeStatus: homeStatus ?? this.homeStatus,
@@ -114,6 +140,12 @@ class MissionsState extends Equatable {
       byDayStatus: byDayStatus ?? this.byDayStatus,
       byDay: byDay ?? this.byDay,
       byDayError: clearByDayError ? null : (byDayError ?? this.byDayError),
+      actionInProgress: clearActionInProgress
+          ? null
+          : (actionInProgress ?? this.actionInProgress),
+      actionFeedback: clearActionFeedback
+          ? null
+          : (actionFeedback ?? this.actionFeedback),
     );
   }
 
@@ -128,5 +160,7 @@ class MissionsState extends Equatable {
         byDayStatus,
         byDay,
         byDayError,
+        actionInProgress,
+        actionFeedback,
       ];
 }

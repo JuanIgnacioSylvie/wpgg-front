@@ -9,6 +9,7 @@ import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
+import '../../../../core/presentation/wpgg_transaction_overlay.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../domain/entities/store_product.dart';
@@ -20,21 +21,9 @@ String _newIdempotencyKey(String productId) {
   return '${DateTime.now().toUtc().millisecondsSinceEpoch}-$productId-${random.nextInt(1 << 32)}';
 }
 
-Future<void> _showPurchaseLoading(BuildContext context) {
-  final isWeb = WebShellScope.isActive(context);
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => Center(
-      child: Card(
-        color: isWeb ? WebColors.surfaceElevated : Colors.white,
-        child: const Padding(
-          padding: EdgeInsets.all(24),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-    ),
-  );
+Future<void> _showPurchaseLoading(BuildContext context, String message) {
+  WpggTransactionOverlay.show(context, message: message);
+  return Future<void>.value();
 }
 
 Future<void> showStorePurchaseDialog(
@@ -85,14 +74,12 @@ Future<void> showStorePurchaseDialog(
   ));
 
   if (context.mounted) {
-    await _showPurchaseLoading(context);
+    await _showPurchaseLoading(context, l10n.transactionProcessingPurchase);
   }
 
   final resultState = await purchaseFuture;
 
-  if (context.mounted) {
-    Navigator.of(context, rootNavigator: true).pop();
-  }
+  WpggTransactionOverlay.hide();
 
   if (!context.mounted) {
     return;

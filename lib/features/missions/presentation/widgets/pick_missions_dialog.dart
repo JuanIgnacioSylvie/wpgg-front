@@ -5,7 +5,6 @@ import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/presentation/web/web_animations.dart';
-import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/utils/mission_day.dart';
@@ -119,16 +118,7 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                 onSelected: (i) => setState(() => _filterIndex = i),
               ),
               Expanded(
-                child: BlocConsumer<MissionsBloc, MissionsState>(
-                  listener: (context, state) {
-                    if (state.pickError != null) {
-                      WpggSnackBar.show(
-                        context,
-                        state.pickError!,
-                        isError: true,
-                      );
-                    }
-                  },
+                child: BlocBuilder<MissionsBloc, MissionsState>(
                   builder: (context, state) {
                     return WebAnimatedSwitcher(
                       child: _buildPickBody(context, state, l10n),
@@ -212,9 +202,6 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                   onAccept: () {
                     context.read<MissionsBloc>().add(
                           AcceptMissionOffer(oid),
-                        );
-                    context.read<MissionsBloc>().add(
-                          const LoadMissionsHome(),
                         );
                     if (!canPickMore) {
                       Navigator.of(context).pop();

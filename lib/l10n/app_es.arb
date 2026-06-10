@@ -146,5 +146,13 @@
   "storeKeyCopied": "Key copiada al portapapeles",
   "storeDone": "Listo",
   "storeOutOfStock": "No hay stock disponible para este producto.",
-  "storePurchaseError": "No se pudo completar la compra. Intentá de nuevo."
+  "storePurchaseError": "No se pudo completar la compra. Intentá de nuevo.",
+  "transactionProcessingAcceptMission": "Aceptando misión…",
+  "transactionProcessingRerollMission": "Cambiando misión…",
+  "transactionProcessingCancelMission": "Eliminando misión…",
+  "transactionProcessingPurchase": "Procesando compra…",
+  "transactionSuccessAcceptMission": "Misión aceptada",
+  "transactionSuccessRerollMission": "Misión cambiada",
+  "transactionSuccessCancelMission": "Misión eliminada",
+  "transactionFailedGeneric": "No se pudo completar la acción. Intentá de nuevo."
 }

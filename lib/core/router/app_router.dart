@@ -33,6 +33,7 @@ import '../di/injection_container.dart';
 import '../presentation/app_shell_page.dart';
 import '../presentation/pages/unavailable_page.dart';
 import '../presentation/web/web_app_shell_page.dart';
+import '../presentation/wpgg_transaction_feedback_host.dart';
 import '../../features/missions/presentation/pages/web_dashboard_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 
@@ -104,12 +105,14 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/missions/pick',
-      builder: (_, __) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: sl<RiotBloc>()),
-          BlocProvider.value(value: sl<MissionsBloc>()),
-        ],
-        child: const PickMissionsPage(),
+      builder: (_, __) => WpggTransactionFeedbackHost(
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<RiotBloc>()),
+            BlocProvider.value(value: sl<MissionsBloc>()),
+          ],
+          child: const PickMissionsPage(),
+        ),
       ),
     ),
     GoRoute(
@@ -136,9 +139,11 @@ final GoRouter appRouter = GoRouter(
             BlocProvider.value(value: sl<WalletBloc>()),
             BlocProvider.value(value: sl<StoreBloc>()),
           ],
-          child: kIsWeb
-              ? WebAppShellPage(navigationShell: navigationShell)
-              : AppShellPage(navigationShell: navigationShell),
+          child: WpggTransactionFeedbackHost(
+            child: kIsWeb
+                ? WebAppShellPage(navigationShell: navigationShell)
+                : AppShellPage(navigationShell: navigationShell),
+          ),
         );
       },
       branches: [

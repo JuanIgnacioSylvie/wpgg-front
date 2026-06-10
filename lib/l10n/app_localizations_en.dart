@@ -396,4 +396,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get storePurchaseError =>
       'Could not complete the purchase. Please try again.';
+
+  @override
+  String get transactionProcessingAcceptMission => 'Accepting mission…';
+
+  @override
+  String get transactionProcessingRerollMission => 'Rerolling mission…';
+
+  @override
+  String get transactionProcessingCancelMission => 'Deleting mission…';
+
+  @override
+  String get transactionProcessingPurchase => 'Processing purchase…';
+
+  @override
+  String get transactionSuccessAcceptMission => 'Mission accepted';
+
+  @override
+  String get transactionSuccessRerollMission => 'Mission rerolled';
+
+  @override
+  String get transactionSuccessCancelMission => 'Mission deleted';
+
+  @override
+  String get transactionFailedGeneric =>
+      'The action could not be completed. Please try again.';
 }

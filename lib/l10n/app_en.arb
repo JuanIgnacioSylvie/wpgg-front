@@ -174,5 +174,13 @@
   "storeKeyCopied": "Key copied to clipboard",
   "storeDone": "Done",
   "storeOutOfStock": "This product is out of stock.",
-  "storePurchaseError": "Could not complete the purchase. Please try again."
+  "storePurchaseError": "Could not complete the purchase. Please try again.",
+  "transactionProcessingAcceptMission": "Accepting mission…",
+  "transactionProcessingRerollMission": "Rerolling mission…",
+  "transactionProcessingCancelMission": "Deleting mission…",
+  "transactionProcessingPurchase": "Processing purchase…",
+  "transactionSuccessAcceptMission": "Mission accepted",
+  "transactionSuccessRerollMission": "Mission rerolled",
+  "transactionSuccessCancelMission": "Mission deleted",
+  "transactionFailedGeneric": "The action could not be completed. Please try again."
 }

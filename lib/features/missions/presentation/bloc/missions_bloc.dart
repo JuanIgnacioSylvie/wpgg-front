@@ -18,6 +18,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     on<AcceptMissionOffer>(_onAccept);
     on<RerollMissionOffer>(_onReroll);
     on<CancelActiveMission>(_onCancel);
+    on<ClearMissionActionFeedback>(_onClearActionFeedback);
   }
 
   final MissionsRemoteDataSource _dataSource;
@@ -125,17 +126,45 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     }
   }
 
+  void _onClearActionFeedback(
+    ClearMissionActionFeedback event,
+    Emitter<MissionsState> emit,
+  ) {
+    emit(state.copyWith(clearActionFeedback: true));
+  }
+
   Future<void> _onAccept(
     AcceptMissionOffer event,
     Emitter<MissionsState> emit,
   ) async {
+    if (state.actionInProgress != null) {
+      return;
+    }
+    emit(state.copyWith(
+      actionInProgress: MissionActionType.accept,
+      clearActionFeedback: true,
+    ));
     try {
       await _dataSource.acceptOffer(event.offerId);
       _refreshWallet();
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: const MissionActionFeedback(
+          type: MissionActionType.accept,
+          success: true,
+        ),
+      ));
       add(const LoadPickToday());
       add(const LoadMissionsHome());
     } catch (e) {
-      emit(state.copyWith(pickError: _missionErrorMessage(e)));
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: MissionActionFeedback(
+          type: MissionActionType.accept,
+          success: false,
+          message: _missionErrorMessage(e),
+        ),
+      ));
     }
   }
 
@@ -143,12 +172,33 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     RerollMissionOffer event,
     Emitter<MissionsState> emit,
   ) async {
+    if (state.actionInProgress != null) {
+      return;
+    }
+    emit(state.copyWith(
+      actionInProgress: MissionActionType.reroll,
+      clearActionFeedback: true,
+    ));
     try {
       await _dataSource.rerollOffer(event.offerId);
       _refreshWallet();
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: const MissionActionFeedback(
+          type: MissionActionType.reroll,
+          success: true,
+        ),
+      ));
       add(const LoadPickToday());
     } catch (e) {
-      emit(state.copyWith(pickError: _missionErrorMessage(e)));
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: MissionActionFeedback(
+          type: MissionActionType.reroll,
+          success: false,
+          message: _missionErrorMessage(e),
+        ),
+      ));
     }
   }
 
@@ -156,13 +206,34 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     CancelActiveMission event,
     Emitter<MissionsState> emit,
   ) async {
+    if (state.actionInProgress != null) {
+      return;
+    }
+    emit(state.copyWith(
+      actionInProgress: MissionActionType.cancel,
+      clearActionFeedback: true,
+    ));
     try {
       await _dataSource.cancelActiveMission(event.missionId);
       _refreshWallet();
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: const MissionActionFeedback(
+          type: MissionActionType.cancel,
+          success: true,
+        ),
+      ));
       add(const LoadMissionsHome());
       add(const LoadPickToday());
     } catch (e) {
-      emit(state.copyWith(homeError: _missionErrorMessage(e)));
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: MissionActionFeedback(
+          type: MissionActionType.cancel,
+          success: false,
+          message: _missionErrorMessage(e),
+        ),
+      ));
     }
   }
 }

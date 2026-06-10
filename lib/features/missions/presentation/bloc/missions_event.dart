@@ -50,3 +50,7 @@ class CancelActiveMission extends MissionsEvent {
   @override
   List<Object?> get props => [missionId];
 }
+
+class ClearMissionActionFeedback extends MissionsEvent {
+  const ClearMissionActionFeedback();
+}
