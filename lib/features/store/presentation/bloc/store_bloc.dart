@@ -16,11 +16,24 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   final StoreRemoteDataSource _dataSource;
 
   Future<void> _onLoad(LoadStoreOrders event, Emitter<StoreState> emit) async {
+    final current = state;
+    if (current is StoreLoaded && current.purchasing) {
+      return;
+    }
+
     emit(const StoreLoading());
     try {
       final orders = await _dataSource.fetchOrders();
+      final afterFetch = state;
+      if (afterFetch is StoreLoaded && afterFetch.purchasing) {
+        return;
+      }
       emit(StoreLoaded(orders: orders));
     } catch (e) {
+      final afterError = state;
+      if (afterError is StoreLoaded && afterError.purchasing) {
+        return;
+      }
       emit(StoreError(e.toString()));
     }
   }
@@ -38,7 +51,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
     emit(StoreLoaded(
       orders: existingOrders,
       purchasing: true,
-      lastPurchase: current is StoreLoaded ? current.lastPurchase : null,
     ));
 
     try {
