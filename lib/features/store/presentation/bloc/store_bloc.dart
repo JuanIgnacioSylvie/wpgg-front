@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection_container.dart';
+import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../data/datasources/store_remote_datasource.dart';
 
 part 'store_event.dart';
@@ -14,6 +16,10 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   }
 
   final StoreRemoteDataSource _dataSource;
+
+  void _refreshWallet() {
+    sl<WalletBloc>().add(const LoadWallet());
+  }
 
   Future<void> _onLoad(LoadStoreOrders event, Emitter<StoreState> emit) async {
     final current = state;
@@ -66,6 +72,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
         idempotencyKey: event.idempotencyKey,
       );
       final orders = await _dataSource.fetchOrders();
+      _refreshWallet();
       emit(StoreLoaded(
         orders: orders,
         lastPurchase: result,

@@ -124,6 +124,7 @@ final GoRouter appRouter = GoRouter(
           providers: [
             BlocProvider.value(value: sl<RiotBloc>()),
             BlocProvider.value(value: sl<MissionsBloc>()),
+            BlocProvider.value(value: sl<StoreBloc>()),
           ],
           child: const PickMissionsPage(),
         ),

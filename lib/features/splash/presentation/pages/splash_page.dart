@@ -21,11 +21,10 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  static const _logoAsset = 'assets/icons/logo_w.png';
+  static const _coinAsset = 'assets/images/wpgg-coin_200x200.png';
   static const _loadDuration = Duration(milliseconds: 2800);
-  static const _logoSize = 72.0;
-  static const _logoIconSize = 38.0;
-  static const _progressWidth = 200.0;
+  static const _coinSize = 88.0;
+  static const _progressWidth = 220.0;
 
   var _exiting = false;
   late final AnimationController _progressController;
@@ -113,75 +112,83 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   ).animate(exitAnim)
                 : const AlwaysStoppedAnimation(1),
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  WebAnimatedAppear(
-                    child: Container(
-                      width: _logoSize,
-                      height: _logoSize,
-                      decoration: BoxDecoration(
-                        color: WebColors.accent,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: WebColors.accent.withValues(alpha: 0.4),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
+              child: WebAnimatedAppear(
+                child: Container(
+                  width: 320,
+                  padding: const EdgeInsets.fromLTRB(32, 40, 32, 36),
+                  decoration: BoxDecoration(
+                    color: WebColors.surface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: WebColors.border),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.35),
+                        blurRadius: 24,
+                        offset: const Offset(0, 12),
                       ),
-                      child: Center(
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: WebColors.accent.withValues(alpha: 0.22),
+                              blurRadius: 28,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
                         child: Image.asset(
-                          _logoAsset,
-                          width: _logoIconSize,
-                          height: _logoIconSize,
+                          _coinAsset,
+                          width: _coinSize,
+                          height: _coinSize,
                           fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const WebAnimatedAppear(
-                    staggerIndex: 1,
-                    child: Text(
-                      'WPGG',
-                      style: TextStyle(
-                        fontFamily: AppFonts.lexendDeca,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
-                        color: WebColors.textPrimary,
-                        letterSpacing: 2,
+                      const SizedBox(height: 20),
+                      const Text(
+                        'WPGG',
+                        style: TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: WebColors.textPrimary,
+                          letterSpacing: 1.5,
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 48),
-                  WebAnimatedAppear(
-                    staggerIndex: 2,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: SizedBox(
-                        width: _progressWidth,
-                        height: 3,
-                        child: ColoredBox(
-                          color: WebColors.border,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: AnimatedBuilder(
-                              animation: _progressController,
-                              builder: (_, __) => FractionallySizedBox(
-                                widthFactor: _progressController.value,
-                                child: const ColoredBox(
-                                  color: WebColors.accent,
+                      const SizedBox(height: 36),
+                      WebAnimatedAppear(
+                        staggerIndex: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: SizedBox(
+                            width: _progressWidth,
+                            height: 4,
+                            child: ColoredBox(
+                              color: WebColors.border,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: AnimatedBuilder(
+                                  animation: _progressController,
+                                  builder: (_, __) => FractionallySizedBox(
+                                    widthFactor: _progressController.value,
+                                    child: const ColoredBox(
+                                      color: WebColors.accent,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
