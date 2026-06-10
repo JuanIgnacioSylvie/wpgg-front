@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /profile/faqs
+Allow: /profile/terms
+Disallow: /auth/
+Disallow: /splash
+Disallow: /home
+Disallow: /missions/
+Disallow: /finance
+Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://wpgg.lol/sitemap.xml
