@@ -6,7 +6,9 @@ import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/locale/locale_provider.dart';
+import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -139,6 +141,12 @@ class _ProfilePageState extends State<ProfilePage>
 
           return BlocBuilder<WalletBloc, WalletState>(
             builder: (context, walletState) {
+              final riotLoading =
+                  riotState is RiotInitial || riotState is RiotLoading;
+              final walletLoading = walletState is WalletInitial ||
+                  walletState is WalletLoading;
+              final showSkeleton = riotLoading || walletLoading;
+
               final summary = _summary(walletState);
               final balance = summary?.balance ?? 0;
               final minWithdraw = summary?.minWithdrawWpgg ?? 1000;
@@ -213,8 +221,15 @@ class _ProfilePageState extends State<ProfilePage>
                         20,
                         widget.embeddedInPanel ? 24 : 120,
                       ),
-                      child: Column(
-                        children: [
+                      child: WebAnimatedSwitcher(
+                        child: showSkeleton
+                            ? ProfileSkeleton(
+                                key: const ValueKey('profile-skeleton'),
+                                useWebStyle: useWeb,
+                              )
+                            : Column(
+                                key: const ValueKey('profile-content'),
+                                children: [
                           if (useWeb)
                             Padding(
                               padding: const EdgeInsets.only(top: 8, bottom: 20),
@@ -403,7 +418,8 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                             ],
                           ),
-                        ],
+                                ],
+                              ),
                       ),
                     ),
                   ),

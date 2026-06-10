@@ -182,5 +182,6 @@
   "transactionSuccessAcceptMission": "Mission accepted",
   "transactionSuccessRerollMission": "Mission rerolled",
   "transactionSuccessCancelMission": "Mission deleted",
-  "transactionFailedGeneric": "The action could not be completed. Please try again."
+  "transactionFailedGeneric": "The action could not be completed. Please try again.",
+  "viewOnGeckoTerminal": "View on GeckoTerminal"
 }

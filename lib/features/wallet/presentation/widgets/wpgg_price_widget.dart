@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../data/datasources/dexscreener_datasource.dart';
@@ -134,6 +136,10 @@ class _CompactPrice extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+        const SizedBox(height: 4),
+        const _GeckoTerminalLink(
+          style: _GeckoTerminalLinkStyle.compact,
+        ),
       ],
     );
   }
@@ -224,7 +230,61 @@ class _ExpandedPrice extends StatelessWidget {
               fontSize: 12,
             ),
           ),
+          const SizedBox(height: 12),
+          const _GeckoTerminalLink(
+            style: _GeckoTerminalLinkStyle.expanded,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+enum _GeckoTerminalLinkStyle { compact, expanded }
+
+class _GeckoTerminalLink extends StatelessWidget {
+  const _GeckoTerminalLink({required this.style});
+
+  final _GeckoTerminalLinkStyle style;
+
+  Future<void> _open() async {
+    final uri = Uri.parse(DexScreenerDataSource.wpggGeckoTerminalUrl);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final label = context.l10n.viewOnGeckoTerminal;
+    final isCompact = style == _GeckoTerminalLinkStyle.compact;
+
+    return InkWell(
+      onTap: _open,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.open_in_new_rounded,
+              size: isCompact ? 12 : 14,
+              color: isCompact ? WpggBrand.white.withValues(alpha: 0.75) : WebColors.accent,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isCompact ? WpggBrand.white.withValues(alpha: 0.75) : WebColors.accent,
+                fontSize: isCompact ? 11 : 13,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
+                decorationColor: isCompact
+                    ? WpggBrand.white.withValues(alpha: 0.5)
+                    : WebColors.accent.withValues(alpha: 0.5),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

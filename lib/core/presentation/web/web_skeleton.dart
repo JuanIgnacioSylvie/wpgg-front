@@ -207,6 +207,151 @@ class WebDashboardSkeleton extends StatelessWidget {
   }
 }
 
+class ProfileSkeleton extends StatelessWidget {
+  const ProfileSkeleton({super.key, this.useWebStyle = true});
+
+  final bool useWebStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final avatarSize = useWebStyle ? 80.0 : 112.0;
+    final cardRadius = useWebStyle ? 12.0 : 20.0;
+    final pillRadius = BorderRadius.circular(useWebStyle ? 12 : 28);
+
+    return WebShimmerScope(
+      child: Column(
+        children: [
+          if (useWebStyle) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 20),
+              child: Column(
+                children: [
+                  WebSkeletonBox(
+                    width: avatarSize,
+                    height: avatarSize,
+                    borderRadius: BorderRadius.circular(avatarSize / 2),
+                  ),
+                  const SizedBox(height: 12),
+                  const WebSkeletonBox(width: 140, height: 18),
+                  const SizedBox(height: 6),
+                  const WebSkeletonBox(width: 72, height: 13),
+                ],
+              ),
+            ),
+          ] else ...[
+            SizedBox(
+              height: 200,
+              child: Center(
+                child: WebSkeletonBox(
+                  width: avatarSize,
+                  height: avatarSize,
+                  borderRadius: BorderRadius.circular(avatarSize / 2),
+                ),
+              ),
+            ),
+            const WebSkeletonBox(width: 140, height: 18),
+            const SizedBox(height: 20),
+          ],
+          Row(
+            children: [
+              Expanded(
+                child: WebSkeletonBox(
+                  width: double.infinity,
+                  height: useWebStyle ? 52 : 48,
+                  borderRadius: pillRadius,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: WebSkeletonBox(
+                  width: double.infinity,
+                  height: useWebStyle ? 52 : 48,
+                  borderRadius: pillRadius,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 28),
+          _ProfileSettingsCardSkeleton(
+            rowCount: 2,
+            borderRadius: cardRadius,
+            useWebStyle: useWebStyle,
+          ),
+          const SizedBox(height: 16),
+          _ProfileSettingsCardSkeleton(
+            rowCount: 4,
+            borderRadius: cardRadius,
+            useWebStyle: useWebStyle,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileSettingsCardSkeleton extends StatelessWidget {
+  const _ProfileSettingsCardSkeleton({
+    required this.rowCount,
+    required this.borderRadius,
+    required this.useWebStyle,
+  });
+
+  final int rowCount;
+  final double borderRadius;
+  final bool useWebStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: useWebStyle ? WebColors.surfaceElevated : const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: useWebStyle
+            ? Border.all(color: WebColors.borderSubtle)
+            : null,
+      ),
+      child: Column(
+        children: [
+          for (var i = 0; i < rowCount; i++) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                color: useWebStyle ? WebColors.borderSubtle : const Color(0xFFE8E8ED),
+              ),
+            const _ProfileSettingsRowSkeleton(),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileSettingsRowSkeleton extends StatelessWidget {
+  const _ProfileSettingsRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      child: Row(
+        children: const [
+          WebSkeletonBox(
+            width: 24,
+            height: 24,
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: WebSkeletonBox(width: double.infinity, height: 14),
+          ),
+          SizedBox(width: 12),
+          WebSkeletonBox(width: 44, height: 20),
+        ],
+      ),
+    );
+  }
+}
+
 class WebPickMissionsSkeleton extends StatelessWidget {
   const WebPickMissionsSkeleton({super.key});
 

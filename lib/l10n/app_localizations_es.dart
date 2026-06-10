@@ -424,4 +424,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get transactionFailedGeneric =>
       'No se pudo completar la acción. Intentá de nuevo.';
+
+  @override
+  String get viewOnGeckoTerminal => 'Ver en GeckoTerminal';
 }

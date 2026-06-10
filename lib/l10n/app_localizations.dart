@@ -841,6 +841,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The action could not be completed. Please try again.'**
   String get transactionFailedGeneric;
+
+  /// No description provided for @viewOnGeckoTerminal.
+  ///
+  /// In en, this message translates to:
+  /// **'View on GeckoTerminal'**
+  String get viewOnGeckoTerminal;
 }
 
 class _AppLocalizationsDelegate
