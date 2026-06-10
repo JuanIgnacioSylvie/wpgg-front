@@ -194,6 +194,18 @@ abstract class AppLocalizations {
   /// **'Completed missions will appear here.'**
   String get completedMissionsPlaceholder;
 
+  /// No description provided for @noMissionsForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No missions for this day.'**
+  String get noMissionsForDay;
+
+  /// No description provided for @noMissionsForFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No missions match this filter.'**
+  String get noMissionsForFilter;
+
   /// No description provided for @errorLoadingMissions.
   ///
   /// In en, this message translates to:

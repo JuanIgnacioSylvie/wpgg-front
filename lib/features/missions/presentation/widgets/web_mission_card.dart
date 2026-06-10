@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
@@ -54,7 +55,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
     }
 
     final mission = widget.mission!;
-    final color = difficultyColor(mission.difficulty);
+    final color = missionAccentColor(mission);
     final isPast = widget.variant == WebMissionCardVariant.past;
     final isCompleted = mission.status == MissionStatus.completed ||
         mission.progressPercent >= 100;
@@ -122,7 +123,9 @@ class _WebMissionCardState extends State<WebMissionCard> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        difficultyIcon(mission.difficulty),
+                        mission.isWelcome
+                            ? Symbols.redeem
+                            : difficultyIcon(mission.difficulty),
                         color: color,
                         size: 20,
                       ),
@@ -145,9 +148,16 @@ class _WebMissionCardState extends State<WebMissionCard> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            difficultyLabel(mission.difficulty, context.l10n),
+                            mission.isWelcome
+                                ? context.l10n.welcomeMissionBadge
+                                : difficultyLabel(
+                                    mission.difficulty,
+                                    context.l10n,
+                                  ),
                             style: TextStyle(
-                              color: color,
+                              color: mission.isWelcome
+                                  ? WpggBrand.welcomeAccent
+                                  : color,
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
                             ),
@@ -174,9 +184,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      isPast
-                          ? statusLabel(mission.status, context.l10n)
-                          : context.l10n.statusInProgress,
+                      statusLabel(mission.status, context.l10n),
                       style: const TextStyle(
                         color: WebColors.textSecondary,
                         fontSize: 12,

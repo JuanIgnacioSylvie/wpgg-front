@@ -17,6 +17,7 @@ import 'oauth_deep_link_redirect.dart';
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/missions/presentation/pages/home_page.dart';
 import '../../features/missions/presentation/pages/missions_by_day_page.dart';
+import '../../features/missions/presentation/pages/web_missions_by_day_page.dart';
 import '../../features/missions/presentation/pages/pick_missions_page.dart';
 import '../../features/profile/presentation/pages/faqs_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
@@ -147,7 +148,9 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/missions/by-day',
-              builder: (_, __) => const MissionsByDayPage(),
+              builder: (_, __) => kIsWeb
+                  ? const WebMissionsByDayPage()
+                  : const MissionsByDayPage(),
             ),
           ],
         ),

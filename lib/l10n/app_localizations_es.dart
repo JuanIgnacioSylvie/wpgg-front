@@ -63,6 +63,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las misiones completadas aparecerán acá.';
 
   @override
+  String get noMissionsForDay => 'No hay misiones para este día.';
+
+  @override
+  String get noMissionsForFilter => 'Ninguna misión coincide con este filtro.';
+
+  @override
   String get errorLoadingMissions => 'Error al cargar misiones';
 
   @override

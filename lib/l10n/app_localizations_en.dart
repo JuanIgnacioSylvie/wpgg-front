@@ -63,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Completed missions will appear here.';
 
   @override
+  String get noMissionsForDay => 'No missions for this day.';
+
+  @override
+  String get noMissionsForFilter => 'No missions match this filter.';
+
+  @override
   String get errorLoadingMissions => 'Error loading missions';
 
   @override

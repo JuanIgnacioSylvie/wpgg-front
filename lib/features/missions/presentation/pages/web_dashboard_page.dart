@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
+import '../../../../core/presentation/web/web_section_header.dart';
 import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
@@ -208,7 +208,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _SectionHeader(
+                            WebSectionHeader(
                               title: l10n.inProgress,
                               count: _inProgressCount(home),
                             ),
@@ -270,7 +270,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                 ),
                               ),
                             const SizedBox(height: 48),
-                            _SectionHeader(
+                            WebSectionHeader(
                               title: l10n.passMissions,
                               count: home.past.length,
                             ),
@@ -337,52 +337,6 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
           );
         },
       ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    this.count,
-  });
-
-  final String title;
-  final int? count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontFamily: AppFonts.lexendDeca,
-            color: WebColors.textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        if (count != null) ...[
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: WebColors.surfaceElevated,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: WebColors.border),
-            ),
-            child: Text(
-              '$count',
-              style: const TextStyle(
-                color: WebColors.textSecondary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ],
     );
   }
 }

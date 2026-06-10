@@ -27,6 +27,8 @@
   "pickMissions": "Pick missions",
   "passMissions": "Pass Missions",
   "completedMissionsPlaceholder": "Completed missions will appear here.",
+  "noMissionsForDay": "No missions for this day.",
+  "noMissionsForFilter": "No missions match this filter.",
   "errorLoadingMissions": "Error loading missions",
   "missionsByDays": "Missions by days",
   "errorGeneric": "Error",
