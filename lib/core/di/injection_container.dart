@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import '../config/app_public_config.dart';
 import '../constants/app_constants.dart';
 import '../network/api_client.dart';
 import '../network/cdn_client.dart';
@@ -51,6 +52,8 @@ Future<void> initDependencies() async {
       secureStorage: sl(),
     ),
   );
+
+  await AppPublicConfig.load(sl<ApiClient>());
 
   sl.registerLazySingleton<DDragonRemoteDataSource>(
     () => DDragonRemoteDataSource(sl<CdnClient>()),

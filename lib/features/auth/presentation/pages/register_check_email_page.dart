@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/config/app_public_config.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
@@ -33,8 +32,7 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
   StreamSubscription<AuthState>? _authSub;
   String? _turnstileToken;
 
-  bool get _needsTurnstile =>
-      kIsWeb && AppConstants.turnstileSiteKey.isNotEmpty;
+  bool get _needsTurnstile => AppPublicConfig.turnstileEnabled;
 
   @override
   void initState() {
@@ -125,7 +123,7 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
                   if (_needsTurnstile) ...[
                     const SizedBox(height: 20),
                     TurnstileWidget(
-                      siteKey: AppConstants.turnstileSiteKey,
+                      siteKey: AppPublicConfig.turnstileSiteKey,
                       onToken: (token) =>
                           setState(() => _turnstileToken = token),
                       onExpired: () => setState(() => _turnstileToken = null),

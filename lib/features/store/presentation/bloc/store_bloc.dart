@@ -21,6 +21,9 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       return;
     }
 
+    final pendingPurchase = current is StoreLoaded ? current.lastPurchase : null;
+    final pendingError = current is StoreLoaded ? current.purchaseError : null;
+
     emit(const StoreLoading());
     try {
       final orders = await _dataSource.fetchOrders();
@@ -28,7 +31,11 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       if (afterFetch is StoreLoaded && afterFetch.purchasing) {
         return;
       }
-      emit(StoreLoaded(orders: orders));
+      emit(StoreLoaded(
+        orders: orders,
+        lastPurchase: pendingPurchase,
+        purchaseError: pendingError,
+      ));
     } catch (e) {
       final afterError = state;
       if (afterError is StoreLoaded && afterError.purchasing) {

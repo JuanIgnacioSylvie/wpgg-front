@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/config/app_public_config.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
@@ -53,9 +52,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   String? _turnstileToken;
 
   bool get _needsTurnstile =>
-      _mode == AuthFlowMode.register &&
-      kIsWeb &&
-      AppConstants.turnstileSiteKey.isNotEmpty;
+      _mode == AuthFlowMode.register && AppPublicConfig.turnstileEnabled;
 
   @override
   void initState() {
@@ -279,7 +276,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
         if (_needsTurnstile) ...[
           const SizedBox(height: 20),
           TurnstileWidget(
-            siteKey: AppConstants.turnstileSiteKey,
+            siteKey: AppPublicConfig.turnstileSiteKey,
             onToken: (token) => setState(() => _turnstileToken = token),
             onExpired: () => setState(() => _turnstileToken = null),
             onError: () => setState(() => _turnstileToken = null),
