@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -76,55 +75,42 @@ Future<void> showStorePurchaseDialog(
   final storeBloc = context.read<StoreBloc>();
   final dataSource = sl<StoreRemoteDataSource>();
 
-  void onConfirm() {
-    unawaited(
-      _executePurchase(
-        context: context,
-        product: product,
-        walletBloc: walletBloc,
-        storeBloc: storeBloc,
-        dataSource: dataSource,
-        l10n: l10n,
-      ),
-    );
-  }
+  final confirmed = isWeb
+      ? await showWebDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (dialogCtx) => BlocProvider.value(
+            value: walletBloc,
+            child: _PurchaseConfirmDialog(
+              dialogCtx: dialogCtx,
+              product: product,
+              isWeb: true,
+            ),
+          ),
+        )
+      : await showDialog<bool>(
+          context: context,
+          useRootNavigator: false,
+          barrierDismissible: false,
+          builder: (dialogCtx) => BlocProvider.value(
+            value: walletBloc,
+            child: _PurchaseConfirmDialog(
+              dialogCtx: dialogCtx,
+              product: product,
+              isWeb: false,
+            ),
+          ),
+        );
 
-  if (isWeb) {
-    await showWebDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogCtx) => BlocProvider.value(
-        value: walletBloc,
-        child: _PurchaseConfirmDialog(
-          dialogCtx: dialogCtx,
-          product: product,
-          isWeb: true,
-          onConfirm: () {
-            Navigator.pop(dialogCtx);
-            onConfirm();
-          },
-        ),
-      ),
-    );
-    return;
-  }
+  if (confirmed != true || !context.mounted) return;
 
-  await showDialog<void>(
+  await _executePurchase(
     context: context,
-    useRootNavigator: false,
-    barrierDismissible: false,
-    builder: (dialogCtx) => BlocProvider.value(
-      value: walletBloc,
-      child: _PurchaseConfirmDialog(
-        dialogCtx: dialogCtx,
-        product: product,
-        isWeb: false,
-        onConfirm: () {
-          Navigator.pop(dialogCtx);
-          onConfirm();
-        },
-      ),
-    ),
+    product: product,
+    walletBloc: walletBloc,
+    storeBloc: storeBloc,
+    dataSource: dataSource,
+    l10n: l10n,
   );
 }
 
@@ -144,13 +130,13 @@ class _PurchaseConfirmDialog extends StatelessWidget {
     required this.dialogCtx,
     required this.product,
     required this.isWeb,
-    required this.onConfirm,
   });
 
   final BuildContext dialogCtx;
   final StoreProduct product;
   final bool isWeb;
-  final VoidCallback onConfirm;
+
+  void _close(bool result) => Navigator.of(dialogCtx).pop(result);
 
   Widget _body(BuildContext context, dynamic l10n, WalletState walletState) {
     final balance = WpggEconomy.balanceFromState(walletState);
@@ -218,33 +204,69 @@ class _PurchaseConfirmDialog extends StatelessWidget {
       builder: (context, walletState) {
         final balance = WpggEconomy.balanceFromState(walletState);
         final walletLoading = balance == null && walletState is! WalletError;
+        final canAfford = WpggEconomy.canAfford(balance, product.priceWpgg);
+        final canConfirm = !walletLoading && canAfford;
 
         if (isWeb) {
-          return AlertDialog(
-            backgroundColor: WebColors.surfaceElevated,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: WebColors.border),
-            ),
-            title: Text(
-              l10n.storePurchaseTitle,
-              style: const TextStyle(
-                fontFamily: AppFonts.lexendDeca,
-                color: WebColors.textPrimary,
-                fontWeight: FontWeight.w700,
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: WebColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: WebColors.border),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 32,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        l10n.storePurchaseTitle,
+                        style: const TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          color: WebColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 17,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _body(context, l10n, walletState),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: WpggCancelButton(
+                              onPressed: () => _close(false),
+                              label: l10n.cancel,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: WpggPrimaryButton(
+                              onPressed:
+                                  canConfirm ? () => _close(true) : null,
+                              label: l10n.storeBuy,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            content: _body(context, l10n, walletState),
-            actions: [
-              WpggCancelButton(
-                onPressed: () => Navigator.pop(dialogCtx),
-                label: l10n.cancel,
-              ),
-              WpggPrimaryButton(
-                onPressed: walletLoading ? null : onConfirm,
-                label: l10n.storeBuy,
-              ),
-            ],
           );
         }
 
@@ -273,12 +295,12 @@ class _PurchaseConfirmDialog extends StatelessWidget {
                 _body(context, l10n, walletState),
                 const SizedBox(height: 24),
                 WpggPrimaryButton(
-                  onPressed: walletLoading ? null : onConfirm,
+                  onPressed: canConfirm ? () => _close(true) : null,
                   label: l10n.storeBuy,
                 ),
                 const SizedBox(height: 12),
                 WpggCancelButton(
-                  onPressed: () => Navigator.pop(dialogCtx),
+                  onPressed: () => _close(false),
                   label: l10n.cancel,
                 ),
               ],
