@@ -183,6 +183,9 @@ String webSectionTitleForLocation(String location) {
   if (location.startsWith('/missions/by-day')) {
     return 'Misiones por día';
   }
+  if (location.startsWith('/store')) {
+    return 'Tienda';
+  }
   if (location.startsWith('/finance')) {
     return 'Finanzas';
   }

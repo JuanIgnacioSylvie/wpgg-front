@@ -24,6 +24,8 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/terms_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../features/store/presentation/pages/store_page.dart';
+import '../../features/store/presentation/pages/web_store_page.dart';
 import '../../features/wallet/presentation/pages/finance_page.dart';
 import '../../features/wallet/presentation/pages/web_finance_page.dart';
 import '../di/injection_container.dart';
@@ -44,11 +46,14 @@ int shellBranchIndexForNav(int navIndex) {
   if (navIndex <= 1) {
     return navIndex;
   }
-  if (navIndex == 3) {
+  if (navIndex == 2) {
     return 2;
   }
-  if (navIndex == 4) {
+  if (navIndex == 3) {
     return 3;
+  }
+  if (navIndex == 4) {
+    return 4;
   }
   return 0;
 }
@@ -152,6 +157,16 @@ final GoRouter appRouter = GoRouter(
               builder: (_, __) => kIsWeb
                   ? const WebMissionsByDayPage()
                   : const MissionsByDayPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/store',
+              builder: (_, __) => kIsWeb
+                  ? const WebStorePage()
+                  : const StorePage(),
             ),
           ],
         ),

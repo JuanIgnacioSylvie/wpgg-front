@@ -697,6 +697,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It\'s currently in active development. More info on availability coming soon.'**
   String get faqAvailabilityA;
+
+  /// No description provided for @storeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get storeTitle;
+
+  /// No description provided for @storeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem your WPGG for Riot gift cards.'**
+  String get storeSubtitle;
+
+  /// No description provided for @storeBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get storeBuy;
+
+  /// No description provided for @storePurchaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm purchase'**
+  String get storePurchaseTitle;
+
+  /// No description provided for @storePurchaseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will spend {cost} WPGG for {product}.'**
+  String storePurchaseBody(int cost, String product);
+
+  /// No description provided for @storeComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases will be available soon.'**
+  String get storeComingSoon;
 }
 
 class _AppLocalizationsDelegate

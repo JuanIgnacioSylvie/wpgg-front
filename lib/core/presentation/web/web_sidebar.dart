@@ -49,13 +49,18 @@ class WebSidebar extends StatelessWidget {
       label: 'Misiones por día',
     ),
     _NavItem(
+      icon: Icons.storefront_outlined,
+      selectedIcon: Icons.storefront,
+      label: 'Tienda',
+    ),
+    _NavItem(
       outline: 'assets/icons/chart_bar.svg',
       filled: 'assets/icons/chart_bar_filled.svg',
       label: 'Finanzas',
     ),
   ];
 
-  static const _branchIndices = [0, 1, 2];
+  static const _branchIndices = [0, 1, 2, 3];
 
   static const _profileItem = _NavItem(
     outline: 'assets/icons/profile.svg',
@@ -97,10 +102,11 @@ class WebSidebar extends StatelessWidget {
           _SidebarNavSection(
             expanded: expanded,
             selectedRowIndex: profileSelected
-                ? 3
+                ? 4
                 : switch (currentIndex) {
                     1 => 1,
                     2 => 2,
+                    3 => 3,
                     _ => 0,
                   },
             items: _items,
@@ -501,8 +507,16 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
   }
 
   Widget _icon(Color color) {
+    final item = widget.item;
+    if (item.icon != null) {
+      return Icon(
+        widget.selected ? (item.selectedIcon ?? item.icon) : item.icon,
+        size: 22,
+        color: color,
+      );
+    }
     return SvgPicture.asset(
-      widget.selected ? widget.item.filled : widget.item.outline,
+      widget.selected ? item.filled! : item.outline!,
       width: 22,
       height: 22,
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
@@ -631,13 +645,17 @@ class _SidebarLogoutButtonState extends State<_SidebarLogoutButton> {
 
 class _NavItem {
   const _NavItem({
-    required this.outline,
-    required this.filled,
+    this.outline,
+    this.filled,
+    this.icon,
+    this.selectedIcon,
     required this.label,
   });
 
-  final String outline;
-  final String filled;
+  final String? outline;
+  final String? filled;
+  final IconData? icon;
+  final IconData? selectedIcon;
   final String label;
 }
 
@@ -645,8 +663,11 @@ int webSidebarIndexForLocation(String location) {
   if (location.startsWith('/missions/by-day')) {
     return 1;
   }
-  if (location.startsWith('/finance')) {
+  if (location.startsWith('/store')) {
     return 2;
+  }
+  if (location.startsWith('/finance')) {
+    return 3;
   }
   return 0;
 }

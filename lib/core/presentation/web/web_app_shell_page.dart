@@ -44,7 +44,7 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
       final location = GoRouterState.of(context).uri.path;
       if (location.startsWith('/profile')) {
         _openProfileDialog();
-        if (widget.navigationShell.currentIndex == 3) {
+        if (widget.navigationShell.currentIndex == 4) {
           widget.navigationShell.goBranch(0, initialLocation: true);
         }
       }

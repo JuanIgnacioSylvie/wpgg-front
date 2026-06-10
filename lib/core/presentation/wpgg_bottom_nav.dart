@@ -178,6 +178,9 @@ int wpggNavIndexForLocation(String location) {
   if (location.startsWith('/missions/by-day')) {
     return 1;
   }
+  if (location.startsWith('/store')) {
+    return 2;
+  }
   if (location.startsWith('/finance')) {
     return 3;
   }

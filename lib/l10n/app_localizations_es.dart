@@ -346,4 +346,24 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get faqAvailabilityA =>
       'Actualmente está en desarrollo activo. Más info sobre disponibilidad próximamente.';
+
+  @override
+  String get storeTitle => 'Tienda';
+
+  @override
+  String get storeSubtitle => 'Canjeá tus WPGG por gift cards de Riot.';
+
+  @override
+  String get storeBuy => 'Comprar';
+
+  @override
+  String get storePurchaseTitle => 'Confirmar compra';
+
+  @override
+  String storePurchaseBody(int cost, String product) {
+    return 'Vas a gastar $cost WPGG por $product.';
+  }
+
+  @override
+  String get storeComingSoon => 'Las compras estarán disponibles muy pronto.';
 }

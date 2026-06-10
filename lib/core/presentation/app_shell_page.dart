@@ -63,7 +63,7 @@ class _AppShellPageState extends State<AppShellPage> {
                   return;
                 }
               },
-              onFabTap: () => context.push('/missions/pick'),
+              onFabTap: () => context.go('/store'),
             ),
           ),
         ],

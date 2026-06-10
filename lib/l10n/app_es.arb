@@ -119,5 +119,17 @@
   "faqLoLAccountQ": "¿Con qué cuenta de LoL me conecto?",
   "faqLoLAccountA": "La app usa Riot Sign On (el sistema oficial de Riot Games), así que iniciás sesión con tu cuenta de Riot directamente. No necesitás darnos tu contraseña ni nada por el estilo — es el mismo OAuth que usan apps como op.gg o u.gg.",
   "faqAvailabilityQ": "¿La app está disponible para iOS y Android?",
-  "faqAvailabilityA": "Actualmente está en desarrollo activo. Más info sobre disponibilidad próximamente."
+  "faqAvailabilityA": "Actualmente está en desarrollo activo. Más info sobre disponibilidad próximamente.",
+  "storeTitle": "Tienda",
+  "storeSubtitle": "Canjeá tus WPGG por gift cards de Riot.",
+  "storeBuy": "Comprar",
+  "storePurchaseTitle": "Confirmar compra",
+  "storePurchaseBody": "Vas a gastar {cost} WPGG por {product}.",
+  "@storePurchaseBody": {
+    "placeholders": {
+      "cost": {"type": "int"},
+      "product": {"type": "String"}
+    }
+  },
+  "storeComingSoon": "Las compras estarán disponibles muy pronto."
 }
