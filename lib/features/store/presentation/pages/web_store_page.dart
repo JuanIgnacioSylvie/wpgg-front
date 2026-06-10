@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_section_header.dart';
-import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../data/datasources/store_remote_datasource.dart';
 import '../../domain/store_catalog.dart';
 import '../bloc/store_bloc.dart';
@@ -19,7 +18,6 @@ class WebStorePage extends StatefulWidget {
 }
 
 class _WebStorePageState extends State<WebStorePage> {
-  var _walletRequested = false;
   var _ordersRequested = false;
 
   @override
@@ -32,10 +30,6 @@ class _WebStorePageState extends State<WebStorePage> {
     final route = ModalRoute.of(context);
     if (route == null || !route.isCurrent) return;
 
-    if (!_walletRequested) {
-      _walletRequested = true;
-      context.read<WalletBloc>().add(const LoadWallet());
-    }
     if (!_ordersRequested) {
       _ordersRequested = true;
       context.read<StoreBloc>().add(const LoadStoreOrders());
