@@ -6,20 +6,26 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
+import '../widgets/profile_panel_header.dart';
 
 class FaqsPage extends StatefulWidget {
   const FaqsPage({
     super.key,
     this.embeddedInPanel = false,
+    this.useWebPanelStyle = false,
+    this.onBack,
   });
 
   final bool embeddedInPanel;
+  final bool useWebPanelStyle;
+  final VoidCallback? onBack;
 
   @override
   State<FaqsPage> createState() => _FaqsPageState();
@@ -49,7 +55,7 @@ class _FaqsPageState extends State<FaqsPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final items = _items(context);
-    final ddragon = context.watch<DDragonProvider>();
+    final useWeb = widget.useWebPanelStyle;
 
     final body = SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
@@ -67,8 +73,8 @@ class _FaqsPageState extends State<FaqsPage> {
               fontFamily: AppFonts.lexendDeca,
               fontSize: 14,
               height: 1.5,
-              color: widget.embeddedInPanel
-                  ? WpggBrand.cardTextDark.withValues(alpha: 0.7)
+              color: useWeb
+                  ? WebColors.textSecondary
                   : WpggBrand.white.withValues(alpha: 0.85),
             ),
           ),
@@ -82,7 +88,7 @@ class _FaqsPageState extends State<FaqsPage> {
                 question: item.question,
                 answer: item.answer,
                 expanded: isExpanded,
-                embeddedInPanel: widget.embeddedInPanel,
+                useWebStyle: useWeb,
                 onTap: () {
                   setState(() {
                     if (isExpanded) {
@@ -102,36 +108,17 @@ class _FaqsPageState extends State<FaqsPage> {
     if (widget.embeddedInPanel) {
       return Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 8, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: WpggBrand.cardTextDark,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    l10n.faqsTitle,
-                    style: const TextStyle(
-                      fontFamily: AppFonts.lexendDeca,
-                      color: WpggBrand.cardTextDark,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ProfilePanelHeader(
+            title: l10n.faqsTitle,
+            onBack: widget.onBack,
+            useWebStyle: useWeb,
           ),
           Expanded(child: body),
         ],
       );
     }
 
+    final ddragon = context.watch<DDragonProvider>();
     return BlocBuilder<RiotBloc, RiotState>(
       builder: (context, riotState) {
         SummonerEntity? summoner;
@@ -152,7 +139,15 @@ class _FaqsPageState extends State<FaqsPage> {
   }
 }
 
-void openFaqsPage(BuildContext context, {required bool embeddedInPanel}) {
+void openFaqsPage(
+  BuildContext context, {
+  required bool embeddedInPanel,
+  VoidCallback? onOpenInPanel,
+}) {
+  if (onOpenInPanel != null) {
+    onOpenInPanel();
+    return;
+  }
   if (embeddedInPanel) {
     Navigator.of(context).push<void>(
       MaterialPageRoute(
@@ -169,66 +164,84 @@ class _FaqTile extends StatelessWidget {
     required this.question,
     required this.answer,
     required this.expanded,
-    required this.embeddedInPanel,
+    required this.useWebStyle,
     required this.onTap,
   });
 
   final String question;
   final String answer;
   final bool expanded;
-  final bool embeddedInPanel;
+  final bool useWebStyle;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final background =
+        useWebStyle ? WebColors.surfaceElevated : WpggBrand.cardSurface;
+    final borderColor = useWebStyle ? WebColors.border : Colors.transparent;
+    final questionColor =
+        useWebStyle ? WebColors.textPrimary : WpggBrand.cardTextDark;
+    final answerColor = useWebStyle
+        ? WebColors.textSecondary
+        : WpggBrand.cardTextDark.withValues(alpha: 0.7);
+    final iconColor = useWebStyle ? WebColors.accent : WpggBrand.primary;
+
     return Material(
-      color: WpggBrand.cardSurface,
-      borderRadius: BorderRadius.circular(20),
+      color: background,
+      borderRadius: BorderRadius.circular(useWebStyle ? 12 : 20),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      question,
-                      style: const TextStyle(
-                        fontFamily: AppFonts.lexendDeca,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: WpggBrand.cardTextDark,
-                        height: 1.35,
+        borderRadius: BorderRadius.circular(useWebStyle ? 12 : 20),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(useWebStyle ? 12 : 20),
+            border: useWebStyle
+                ? Border.all(color: borderColor)
+                : null,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        question,
+                        style: TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: questionColor,
+                          height: 1.35,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    expanded ? Icons.expand_less : Icons.expand_more,
-                    color: WpggBrand.primary,
-                    size: 24,
+                    const SizedBox(width: 8),
+                    Icon(
+                      expanded ? Icons.expand_less : Icons.expand_more,
+                      color: iconColor,
+                      size: 24,
+                    ),
+                  ],
+                ),
+                if (expanded) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    answer,
+                    style: TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: answerColor,
+                      height: 1.5,
+                    ),
                   ),
                 ],
-              ),
-              if (expanded) ...[
-                const SizedBox(height: 12),
-                Text(
-                  answer,
-                  style: TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: WpggBrand.cardTextDark.withValues(alpha: 0.7),
-                    height: 1.5,
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
         ),
       ),

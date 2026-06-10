@@ -14,6 +14,7 @@ import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import 'faqs_page.dart';
+import 'terms_page.dart';
 import '../widgets/withdraw_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -21,10 +22,14 @@ class ProfilePage extends StatefulWidget {
     super.key,
     this.embeddedInPanel = false,
     this.onClose,
+    this.onOpenFaqs,
+    this.onOpenTerms,
   });
 
   final bool embeddedInPanel;
   final VoidCallback? onClose;
+  final VoidCallback? onOpenFaqs;
+  final VoidCallback? onOpenTerms;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -318,6 +323,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 onTap: () => openFaqsPage(
                                   context,
                                   embeddedInPanel: widget.embeddedInPanel,
+                                  onOpenInPanel: widget.onOpenFaqs,
                                 ),
                               ),
                               const Divider(height: 1),
@@ -332,8 +338,13 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                               const Divider(height: 1),
                               _SettingsRow(
-                                icon: Icons.lock_outline,
-                                label: l10n.privacyPolicy,
+                                icon: Icons.description_outlined,
+                                label: l10n.termsAndConditionsTitle,
+                                onTap: () => openTermsPage(
+                                  context,
+                                  embeddedInPanel: widget.embeddedInPanel,
+                                  onOpenInPanel: widget.onOpenTerms,
+                                ),
                               ),
                             ],
                           ),

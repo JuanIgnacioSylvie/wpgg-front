@@ -101,6 +101,7 @@
   "helpSupport": "Help & Support",
   "contactUs": "Contact us",
   "privacyPolicy": "Privacy policy",
+  "termsAndConditionsTitle": "Terms and Conditions",
   "withdrawTitle": "Withdraw WPGG",
   "withdrawMinHint": "Minimum withdrawal is {amount} WPGG",
   "@withdrawMinHint": {

@@ -446,6 +446,12 @@ abstract class AppLocalizations {
   /// **'Privacy policy'**
   String get privacyPolicy;
 
+  /// No description provided for @termsAndConditionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and Conditions'**
+  String get termsAndConditionsTitle;
+
   /// No description provided for @withdrawTitle.
   ///
   /// In en, this message translates to:

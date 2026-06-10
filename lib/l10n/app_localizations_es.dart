@@ -204,6 +204,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privacyPolicy => 'Política de privacidad';
 
   @override
+  String get termsAndConditionsTitle => 'Términos y Condiciones';
+
+  @override
   String get withdrawTitle => 'Retirar WPGG';
 
   @override

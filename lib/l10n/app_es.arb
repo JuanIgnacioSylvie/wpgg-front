@@ -78,6 +78,7 @@
   "helpSupport": "Ayuda y soporte",
   "contactUs": "Contáctanos",
   "privacyPolicy": "Política de privacidad",
+  "termsAndConditionsTitle": "Términos y Condiciones",
   "withdrawTitle": "Retirar WPGG",
   "withdrawMinHint": "El retiro mínimo es {amount} WPGG",
   "walletAddressLabel": "Dirección de wallet Polygon",
