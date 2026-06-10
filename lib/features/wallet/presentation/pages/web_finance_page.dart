@@ -91,7 +91,7 @@ class _WebFinancePageState extends State<WebFinancePage> {
                 subtitle: 'Precio del token y movimientos de tu wallet',
               ),
               const SizedBox(height: 24),
-              const WpggPriceWidget(showMarketStats: true),
+              const WpggPriceWidget(),
               const SizedBox(height: 32),
               if (walletLoading)
                 const WebAnimatedSwitcher(

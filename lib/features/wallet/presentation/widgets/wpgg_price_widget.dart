@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/presentation/web/web_colors.dart';
@@ -14,14 +13,13 @@ class WpggPriceWidget extends StatefulWidget {
   const WpggPriceWidget({
     super.key,
     this.compact = false,
-    this.showMarketStats = false,
   });
 
   /// Compact layout for mobile finance header.
   final bool compact;
 
-  /// Shows 24h volume and pool liquidity (web finance).
-  final bool showMarketStats;
+  static const _wpggCoinAsset = 'assets/images/wpgg-coin_32x32.png';
+  static const _wpggCoinSize = 28.0;
 
   @override
   State<WpggPriceWidget> createState() => _WpggPriceWidgetState();
@@ -78,16 +76,6 @@ class _WpggPriceWidgetState extends State<WpggPriceWidget> {
     return '$sign${value.toStringAsFixed(2)}%';
   }
 
-  static String formatCompactUsd(double value) {
-    if (value >= 1_000_000) {
-      return '\$${(value / 1_000_000).toStringAsFixed(2)}M';
-    }
-    if (value >= 1_000) {
-      return '\$${(value / 1_000).toStringAsFixed(1)}K';
-    }
-    return NumberFormat.currency(symbol: '\$', decimalDigits: 0).format(value);
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_initialLoading && _price == null) {
@@ -103,10 +91,7 @@ class _WpggPriceWidgetState extends State<WpggPriceWidget> {
       return _CompactPrice(price: price);
     }
 
-    return _ExpandedPrice(
-      price: price,
-      showMarketStats: widget.showMarketStats,
-    );
+    return _ExpandedPrice(price: price);
   }
 }
 
@@ -155,13 +140,9 @@ class _CompactPrice extends StatelessWidget {
 }
 
 class _ExpandedPrice extends StatelessWidget {
-  const _ExpandedPrice({
-    required this.price,
-    required this.showMarketStats,
-  });
+  const _ExpandedPrice({required this.price});
 
   final WpggTokenPrice price;
-  final bool showMarketStats;
 
   @override
   Widget build(BuildContext context) {
@@ -185,20 +166,13 @@ class _ExpandedPrice extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: WebColors.accent.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.monetization_on_rounded,
-                  color: WebColors.accent,
-                  size: 22,
-                ),
+              Image.asset(
+                WpggPriceWidget._wpggCoinAsset,
+                width: WpggPriceWidget._wpggCoinSize,
+                height: WpggPriceWidget._wpggCoinSize,
+                filterQuality: FilterQuality.high,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               const Text(
                 'WPGG',
                 style: TextStyle(
@@ -250,66 +224,8 @@ class _ExpandedPrice extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          if (showMarketStats) ...[
-            const SizedBox(height: 24),
-            const Divider(color: WebColors.borderSubtle, height: 1),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatTile(
-                    label: 'Volumen 24h',
-                    value: _WpggPriceWidgetState.formatCompactUsd(
-                      price.volumeH24,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _StatTile(
-                    label: 'Liquidez',
-                    value: _WpggPriceWidgetState.formatCompactUsd(
-                      price.liquidityUsd,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ],
       ),
-    );
-  }
-}
-
-class _StatTile extends StatelessWidget {
-  const _StatTile({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: WebColors.textMuted,
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: WebColors.textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -345,8 +261,12 @@ class _PriceShimmer extends StatelessWidget {
                 children: const [
                   Row(
                     children: [
-                      WebSkeletonBox(width: 40, height: 40, borderRadius: BorderRadius.all(Radius.circular(10))),
-                      SizedBox(width: 12),
+                      WebSkeletonBox(
+                        width: WpggPriceWidget._wpggCoinSize,
+                        height: WpggPriceWidget._wpggCoinSize,
+                        borderRadius: BorderRadius.all(Radius.circular(WpggPriceWidget._wpggCoinSize / 2)),
+                      ),
+                      SizedBox(width: 10),
                       WebSkeletonBox(width: 56, height: 18),
                       Spacer(),
                       WebSkeletonBox(width: 72, height: 24, borderRadius: BorderRadius.all(Radius.circular(20))),
