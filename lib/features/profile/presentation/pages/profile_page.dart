@@ -6,6 +6,7 @@ import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/locale/locale_provider.dart';
+import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -16,18 +17,21 @@ import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import 'faqs_page.dart';
 import 'terms_page.dart';
+import '../widgets/profile_panel_header.dart';
 import '../widgets/withdraw_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
     this.embeddedInPanel = false,
+    this.useWebPanelStyle = false,
     this.onClose,
     this.onOpenFaqs,
     this.onOpenTerms,
   });
 
   final bool embeddedInPanel;
+  final bool useWebPanelStyle;
   final VoidCallback? onClose;
   final VoidCallback? onOpenFaqs;
   final VoidCallback? onOpenTerms;
@@ -40,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   static const _appBarAvatarSize = 40.0;
   static const _profileAvatarSize = 112.0;
+  static const _webProfileAvatarSize = 80.0;
 
   late final AnimationController _entranceController;
   late final Animation<double> _scaleAnimation;
@@ -106,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage>
     final l10n = context.l10n;
     final localeProvider = Provider.of<LocaleProvider>(context);
     final ddragon = Provider.of<DDragonProvider>(context);
+    final useWeb = widget.useWebPanelStyle;
 
     return BlocListener<WalletBloc, WalletState>(
       listenWhen: (prev, curr) =>
@@ -138,33 +144,34 @@ class _ProfilePageState extends State<ProfilePage>
               final minWithdraw = summary?.minWithdrawWpgg ?? 1000;
               final withdrawing = walletState is WalletWithdrawing;
 
+              final avatarSize =
+                  useWeb ? _webProfileAvatarSize : _profileAvatarSize;
+              final avatarWidget = summoner != null
+                  ? WpggProfileAvatar(
+                      summoner: summoner,
+                      ddragon: ddragon,
+                      size: avatarSize,
+                      enableHero:
+                          !widget.embeddedInPanel && _animateFromAppBar,
+                    )
+                  : CircleAvatar(
+                      radius: avatarSize / 2,
+                      backgroundColor:
+                          useWeb ? WebColors.surfaceElevated : WpggBrand.primary,
+                      child: Icon(
+                        Icons.person,
+                        color: useWeb ? WebColors.textSecondary : WpggBrand.white,
+                        size: avatarSize * 0.4,
+                      ),
+                    );
+
               return Column(
                 children: [
                   if (widget.embeddedInPanel)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 8, 0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              l10n.myProfile,
-                              style: const TextStyle(
-                                fontFamily: AppFonts.lexendDeca,
-                                color: WpggBrand.cardTextDark,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: widget.onClose,
-                            icon: const Icon(
-                              Icons.close,
-                              color: WpggBrand.cardTextDark,
-                            ),
-                          ),
-                        ],
-                      ),
+                    ProfilePanelHeader(
+                      title: l10n.myProfile,
+                      onClose: widget.onClose,
+                      useWebStyle: useWeb,
                     )
                   else
                     SafeArea(
@@ -208,63 +215,82 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 200,
-                            child: AnimatedBuilder(
-                              animation: _entranceController,
-                              builder: (context, child) {
-                                return AlignTransition(
-                                  alignment: _alignmentAnimation,
-                                  child: ScaleTransition(
-                                    scale: _scaleAnimation,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: summoner != null
-                                  ? WpggProfileAvatar(
-                                      summoner: summoner,
-                                      ddragon: ddragon,
-                                      size: _profileAvatarSize,
-                                      enableHero:
-                                          !widget.embeddedInPanel &&
-                                              _animateFromAppBar,
-                                    )
-                                  : const CircleAvatar(
-                                      radius: _profileAvatarSize / 2,
-                                      backgroundColor: WpggBrand.primary,
-                                      child: Icon(
-                                        Icons.person,
-                                        color: WpggBrand.white,
-                                        size: 48,
+                          if (useWeb)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8, bottom: 20),
+                              child: Column(
+                                children: [
+                                  avatarWidget,
+                                  if (summoner != null) ...[
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      summoner.gameName,
+                                      style: const TextStyle(
+                                        fontFamily: AppFonts.lexendDeca,
+                                        color: WebColors.textPrimary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                            ),
-                          ),
-                          if (summoner != null) ...[
-                            Text(
-                              summoner.gameName,
-                              style: TextStyle(
-                                fontFamily: AppFonts.lexendDeca,
-                                color: widget.embeddedInPanel
-                                    ? WpggBrand.cardTextDark
-                                    : WpggBrand.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                                    if (summoner.tagLine.isNotEmpty)
+                                      Text(
+                                        '#${summoner.tagLine}',
+                                        style: const TextStyle(
+                                          fontFamily: AppFonts.lexendDeca,
+                                          color: WebColors.textMuted,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                  ],
+                                ],
+                              ),
+                            )
+                          else ...[
+                            SizedBox(
+                              height: 200,
+                              child: AnimatedBuilder(
+                                animation: _entranceController,
+                                builder: (context, child) {
+                                  return AlignTransition(
+                                    alignment: _alignmentAnimation,
+                                    child: ScaleTransition(
+                                      scale: _scaleAnimation,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                child: avatarWidget,
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            if (summoner != null) ...[
+                              Text(
+                                summoner.gameName,
+                                style: TextStyle(
+                                  fontFamily: AppFonts.lexendDeca,
+                                  color: widget.embeddedInPanel
+                                      ? WpggBrand.cardTextDark
+                                      : WpggBrand.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
                           ],
                           Row(
                             children: [
                               Expanded(
-                                child: _BalancePill(balance: balance),
+                                child: _BalancePill(
+                                  balance: balance,
+                                  useWebStyle: useWeb,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _WithdrawPill(
                                   loading: withdrawing,
                                   enabled: balance >= minWithdraw,
+                                  useWebStyle: useWeb,
                                   onTap: () => showWithdrawDialog(
                                     context,
                                     balance: balance,
@@ -276,28 +302,40 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           const SizedBox(height: 28),
                           _SettingsCard(
+                            useWebStyle: useWeb,
                             children: [
                               _SettingsRow(
                                 icon: Icons.notifications_none,
                                 label: l10n.generalNotification,
+                                useWebStyle: useWeb,
                                 trailing: Switch(
                                   value: true,
                                   onChanged: null,
                                   activeThumbColor: WpggBrand.white,
-                                  activeTrackColor: WpggBrand.primary,
+                                  activeTrackColor: useWeb
+                                      ? WebColors.accent
+                                      : WpggBrand.primary,
                                 ),
                               ),
-                              const Divider(height: 1),
+                              Divider(
+                                height: 1,
+                                color: useWeb
+                                    ? WebColors.borderSubtle
+                                    : null,
+                              ),
                               _SettingsRow(
                                 icon: Icons.translate,
                                 label: l10n.language,
+                                useWebStyle: useWeb,
                                 trailing: Text(
                                   localeProvider.isSpanish
                                       ? l10n.languageSpanish
                                       : l10n.languageEnglish,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: AppFonts.lexendDeca,
-                                    color: WpggBrand.primary,
+                                    color: useWeb
+                                        ? WebColors.accent
+                                        : WpggBrand.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -313,30 +351,50 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           const SizedBox(height: 16),
                           _SettingsCard(
+                            useWebStyle: useWeb,
                             children: [
                               _SettingsRow(
                                 icon: Icons.quiz_outlined,
                                 label: l10n.faqsMenuItem,
+                                useWebStyle: useWeb,
                                 onTap: () => openFaqsPage(
                                   context,
                                   embeddedInPanel: widget.embeddedInPanel,
                                   onOpenInPanel: widget.onOpenFaqs,
                                 ),
                               ),
-                              const Divider(height: 1),
+                              Divider(
+                                height: 1,
+                                color: useWeb
+                                    ? WebColors.borderSubtle
+                                    : null,
+                              ),
                               _SettingsRow(
                                 icon: Icons.support_agent_outlined,
                                 label: l10n.helpSupport,
+                                useWebStyle: useWeb,
                               ),
-                              const Divider(height: 1),
+                              Divider(
+                                height: 1,
+                                color: useWeb
+                                    ? WebColors.borderSubtle
+                                    : null,
+                              ),
                               _SettingsRow(
                                 icon: Icons.chat_bubble_outline,
                                 label: l10n.contactUs,
+                                useWebStyle: useWeb,
                               ),
-                              const Divider(height: 1),
+                              Divider(
+                                height: 1,
+                                color: useWeb
+                                    ? WebColors.borderSubtle
+                                    : null,
+                              ),
                               _SettingsRow(
                                 icon: Icons.description_outlined,
                                 label: l10n.termsAndConditionsTitle,
+                                useWebStyle: useWeb,
                                 onTap: () => openTermsPage(
                                   context,
                                   embeddedInPanel: widget.embeddedInPanel,
@@ -360,12 +418,62 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class _BalancePill extends StatelessWidget {
-  const _BalancePill({required this.balance});
+  const _BalancePill({
+    required this.balance,
+    this.useWebStyle = false,
+  });
 
   final int balance;
+  final bool useWebStyle;
 
   @override
   Widget build(BuildContext context) {
+    if (useWebStyle) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: WebColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: WebColors.borderSubtle),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              'assets/images/wpgg-coin_24x24.png',
+              width: 20,
+              height: 20,
+              filterQuality: FilterQuality.high,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Saldo',
+                    style: TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: WebColors.textMuted,
+                      fontSize: 11,
+                    ),
+                  ),
+                  Text(
+                    '$balance WPGG',
+                    style: const TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: WebColors.textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -403,46 +511,63 @@ class _WithdrawPill extends StatelessWidget {
     required this.onTap,
     required this.enabled,
     required this.loading,
+    this.useWebStyle = false,
   });
 
   final VoidCallback onTap;
   final bool enabled;
   final bool loading;
+  final bool useWebStyle;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final borderRadius =
+        BorderRadius.circular(useWebStyle ? 12 : 28);
+    final borderColor = useWebStyle
+        ? (enabled ? WebColors.accent : WebColors.borderSubtle)
+        : (enabled ? WpggBrand.primary : WpggBrand.textMuted);
+    final labelColor = useWebStyle
+        ? (enabled ? WebColors.accent : WebColors.textMuted)
+        : (enabled ? WpggBrand.primary : WpggBrand.textMuted);
+    final backgroundColor = useWebStyle
+        ? (enabled
+            ? WebColors.accent.withValues(alpha: 0.1)
+            : WebColors.surfaceElevated)
+        : Colors.black.withValues(alpha: 0.35);
+    final progressColor =
+        useWebStyle ? WebColors.accent : WpggBrand.primary;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: enabled && !loading ? onTap : null,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: borderRadius,
         child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: useWebStyle ? 14 : 16,
+            vertical: useWebStyle ? 18 : 12,
+          ),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: enabled ? WpggBrand.primary : WpggBrand.textMuted,
-              width: 1.5,
-            ),
+            color: backgroundColor,
+            borderRadius: borderRadius,
+            border: Border.all(color: borderColor, width: 1.5),
           ),
           child: Center(
             child: loading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: WpggBrand.primary,
+                      color: progressColor,
                     ),
                   )
                 : Text(
                     l10n.withdraw,
                     style: TextStyle(
                       fontFamily: AppFonts.lexendDeca,
-                      color: enabled ? WpggBrand.primary : WpggBrand.textMuted,
+                      color: labelColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
@@ -456,16 +581,23 @@ class _WithdrawPill extends StatelessWidget {
 }
 
 class _SettingsCard extends StatelessWidget {
-  const _SettingsCard({required this.children});
+  const _SettingsCard({
+    required this.children,
+    this.useWebStyle = false,
+  });
 
   final List<Widget> children;
+  final bool useWebStyle;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: WpggBrand.cardSurface,
-        borderRadius: BorderRadius.circular(20),
+        color: useWebStyle ? WebColors.surfaceElevated : WpggBrand.cardSurface,
+        borderRadius: BorderRadius.circular(useWebStyle ? 12 : 20),
+        border: useWebStyle
+            ? Border.all(color: WebColors.borderSubtle)
+            : null,
       ),
       child: Column(children: children),
     );
@@ -478,34 +610,42 @@ class _SettingsRow extends StatelessWidget {
     required this.label,
     this.trailing,
     this.onTap,
+    this.useWebStyle = false,
   });
 
   final IconData icon;
   final String label;
   final Widget? trailing;
   final VoidCallback? onTap;
+  final bool useWebStyle;
 
   @override
   Widget build(BuildContext context) {
+    final iconColor =
+        useWebStyle ? WebColors.textSecondary : WpggBrand.cardTextDark;
+    final labelColor =
+        useWebStyle ? WebColors.textPrimary : WpggBrand.cardTextDark;
+    final borderRadius = BorderRadius.circular(useWebStyle ? 12 : 20);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: borderRadius,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           child: Row(
             children: [
-              Icon(icon, color: WpggBrand.cardTextDark, size: 24),
+              Icon(icon, color: iconColor, size: 24),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: AppFonts.lexendDeca,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: WpggBrand.cardTextDark,
+                    color: labelColor,
                   ),
                 ),
               ),

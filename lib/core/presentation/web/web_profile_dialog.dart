@@ -65,7 +65,9 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
           duration: WebMotion.resolve(context, WebMotion.normal),
           curve: WebMotion.curve,
           constraints: BoxConstraints(
-            maxWidth: isLegal ? 520 : 440,
+            minWidth: isLegal ? 480 : 440,
+            maxWidth: isLegal ? 520 : 480,
+            minHeight: 560,
             maxHeight: 720,
           ),
           decoration: BoxDecoration(
@@ -96,6 +98,7 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
                 _WebProfilePanel.profile => ProfilePage(
                     key: const ValueKey('profile'),
                     embeddedInPanel: true,
+                    useWebPanelStyle: true,
                     onClose: () => Navigator.of(context).pop(),
                     onOpenFaqs: _showFaqs,
                     onOpenTerms: _showTerms,
