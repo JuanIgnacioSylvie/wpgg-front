@@ -1,0 +1,116 @@
+import 'dart:js_interop';
+import 'dart:ui_web' as ui_web;
+
+import 'package:flutter/material.dart';
+import 'package:web/web.dart' as web;
+
+@JS('turnstile')
+external TurnstileApi? get _turnstile;
+
+@JS()
+extension type TurnstileApi._(JSObject _) {
+  external String render(
+    web.HTMLElement container,
+    TurnstileRenderOptions options,
+  );
+
+  external void reset(String? widgetId);
+}
+
+@JS()
+@anonymous
+extension type TurnstileRenderOptions._(JSObject _) {
+  external factory TurnstileRenderOptions({
+    String sitekey,
+    JSFunction callback,
+    @JS('expired-callback')
+    JSFunction? expiredCallback,
+    @JS('error-callback')
+    JSFunction? errorCallback,
+  });
+}
+
+int _turnstileInstanceCounter = 0;
+String? _lastWidgetId;
+
+void resetTurnstileWidget() {
+  final api = _turnstile;
+  final id = _lastWidgetId;
+  if (api != null && id != null && id.isNotEmpty) {
+    api.reset(id);
+  }
+}
+
+class TurnstileWidget extends StatefulWidget {
+  const TurnstileWidget({
+    super.key,
+    required this.siteKey,
+    required this.onToken,
+    this.onExpired,
+    this.onError,
+  });
+
+  final String siteKey;
+  final ValueChanged<String> onToken;
+  final VoidCallback? onExpired;
+  final VoidCallback? onError;
+
+  @override
+  State<TurnstileWidget> createState() => _TurnstileWidgetState();
+}
+
+class _TurnstileWidgetState extends State<TurnstileWidget> {
+  late final String _viewType;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewType = 'wpgg-turnstile-${_turnstileInstanceCounter++}';
+    ui_web.platformViewRegistry.registerViewFactory(_viewType, (int _) {
+      final div = web.HTMLDivElement();
+      _renderWhenReady(div);
+      return div;
+    });
+  }
+
+  void _renderWhenReady(web.HTMLDivElement div) {
+    void tryRender() {
+      final api = _turnstile;
+      if (api == null) {
+        Future<void>.delayed(const Duration(milliseconds: 120), tryRender);
+        return;
+      }
+
+      _lastWidgetId = api.render(
+        div,
+        TurnstileRenderOptions(
+          sitekey: widget.siteKey,
+          callback: ((JSString token) {
+            widget.onToken(token.toDart);
+          }).toJS,
+          expiredCallback: widget.onExpired == null
+              ? null
+              : (() {
+                  widget.onExpired!();
+                }).toJS,
+          errorCallback: widget.onError == null
+              ? null
+              : (() {
+                  widget.onError!();
+                }).toJS,
+        ),
+      );
+    }
+
+    tryRender();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 65,
+      width: double.infinity,
+      child: HtmlElementView(viewType: _viewType),
+    );
+  }
+}

@@ -3,22 +3,18 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../repositories/auth_repository.dart';
 
-class RegisterUseCase {
-  RegisterUseCase(this._repository);
+class ResendVerificationEmailUseCase {
+  ResendVerificationEmailUseCase(this._repository);
 
   final AuthRepository _repository;
 
-  Future<Either<Failure, String>> call({
+  Future<Either<Failure, void>> call({
     required String email,
-    required String password,
     String? turnstileToken,
-    String? riotLinkPendingCode,
   }) {
-    return _repository.register(
+    return _repository.resendVerificationEmail(
       email: email,
-      password: password,
       turnstileToken: turnstileToken,
-      riotLinkPendingCode: riotLinkPendingCode,
     );
   }
 }

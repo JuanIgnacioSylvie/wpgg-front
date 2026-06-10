@@ -53,4 +53,10 @@ abstract final class AppConstants {
   static const String keyRiotRsoAccessToken = 'riot_rso_access_token';
   static const String keyRiotRsoRefreshToken = 'riot_rso_refresh_token';
   static const String keyRiotRsoIdToken = 'riot_rso_id_token';
+
+  /// Cloudflare Turnstile site key (public). Empty disables the widget in the client.
+  static const String turnstileSiteKey = String.fromEnvironment(
+    'WPGG_TURNSTILE_SITE_KEY',
+    defaultValue: '',
+  );
 }

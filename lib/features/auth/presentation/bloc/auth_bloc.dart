@@ -11,7 +11,9 @@ import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/refresh_token_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/request_password_reset_usecase.dart';
+import '../../domain/usecases/resend_verification_email_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
+import '../../domain/usecases/verify_email_usecase.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -19,6 +21,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required LoginUseCase loginUseCase,
     required RegisterUseCase registerUseCase,
+    required VerifyEmailUseCase verifyEmailUseCase,
+    required ResendVerificationEmailUseCase resendVerificationEmailUseCase,
     required LogoutUseCase logoutUseCase,
     required RefreshTokenUseCase refreshTokenUseCase,
     required RequestPasswordResetUseCase requestPasswordResetUseCase,
@@ -26,6 +30,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required AuthRepository authRepository,
   })  : _loginUseCase = loginUseCase,
         _registerUseCase = registerUseCase,
+        _verifyEmailUseCase = verifyEmailUseCase,
+        _resendVerificationEmailUseCase = resendVerificationEmailUseCase,
         _logoutUseCase = logoutUseCase,
         _refreshTokenUseCase = refreshTokenUseCase,
         _requestPasswordResetUseCase = requestPasswordResetUseCase,
@@ -34,6 +40,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(const AuthInitial()) {
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
+    on<VerifyEmailRequested>(_onVerifyEmail);
+    on<ResendVerificationEmailRequested>(_onResendVerification);
     on<LogoutRequested>(_onLogout);
     on<SessionChecked>(_onSessionChecked);
     on<RiotRsoSignInRequested>(_onRiotRsoSignIn);
@@ -45,6 +53,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final LoginUseCase _loginUseCase;
   final RegisterUseCase _registerUseCase;
+  final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendVerificationEmailUseCase _resendVerificationEmailUseCase;
   final LogoutUseCase _logoutUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
   final RequestPasswordResetUseCase _requestPasswordResetUseCase;
@@ -72,17 +82,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _registerUseCase(
       email: event.email,
       password: event.password,
+      turnstileToken: event.turnstileToken,
       riotLinkPendingCode: event.riotLinkPendingCode,
     );
     result.fold(
       (f) => emit(AuthError(f.message)),
-      (user) {
-        if (event.thenLinkRiot) {
-          emit(AuthRegisteredPendingRiotLink(user));
-        } else {
-          emit(AuthAuthenticated(user));
-        }
-      },
+      (email) => emit(AuthRegistrationPendingVerification(email)),
+    );
+  }
+
+  Future<void> _onVerifyEmail(
+    VerifyEmailRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await _verifyEmailUseCase(token: event.token);
+    result.fold(
+      (f) => emit(AuthError(f.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
+  }
+
+  Future<void> _onResendVerification(
+    ResendVerificationEmailRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await _resendVerificationEmailUseCase(
+      email: event.email,
+      turnstileToken: event.turnstileToken,
+    );
+    result.fold(
+      (f) => emit(AuthError(f.message)),
+      (_) => emit(const AuthVerificationEmailSent()),
     );
   }
 

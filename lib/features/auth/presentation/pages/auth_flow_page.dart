@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/di/injection_container.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/web/turnstile_widget.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
@@ -47,6 +50,12 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   var _remember = false;
   var _obscurePassword = true;
   var _obscureConfirm = true;
+  String? _turnstileToken;
+
+  bool get _needsTurnstile =>
+      _mode == AuthFlowMode.register &&
+      kIsWeb &&
+      AppConstants.turnstileSiteKey.isNotEmpty;
 
   @override
   void initState() {
@@ -69,6 +78,12 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       unawaited(_navigateAfterAuthenticated());
       return;
     }
+    if (state is AuthRegistrationPendingVerification) {
+      context.go(
+        '/register/check-email?email=${Uri.encodeComponent(state.email)}',
+      );
+      return;
+    }
     if (state is AuthRegisteredPendingRiotLink) {
       context.go('/auth/link-riot');
       return;
@@ -83,6 +98,8 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     }
     if (state is AuthError) {
       WpggSnackBar.show(context, state.message, isError: true);
+      resetTurnstileWidget();
+      setState(() => _turnstileToken = null);
     }
   }
 
@@ -125,10 +142,17 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       return;
     }
 
+    if (_needsTurnstile &&
+        (_turnstileToken == null || _turnstileToken!.isEmpty)) {
+      WpggSnackBar.show(context, AuthStrings.turnstileRequired, isError: true);
+      return;
+    }
+
     _authBloc.add(
       RegisterRequested(
         email: _email.text.trim(),
         password: _password.text,
+        turnstileToken: _turnstileToken,
         thenLinkRiot: true,
       ),
     );
@@ -252,6 +276,15 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
                 )
               : const SizedBox.shrink(),
         ),
+        if (_needsTurnstile) ...[
+          const SizedBox(height: 20),
+          TurnstileWidget(
+            siteKey: AppConstants.turnstileSiteKey,
+            onToken: (token) => setState(() => _turnstileToken = token),
+            onExpired: () => setState(() => _turnstileToken = null),
+            onError: () => setState(() => _turnstileToken = null),
+          ),
+        ],
         const SizedBox(height: 24),
         WpggPrimaryButton(
           label: _mode == AuthFlowMode.login

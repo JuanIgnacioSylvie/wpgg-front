@@ -56,4 +56,17 @@ abstract final class AuthStrings {
       'Tu contraseña fue actualizada. Ya podés iniciar sesión.';
   static const String resetPasswordInvalidLink =
       'El enlace no es válido o expiró. Pedí uno nuevo desde el inicio de sesión.';
+
+  static const String verifyEmailTitle = 'Confirmá tu email';
+  static const String verifyEmailBody =
+      'Te enviamos un enlace a tu correo. Abrilo para activar tu cuenta.';
+  static const String verifyEmailResent =
+      'Si la cuenta existe y no está verificada, reenviamos el enlace.';
+  static const String verifyEmailSuccess =
+      'Tu email fue confirmado. ¡Bienvenido a WPGG!';
+  static const String verifyEmailInvalidLink =
+      'El enlace no es válido o expiró. Pedí uno nuevo desde el registro.';
+  static const String buttonResendVerification = 'Reenviar enlace';
+  static const String turnstileRequired =
+      'Completá la verificación de seguridad antes de continuar.';
 }

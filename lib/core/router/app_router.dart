@@ -8,7 +8,9 @@ import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/link_riot_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/register_check_email_page.dart';
 import '../../features/auth/presentation/pages/reset_password_page.dart';
+import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_already_exists_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_callback_page.dart';
 import '../../features/auth/presentation/pages/riot_rso_no_account_page.dart';
@@ -94,6 +96,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (_, __) => _authFlowRoute(const RegisterPage()),
+    ),
+    GoRoute(
+      path: '/register/check-email',
+      builder: (_, state) => _authFlowRoute(
+        RegisterCheckEmailPage(
+          email: state.uri.queryParameters['email'] ?? '',
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/verify-email',
+      builder: (_, __) => _authFlowRoute(const VerifyEmailPage()),
     ),
     GoRoute(
       path: '/forgot-password',

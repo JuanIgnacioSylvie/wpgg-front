@@ -10,10 +10,18 @@ abstract class AuthRepository {
     required bool rememberMe,
   });
 
-  Future<Either<Failure, UserEntity>> register({
+  Future<Either<Failure, String>> register({
     required String email,
     required String password,
+    String? turnstileToken,
     String? riotLinkPendingCode,
+  });
+
+  Future<Either<Failure, UserEntity>> verifyEmail({required String token});
+
+  Future<Either<Failure, void>> resendVerificationEmail({
+    required String email,
+    String? turnstileToken,
   });
 
   /// URL de autorización Riot para vincular cuenta (`GET /riot/rso/link`).

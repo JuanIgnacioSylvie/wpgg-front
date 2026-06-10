@@ -26,21 +26,46 @@ class RegisterRequested extends AuthEvent {
   const RegisterRequested({
     required this.email,
     required this.password,
+    this.turnstileToken,
     this.riotLinkPendingCode,
     this.thenLinkRiot = false,
   });
 
   final String email;
   final String password;
+  final String? turnstileToken;
 
   /// Código de `?riot_link_pending=` tras login Riot sin cuenta WPGG.
   final String? riotLinkPendingCode;
 
-  /// Si true, tras registrar navegar a vincular Riot (flujo registro previo).
+  /// Tras verificar email, navegar a vincular Riot.
   final bool thenLinkRiot;
 
   @override
-  List<Object?> get props => [email, password, riotLinkPendingCode, thenLinkRiot];
+  List<Object?> get props =>
+      [email, password, turnstileToken, riotLinkPendingCode, thenLinkRiot];
+}
+
+class VerifyEmailRequested extends AuthEvent {
+  const VerifyEmailRequested({required this.token});
+
+  final String token;
+
+  @override
+  List<Object?> get props => [token];
+}
+
+class ResendVerificationEmailRequested extends AuthEvent {
+  const ResendVerificationEmailRequested({
+    required this.email,
+    this.turnstileToken,
+  });
+
+  final String email;
+  final String? turnstileToken;
+
+  @override
+  List<Object?> get props => [email, turnstileToken];
 }
 
 class LogoutRequested extends AuthEvent {

@@ -68,19 +68,53 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> register({
+  Future<Either<Failure, String>> register({
     required String email,
     required String password,
+    String? turnstileToken,
     String? riotLinkPendingCode,
   }) async {
     try {
-      final session = await _remote.register(
+      final outEmail = await _remote.register(
         email: email,
         password: password,
+        turnstileToken: turnstileToken,
         riotLinkPendingCode: riotLinkPendingCode,
       );
+      return Right(outEmail);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> verifyEmail({
+    required String token,
+  }) async {
+    try {
+      final session = await _remote.verifyEmail(token: token);
       await _persistAuthSession(session);
       return Right(session.user);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> resendVerificationEmail({
+    required String email,
+    String? turnstileToken,
+  }) async {
+    try {
+      await _remote.resendVerificationEmail(
+        email: email,
+        turnstileToken: turnstileToken,
+      );
+      return const Right(null);
     } on AuthException catch (e) {
       return Left(AuthFailure(e.message));
     } catch (e) {

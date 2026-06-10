@@ -39,9 +39,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthRemoteSession> register({
+  Future<String> register({
     required String email,
     required String password,
+    String? turnstileToken,
     String? riotLinkPendingCode,
   }) async {
     try {
@@ -49,6 +50,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'email': email,
         'password': password,
       };
+      if (turnstileToken != null && turnstileToken.isNotEmpty) {
+        data['turnstileToken'] = turnstileToken;
+      }
       if (riotLinkPendingCode != null && riotLinkPendingCode.isNotEmpty) {
         data['riotLinkPendingCode'] = riotLinkPendingCode;
       }
@@ -56,9 +60,58 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         '/auth/register',
         data: data,
       );
+      final body = res.data;
+      if (body is Map) {
+        final map = Map<String, dynamic>.from(body);
+        return map['email'] as String? ?? email;
+      }
+      return email;
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
+    }
+  }
+
+  @override
+  Future<AuthRemoteSession> verifyEmail({required String token}) async {
+    try {
+      final res = await _api.post<dynamic>(
+        '/auth/verify-email',
+        data: {'token': token},
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
+      );
       return _requireRefreshBody(
-        _parseAuthSession(res.data, fallbackEmail: email),
-        'register',
+        _parseAuthSession(res.data),
+        'POST /auth/verify-email',
+      );
+    } on DioException catch (e) {
+      throw AuthException(_message(e));
+    }
+  }
+
+  @override
+  Future<void> resendVerificationEmail({
+    required String email,
+    String? turnstileToken,
+  }) async {
+    try {
+      final data = <String, dynamic>{'email': email};
+      if (turnstileToken != null && turnstileToken.isNotEmpty) {
+        data['turnstileToken'] = turnstileToken;
+      }
+      await _api.post<dynamic>(
+        '/auth/resend-verification',
+        data: data,
+        options: Options(
+          extra: {
+            AuthRequestExtra.skipAuth: true,
+            AuthRequestExtra.skipRefresh: true,
+          },
+        ),
       );
     } on DioException catch (e) {
       throw AuthException(_message(e));

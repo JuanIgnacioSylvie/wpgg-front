@@ -26,6 +26,20 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
+/// Registro OK; falta confirmar email antes de iniciar sesión.
+class AuthRegistrationPendingVerification extends AuthState {
+  const AuthRegistrationPendingVerification(this.email);
+
+  final String email;
+
+  @override
+  List<Object?> get props => [email];
+}
+
+class AuthVerificationEmailSent extends AuthState {
+  const AuthVerificationEmailSent();
+}
+
 /// Registro OK; falta vincular Riot antes de entrar a la app.
 class AuthRegisteredPendingRiotLink extends AuthState {
   const AuthRegisteredPendingRiotLink(this.user);

@@ -1,7 +1,6 @@
 import '../models/user_model.dart';
 
-/// Respuesta de login / register / canje Riot: siempre `accessToken` y `refreshToken` en JSON.
-/// En [AuthRemoteDataSource.refresh] el refresh en JSON es opcional si el back renueva solo por cookie.
+/// Respuesta de login / canje Riot / verify-email: `accessToken` y `refreshToken` en JSON.
 typedef AuthRemoteSession = ({
   UserModel user,
   String accessToken,
@@ -15,20 +14,26 @@ abstract class AuthRemoteDataSource {
     required bool rememberMe,
   });
 
-  Future<AuthRemoteSession> register({
+  Future<String> register({
     required String email,
     required String password,
+    String? turnstileToken,
     String? riotLinkPendingCode,
+  });
+
+  Future<AuthRemoteSession> verifyEmail({required String token});
+
+  Future<void> resendVerificationEmail({
+    required String email,
+    String? turnstileToken,
   });
 
   Future<String> fetchRiotLinkAuthorizeUrl({bool mobilePlatform = false});
 
   Future<void> logout();
 
-  /// Canje del código `?riot_session=` tras Riot Sign On → `{ accessToken, refreshToken }`.
   Future<AuthRemoteSession> exchangeRiotSession({required String code});
 
-  /// [refreshToken] opcional: el back acepta cookie `refreshToken` o `body.refreshToken`.
   Future<AuthRemoteSession> refresh({String? refreshToken});
 
   Future<void> requestPasswordReset({required String email});

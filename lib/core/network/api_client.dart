@@ -10,6 +10,13 @@ import 'auth_interceptor.dart';
 import 'http_client_config.dart';
 import 'web_credentials_interceptor.dart';
 
+Map<String, String> _defaultHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'X-WPGG-Platform': kIsWeb ? 'web' : 'mobile',
+  };
+}
+
 class ApiClient {
   ApiClient({
     required String baseUrl,
@@ -20,7 +27,7 @@ class ApiClient {
         baseUrl: baseUrl,
         connectTimeout: AppConstants.connectTimeout,
         receiveTimeout: AppConstants.receiveTimeout,
-        headers: const {'Content-Type': 'application/json'},
+        headers: _defaultHeaders(),
         // Web (dio_web_adapter): fuerza credenciales en cada XHR; sin esto algunos
         // builds pueden no enviar cookies cross-origin aunque el adapter tenga withCredentials.
         extra: const {'withCredentials': true},
