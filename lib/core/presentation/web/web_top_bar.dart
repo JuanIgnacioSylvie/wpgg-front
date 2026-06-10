@@ -4,6 +4,7 @@ import '../../constants/app_fonts.dart';
 import '../../l10n/l10n_extension.dart';
 import '../widgets/mission_day_countdown.dart';
 import 'web_colors.dart';
+import 'web_motion.dart';
 
 class WebTopBar extends StatelessWidget {
   const WebTopBar({
@@ -48,18 +49,38 @@ class WebTopBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: WebColors.surface,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: WebColors.border),
-            ),
-            child: Text(
-              sectionTitle,
-              style: const TextStyle(
-                color: WebColors.textSecondary,
-                fontSize: 12,
+          AnimatedSwitcher(
+            duration: WebMotion.resolve(context, WebMotion.normal),
+            switchInCurve: WebMotion.curve,
+            switchOutCurve: WebMotion.curve,
+            transitionBuilder: (child, animation) {
+              final curved =
+                  CurvedAnimation(parent: animation, curve: WebMotion.curve);
+              return FadeTransition(
+                opacity: curved,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.4),
+                    end: Offset.zero,
+                  ).animate(curved),
+                  child: child,
+                ),
+              );
+            },
+            child: Container(
+              key: ValueKey<String>(sectionTitle),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: WebColors.surface,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: WebColors.border),
+              ),
+              child: Text(
+                sectionTitle,
+                style: const TextStyle(
+                  color: WebColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

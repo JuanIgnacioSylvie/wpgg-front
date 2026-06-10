@@ -64,7 +64,7 @@ class _WebAnimatedAppearState extends State<WebAnimatedAppear>
       duration: WebMotion.normal,
     );
     _buildAnimations();
-    _runEnter();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runEnter());
   }
 
   void _buildAnimations() {
@@ -78,6 +78,10 @@ class _WebAnimatedAppearState extends State<WebAnimatedAppear>
   }
 
   Future<void> _runEnter() async {
+    if (!WebMotion.animationsEnabled(context)) {
+      _controller.value = 1;
+      return;
+    }
     if (widget.staggerIndex > 0) {
       await Future<void>.delayed(
         WebMotion.staggerStep * widget.staggerIndex,
@@ -130,8 +134,9 @@ class WebAnimatedSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolved = WebMotion.resolve(context, duration);
     return AnimatedSwitcher(
-      duration: duration,
+      duration: resolved,
       switchInCurve: WebMotion.curve,
       switchOutCurve: WebMotion.curve,
       transitionBuilder: (child, animation) {
@@ -193,6 +198,89 @@ class WebAnimatedProgressBar extends StatelessWidget {
   }
 }
 
+/// Animates integer value changes (balance, counts, percentages).
+class WebAnimatedNumber extends StatefulWidget {
+  const WebAnimatedNumber({
+    super.key,
+    required this.value,
+    required this.style,
+    this.prefix = '',
+    this.suffix = '',
+  });
+
+  final int value;
+  final TextStyle style;
+  final String prefix;
+  final String suffix;
+
+  @override
+  State<WebAnimatedNumber> createState() => _WebAnimatedNumberState();
+}
+
+class _WebAnimatedNumberState extends State<WebAnimatedNumber>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late Animation<double> _animation;
+  var _displayValue = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayValue = widget.value;
+    _controller = AnimationController(
+      vsync: this,
+      duration: WebMotion.progress,
+    );
+    _animation = Tween<double>(
+      begin: widget.value.toDouble(),
+      end: widget.value.toDouble(),
+    ).animate(CurvedAnimation(parent: _controller, curve: WebMotion.curve));
+  }
+
+  @override
+  void didUpdateWidget(WebAnimatedNumber oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      if (!WebMotion.animationsEnabled(context)) {
+        setState(() => _displayValue = widget.value);
+        return;
+      }
+      _animation = Tween<double>(
+        begin: _displayValue.toDouble(),
+        end: widget.value.toDouble(),
+      ).animate(CurvedAnimation(parent: _controller, curve: WebMotion.curve));
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!WebMotion.animationsEnabled(context)) {
+      return Text(
+        '${widget.prefix}${widget.value}${widget.suffix}',
+        style: widget.style,
+      );
+    }
+
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (_, __) {
+        _displayValue = _animation.value.round();
+        return Text(
+          '${widget.prefix}$_displayValue${widget.suffix}',
+          style: widget.style,
+        );
+      },
+    );
+  }
+}
+
 class AnimatedFractionallySizedBox extends ImplicitlyAnimatedWidget {
   const AnimatedFractionallySizedBox({
     super.key,
@@ -246,7 +334,7 @@ Future<T?> showWebDialog<T>({
     barrierDismissible: barrierDismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: Colors.transparent,
-    transitionDuration: WebMotion.normal,
+    transitionDuration: WebMotion.resolve(context, WebMotion.normal),
     pageBuilder: (dialogContext, animation, secondaryAnimation) {
       return builder(dialogContext);
     },

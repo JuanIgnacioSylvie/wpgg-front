@@ -11,6 +11,7 @@ import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'web_animations.dart';
 import 'web_colors.dart';
+import 'web_motion.dart';
 
 enum _WebProfilePanel { profile, faqs, terms }
 
@@ -60,12 +61,13 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: isLegal ? 520 : 440,
-          maxHeight: 720,
-        ),
-        child: DecoratedBox(
+      child: AnimatedContainer(
+          duration: WebMotion.resolve(context, WebMotion.normal),
+          curve: WebMotion.curve,
+          constraints: BoxConstraints(
+            maxWidth: isLegal ? 520 : 440,
+            maxHeight: 720,
+          ),
           decoration: BoxDecoration(
             color: WebColors.surface,
             borderRadius: BorderRadius.circular(16),
@@ -81,7 +83,15 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
+              duration: WebMotion.resolve(context, WebMotion.normal),
+              switchInCurve: WebMotion.curve,
+              switchOutCurve: WebMotion.curve,
+              transitionBuilder: (child, animation) {
+                return WebFadeSlideTransition(
+                  animation: animation,
+                  child: child,
+                );
+              },
               child: switch (_panel) {
                 _WebProfilePanel.profile => ProfilePage(
                     key: const ValueKey('profile'),
@@ -106,7 +116,6 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
             ),
           ),
         ),
-      ),
     );
   }
 }

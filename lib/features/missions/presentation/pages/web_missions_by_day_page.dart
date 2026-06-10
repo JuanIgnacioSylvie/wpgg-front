@@ -121,100 +121,66 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
           );
         }
 
-        return WebAnimatedSwitcher(
-          child: RefreshIndicator(
-            key: ValueKey(MissionDay.toApiDate(_selectedDate)),
-            color: WebColors.accent,
-            backgroundColor: WebColors.surface,
-            onRefresh: () async {
-              _load();
-              await context.read<MissionsBloc>().stream.firstWhere(
-                    (s) =>
-                        s.byDayStatus == MissionsLoadStatus.loaded ||
-                        s.byDayStatus == MissionsLoadStatus.error,
-                  );
-            },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(32, 32, 32, 120),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  WebSectionHeader(
-                    title: l10n.missionsByDays,
-                    subtitle: _formattedSelectedDate(context),
-                  ),
-                  const SizedBox(height: 24),
-                  WebDaySelector(
-                    selectedDate: _selectedDate,
-                    onDateSelected: (d) {
-                      setState(() => _selectedDate = d);
-                      _load();
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  WebFilterChips(
-                    labels: [
-                      l10n.filterAll,
-                      l10n.filterToDo,
-                      l10n.filterInProgress,
-                      l10n.filterCompleted,
-                    ],
-                    selectedIndex: _filterIndex,
-                    onSelected: (i) => setState(() => _filterIndex = i),
-                  ),
-                  const SizedBox(height: 28),
-                  WebSectionHeader(
-                    title: _filterTitle(l10n),
-                    count: missions.length,
-                  ),
-                  const SizedBox(height: 20),
-                  if (isLoading)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 24),
-                      child: Center(
-                        child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: CircularProgressIndicator(
-                            color: WebColors.accent,
-                            strokeWidth: 2.5,
-                          ),
-                        ),
-                      ),
-                    )
-                  else if (missions.isEmpty)
-                    Text(
-                      _filterIndex == 0
-                          ? l10n.noMissionsForDay
-                          : l10n.noMissionsForFilter,
-                      style: const TextStyle(
-                        color: WebColors.textMuted,
-                        fontSize: 13,
-                      ),
-                    )
-                  else
-                    Wrap(
-                      spacing: 20,
-                      runSpacing: 20,
-                      children: missions.asMap().entries.map((entry) {
-                        final mission = entry.value;
-                        return WebAnimatedAppear(
-                          key: ValueKey('by-day-${mission.id}'),
-                          staggerIndex: entry.key,
-                          child: mission.isWelcome
-                              ? WebMissionWelcomeCard(mission: mission)
-                              : WebMissionCard(
-                                  mission: mission,
-                                  variant: _isPastMission(mission)
-                                      ? WebMissionCardVariant.past
-                                      : WebMissionCardVariant.active,
-                                ),
-                        );
-                      }).toList(),
+        return RefreshIndicator(
+          color: WebColors.accent,
+          backgroundColor: WebColors.surface,
+          onRefresh: () async {
+            _load();
+            await context.read<MissionsBloc>().stream.firstWhere(
+                  (s) =>
+                      s.byDayStatus == MissionsLoadStatus.loaded ||
+                      s.byDayStatus == MissionsLoadStatus.error,
+                );
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(32, 32, 32, 120),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                WebSectionHeader(
+                  title: l10n.missionsByDays,
+                  subtitle: _formattedSelectedDate(context),
+                ),
+                const SizedBox(height: 24),
+                WebDaySelector(
+                  selectedDate: _selectedDate,
+                  onDateSelected: (d) {
+                    setState(() => _selectedDate = d);
+                    _load();
+                  },
+                ),
+                const SizedBox(height: 20),
+                WebFilterChips(
+                  labels: [
+                    l10n.filterAll,
+                    l10n.filterToDo,
+                    l10n.filterInProgress,
+                    l10n.filterCompleted,
+                  ],
+                  selectedIndex: _filterIndex,
+                  onSelected: (i) => setState(() => _filterIndex = i),
+                ),
+                const SizedBox(height: 28),
+                WebSectionHeader(
+                  title: _filterTitle(l10n),
+                  count: missions.length,
+                ),
+                const SizedBox(height: 20),
+                WebAnimatedSwitcher(
+                  child: _MissionsByDayGrid(
+                    key: ValueKey(
+                      '${MissionDay.toApiDate(_selectedDate)}-$_filterIndex-$isLoading-${missions.length}',
                     ),
-                ],
-              ),
+                    isLoading: isLoading,
+                    missions: missions,
+                    filterIndex: _filterIndex,
+                    emptyAllLabel: l10n.noMissionsForDay,
+                    emptyFilterLabel: l10n.noMissionsForFilter,
+                    isPastMission: _isPastMission,
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -233,6 +199,77 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
       default:
         return l10n.filterAll;
     }
+  }
+}
+
+class _MissionsByDayGrid extends StatelessWidget {
+  const _MissionsByDayGrid({
+    super.key,
+    required this.isLoading,
+    required this.missions,
+    required this.filterIndex,
+    required this.emptyAllLabel,
+    required this.emptyFilterLabel,
+    required this.isPastMission,
+  });
+
+  final bool isLoading;
+  final List<MissionCardEntity> missions;
+  final int filterIndex;
+  final String emptyAllLabel;
+  final String emptyFilterLabel;
+  final bool Function(MissionCardEntity) isPastMission;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Padding(
+        key: ValueKey('by-day-loading'),
+        padding: EdgeInsets.only(top: 24),
+        child: Center(
+          child: SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(
+              color: WebColors.accent,
+              strokeWidth: 2.5,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (missions.isEmpty) {
+      return Text(
+        key: const ValueKey('by-day-empty'),
+        filterIndex == 0 ? emptyAllLabel : emptyFilterLabel,
+        style: const TextStyle(
+          color: WebColors.textMuted,
+          fontSize: 13,
+        ),
+      );
+    }
+
+    return Wrap(
+      key: const ValueKey('by-day-grid'),
+      spacing: 20,
+      runSpacing: 20,
+      children: missions.asMap().entries.map((entry) {
+        final mission = entry.value;
+        return WebAnimatedAppear(
+          key: ValueKey('by-day-${mission.id}'),
+          staggerIndex: entry.key,
+          child: mission.isWelcome
+              ? WebMissionWelcomeCard(mission: mission)
+              : WebMissionCard(
+                  mission: mission,
+                  variant: isPastMission(mission)
+                      ? WebMissionCardVariant.past
+                      : WebMissionCardVariant.active,
+                ),
+        );
+      }).toList(),
+    );
   }
 }
 

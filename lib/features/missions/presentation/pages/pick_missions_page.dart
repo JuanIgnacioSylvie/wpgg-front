@@ -6,6 +6,7 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
@@ -67,8 +68,10 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
           body: BlocConsumer<MissionsBloc, MissionsState>(
             listener: (context, state) {
               if (state.pickError != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.pickError!)),
+                WpggSnackBar.show(
+                  context,
+                  state.pickError!,
+                  isError: true,
                 );
               }
             },

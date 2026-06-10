@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/app_fonts.dart';
+import 'web_animations.dart';
 import 'web_colors.dart';
 
 class WebSectionHeader extends StatelessWidget {
@@ -40,8 +41,8 @@ class WebSectionHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: WebColors.border),
                 ),
-                child: Text(
-                  '$count',
+                child: WebAnimatedNumber(
+                  value: count!,
                   style: const TextStyle(
                     color: WebColors.textSecondary,
                     fontSize: 12,

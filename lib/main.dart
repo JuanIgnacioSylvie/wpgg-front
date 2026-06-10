@@ -6,6 +6,7 @@ import 'core/platform/oauth_callback_fragment_capture.dart';
 import 'core/di/injection_container.dart';
 import 'core/locale/locale_provider.dart';
 import 'core/router/app_router.dart';
+import 'core/presentation/web/web_motion.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/ddragon/domain/repositories/ddragon_repository.dart';
@@ -39,6 +40,8 @@ class WpggApp extends StatelessWidget {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: themeProvider.themeMode,
+          themeAnimationDuration: WebMotion.theme,
+          themeAnimationCurve: WebMotion.curve,
           locale: localeProvider.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -40,9 +41,7 @@ class _LinkRiotScreenState extends State<LinkRiotScreen> {
       return;
     }
     if (state is AuthError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
+      WpggSnackBar.show(context, state.message, isError: true);
     }
   }
 

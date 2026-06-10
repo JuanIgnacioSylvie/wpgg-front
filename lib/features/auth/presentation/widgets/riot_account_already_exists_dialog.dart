@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -17,9 +18,7 @@ Future<void> showRiotAccountAlreadyExistsDialog(BuildContext context) {
     builder: (dialogContext) => BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          WpggSnackBar.show(context, state.message, isError: true);
         }
       },
       child: const _RiotAccountAlreadyExistsDialog(),

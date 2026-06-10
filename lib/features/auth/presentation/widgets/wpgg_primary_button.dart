@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/presentation/web/web_motion.dart';
 
 /// Drop shadow Figma: X 0, Y 4, blur 4, spread 0, #000000 25%.
 abstract final class WpggButtonShadow {
@@ -79,38 +80,28 @@ class WpggPrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null && !isLoading;
-    final color = enabled ? AuthUiColors.accentRed : AuthUiColors.cardTextMuted;
+    final baseColor =
+        enabled ? AuthUiColors.accentRed : AuthUiColors.cardTextMuted;
+    final hoverColor = enabled
+        ? Color.lerp(AuthUiColors.accentRed, Colors.black, 0.12)!
+        : baseColor;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: WpggButtonShadow.layoutPaddingBottom),
-      child: SizedBox(
-        width: double.infinity,
-        height: height,
-        child: CustomPaint(
-          painter: _WpggFilledBulgePainter(
-            fillColor: color,
-            drawShadow: enabled,
-          ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: enabled ? onPressed : null,
-            child: Center(
-              child: isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(label, style: labelStyle),
-            ),
-          ),
-        ),
-      ),
-      ),
+    return _WpggInteractiveBulgeButton(
+      enabled: enabled,
+      onPressed: enabled ? onPressed : null,
+      baseColor: baseColor,
+      hoverColor: hoverColor,
+      drawShadow: enabled,
+      child: isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Text(label, style: labelStyle),
     );
   }
 }
@@ -138,38 +129,98 @@ class WpggCancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
+    final borderColor =
+        enabled ? AuthUiColors.accentRed : AuthUiColors.cardTextMuted;
+
+    return _WpggInteractiveBulgeButton(
+      enabled: enabled,
+      onPressed: onPressed,
+      baseColor: Colors.white,
+      hoverColor: const Color(0xFFF8F8F8),
+      borderColor: borderColor,
+      borderWidth: 1.5,
+      drawShadow: enabled,
+      child: Text(
+        label,
+        style: labelStyle.copyWith(
+          color: enabled ? AuthUiColors.accentRed : AuthUiColors.cardTextMuted,
+        ),
+      ),
+    );
+  }
+}
+
+class _WpggInteractiveBulgeButton extends StatefulWidget {
+  const _WpggInteractiveBulgeButton({
+    required this.enabled,
+    required this.onPressed,
+    required this.baseColor,
+    required this.hoverColor,
+    required this.drawShadow,
+    required this.child,
+    this.borderColor,
+    this.borderWidth = 0,
+  });
+
+  final bool enabled;
+  final VoidCallback? onPressed;
+  final Color baseColor;
+  final Color hoverColor;
+  final bool drawShadow;
+  final Widget child;
+  final Color? borderColor;
+  final double borderWidth;
+
+  @override
+  State<_WpggInteractiveBulgeButton> createState() =>
+      _WpggInteractiveBulgeButtonState();
+}
+
+class _WpggInteractiveBulgeButtonState extends State<_WpggInteractiveBulgeButton> {
+  var _hovered = false;
+  var _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final fillColor = !widget.enabled
+        ? widget.baseColor
+        : _pressed
+            ? Color.lerp(widget.hoverColor, widget.baseColor, 0.5)!
+            : _hovered
+                ? widget.hoverColor
+                : widget.baseColor;
+    final scale = widget.enabled && _pressed ? 0.98 : 1.0;
+    final duration = WebMotion.resolve(context, WebMotion.fast);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: WpggButtonShadow.layoutPaddingBottom),
-      child: SizedBox(
-        width: double.infinity,
-        height: WpggPrimaryButton.height,
-        child: CustomPaint(
-          painter: _WpggFilledBulgePainter(
-            fillColor: Colors.white,
-            borderColor: enabled
-                ? AuthUiColors.accentRed
-                : AuthUiColors.cardTextMuted,
-            borderWidth: 1.5,
-            drawShadow: enabled,
-          ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onPressed,
-            child: Center(
-              child: Text(
-                label,
-                style: labelStyle.copyWith(
-                  color: enabled
-                      ? AuthUiColors.accentRed
-                      : AuthUiColors.cardTextMuted,
+      child: MouseRegion(
+        onEnter: widget.enabled ? (_) => setState(() => _hovered = true) : null,
+        onExit: widget.enabled ? (_) => setState(() => _hovered = false) : null,
+        child: GestureDetector(
+          onTapDown: widget.enabled ? (_) => setState(() => _pressed = true) : null,
+          onTapUp: widget.enabled ? (_) => setState(() => _pressed = false) : null,
+          onTapCancel: widget.enabled ? () => setState(() => _pressed = false) : null,
+          onTap: widget.onPressed,
+          child: AnimatedScale(
+            scale: WebMotion.animationsEnabled(context) ? scale : 1,
+            duration: duration,
+            curve: WebMotion.curve,
+            child: SizedBox(
+              width: double.infinity,
+              height: WpggPrimaryButton.height,
+              child: CustomPaint(
+                painter: _WpggFilledBulgePainter(
+                  fillColor: fillColor,
+                  borderColor: widget.borderColor,
+                  borderWidth: widget.borderWidth,
+                  drawShadow: widget.drawShadow,
                 ),
+                child: Center(child: widget.child),
               ),
             ),
           ),
         ),
-      ),
       ),
     );
   }

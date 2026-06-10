@@ -7,6 +7,7 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
@@ -111,18 +112,14 @@ class _ProfilePageState extends State<ProfilePage>
           curr is WalletWithdrawSuccess || curr is WalletWithdrawError,
       listener: (context, state) {
         if (state is WalletWithdrawSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.withdrawSuccess)),
-          );
+          WpggSnackBar.show(context, l10n.withdrawSuccess);
         } else if (state is WalletWithdrawError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                state.message.contains('Exception')
-                    ? l10n.withdrawError
-                    : state.message,
-              ),
-            ),
+          WpggSnackBar.show(
+            context,
+            state.message.contains('Exception')
+                ? l10n.withdrawError
+                : state.message,
+            isError: true,
           );
         }
         context.read<WalletBloc>().add(const LoadWallet());

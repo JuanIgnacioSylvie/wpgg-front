@@ -7,7 +7,9 @@ import '../../l10n/l10n_extension.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/riot/domain/entities/summoner_entity.dart';
 import '../wpgg_profile_avatar.dart';
+import 'web_animations.dart';
 import 'web_colors.dart';
+import 'web_motion.dart';
 
 class WebSidebar extends StatelessWidget {
   const WebSidebar({
@@ -64,8 +66,8 @@ class WebSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOutCubic,
+      duration: WebMotion.resolve(context, WebMotion.normal),
+      curve: WebMotion.curve,
       width: expanded ? WebColors.sidebarExpandedWidth : WebColors.sidebarCollapsedWidth,
       decoration: const BoxDecoration(
         color: WebColors.topBar,
@@ -92,35 +94,48 @@ class WebSidebar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          for (var i = 0; i < _items.length; i++)
-            _SidebarNavRow(
-              item: _items[i],
-              expanded: expanded,
-              selected: currentIndex == _branchIndices[i],
-              onTap: () => onTap(_branchIndices[i]),
-            ),
-          _SidebarNavRow(
-            item: _profileItem,
+          _SidebarNavSection(
             expanded: expanded,
-            selected: profileSelected,
-            onTap: onProfileTap,
+            selectedRowIndex: profileSelected
+                ? 3
+                : switch (currentIndex) {
+                    1 => 1,
+                    2 => 2,
+                    _ => 0,
+                  },
+            items: _items,
+            profileItem: _profileItem,
+            branchIndices: _branchIndices,
+            profileSelected: profileSelected,
+            onBranchTap: onTap,
+            onProfileTap: onProfileTap,
           ),
           const Spacer(),
-          if (expanded) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: _SidebarBalance(balance: balance),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: _SidebarLogoutButton(
-                label: context.l10n.logOut,
-                onTap: onLogout,
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
+          AnimatedSize(
+            duration: WebMotion.resolve(context, WebMotion.normal),
+            curve: WebMotion.curve,
+            alignment: Alignment.topCenter,
+            child: expanded
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: _SidebarBalance(balance: balance),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: _SidebarLogoutButton(
+                          label: context.l10n.logOut,
+                          onTap: onLogout,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
           _SidebarToggleRow(
             expanded: expanded,
             onTap: onToggleExpanded,
@@ -204,34 +219,40 @@ class _SidebarProfileHeaderState extends State<_SidebarProfileHeader> {
                       if (widget.summoner != null) ...[
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.summoner!.gameName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontFamily: AppFonts.lexendDeca,
-                                  color: _hovered
-                                      ? WebColors.textPrimary
-                                      : WebColors.textSecondary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
+                          child: AnimatedOpacity(
+                            opacity: widget.expanded ? 1 : 0,
+                            duration:
+                                WebMotion.resolve(context, WebMotion.normal),
+                            curve: WebMotion.curve,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.summoner!.gameName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontFamily: AppFonts.lexendDeca,
+                                    color: _hovered
+                                        ? WebColors.textPrimary
+                                        : WebColors.textSecondary,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '#${widget.summoner!.tagLine}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontFamily: AppFonts.lexendDeca,
-                                  color: WebColors.textMuted,
-                                  fontSize: 11,
+                                Text(
+                                  '#${widget.summoner!.tagLine}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: AppFonts.lexendDeca,
+                                    color: WebColors.textMuted,
+                                    fontSize: 11,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -240,6 +261,74 @@ class _SidebarProfileHeaderState extends State<_SidebarProfileHeader> {
                 )
               : Center(child: avatar),
         ),
+      ),
+    );
+  }
+}
+
+class _SidebarNavSection extends StatelessWidget {
+  const _SidebarNavSection({
+    required this.expanded,
+    required this.selectedRowIndex,
+    required this.items,
+    required this.profileItem,
+    required this.branchIndices,
+    required this.profileSelected,
+    required this.onBranchTap,
+    required this.onProfileTap,
+  });
+
+  static const _rowStride = 44.0;
+
+  final bool expanded;
+  final int selectedRowIndex;
+  final List<_NavItem> items;
+  final _NavItem profileItem;
+  final List<int> branchIndices;
+  final bool profileSelected;
+  final ValueChanged<int> onBranchTap;
+  final VoidCallback onProfileTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: expanded ? 8 : 0),
+      child: Stack(
+        children: [
+          AnimatedPositioned(
+            duration: WebMotion.resolve(context, WebMotion.normal),
+            curve: WebMotion.curve,
+            top: selectedRowIndex * _rowStride + 2,
+            left: 0,
+            right: 0,
+            height: 40,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: WebColors.sidebarHover,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: WebColors.border),
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              for (var i = 0; i < items.length; i++)
+                _SidebarNavRow(
+                  item: items[i],
+                  expanded: expanded,
+                  selected: !profileSelected &&
+                      selectedRowIndex == i,
+                  onTap: () => onBranchTap(branchIndices[i]),
+                ),
+              _SidebarNavRow(
+                item: profileItem,
+                expanded: expanded,
+                selected: profileSelected,
+                onTap: onProfileTap,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -294,14 +383,20 @@ class _SidebarToggleRowState extends State<_SidebarToggleRow> {
                   ? Row(
                       children: [
                         SizedBox(width: 40, child: Center(child: icon)),
-                        const Expanded(
-                          child: Text(
-                            'Colapsar',
-                            style: TextStyle(
-                              fontFamily: AppFonts.lexendDeca,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: WebColors.textSecondary,
+                        Expanded(
+                          child: AnimatedOpacity(
+                            opacity: widget.expanded ? 1 : 0,
+                            duration:
+                                WebMotion.resolve(context, WebMotion.normal),
+                            curve: WebMotion.curve,
+                            child: const Text(
+                              'Colapsar',
+                              style: TextStyle(
+                                fontFamily: AppFonts.lexendDeca,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: WebColors.textSecondary,
+                              ),
                             ),
                           ),
                         ),
@@ -349,10 +444,7 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
                 : WebColors.textMuted;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: widget.expanded ? 8 : 0,
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: MouseRegion(
         onEnter: (_) => setState(() => _hovered = true),
         onExit: (_) => setState(() => _hovered = false),
@@ -361,16 +453,13 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
           child: GestureDetector(
             onTap: widget.enabled ? widget.onTap : null,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
+              duration: WebMotion.resolve(context, WebMotion.fast),
               height: 40,
               decoration: BoxDecoration(
-                color: widget.selected || _hovered
-                    ? WebColors.sidebarHover
+                color: _hovered && !widget.selected
+                    ? WebColors.sidebarHover.withValues(alpha: 0.5)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
-                border: widget.selected
-                    ? Border.all(color: WebColors.border)
-                    : null,
               ),
               child: widget.expanded
                   ? Row(
@@ -380,18 +469,24 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
                           child: Center(child: _icon(color)),
                         ),
                         Expanded(
-                          child: Text(
-                            widget.item.label,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: AppFonts.lexendDeca,
-                              fontSize: 13,
-                              fontWeight: widget.selected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: widget.selected
-                                  ? WebColors.textPrimary
-                                  : WebColors.textSecondary,
+                          child: AnimatedOpacity(
+                            opacity: widget.expanded ? 1 : 0,
+                            duration:
+                                WebMotion.resolve(context, WebMotion.normal),
+                            curve: WebMotion.curve,
+                            child: Text(
+                              widget.item.label,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: AppFonts.lexendDeca,
+                                fontSize: 13,
+                                fontWeight: widget.selected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                                color: widget.selected
+                                    ? WebColors.textPrimary
+                                    : WebColors.textSecondary,
+                              ),
                             ),
                           ),
                         ),
@@ -451,15 +546,26 @@ class _SidebarBalance extends StatelessWidget {
                     fontSize: 11,
                   ),
                 ),
-                Text(
-                  balance != null ? '$balance WPGG' : '—',
-                  style: const TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    color: WebColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                balance != null
+                    ? WebAnimatedNumber(
+                        value: balance!,
+                        suffix: ' WPGG',
+                        style: const TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          color: WebColors.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )
+                    : const Text(
+                        '—',
+                        style: TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          color: WebColors.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ],
             ),
           ),

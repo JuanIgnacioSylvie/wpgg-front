@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/presentation/web/web_motion.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
 import '../auth_flow_mode.dart';
 import '../auth_strings.dart';
@@ -80,9 +82,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
       return;
     }
     if (state is AuthError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
+      WpggSnackBar.show(context, state.message, isError: true);
     }
   }
 
@@ -96,11 +96,8 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
   }
 
   void _goToMode(AuthFlowMode mode) {
-    if (mode == AuthFlowMode.login) {
-      context.go('/login');
-    } else {
-      context.go('/register');
-    }
+    if (_mode == mode) return;
+    setState(() => _mode = mode);
   }
 
   bool get _showConfirmPassword => _mode == AuthFlowMode.register;
@@ -124,9 +121,7 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
     }
 
     if (_password.text != _confirm.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AuthStrings.passwordsMismatch)),
-      );
+      WpggSnackBar.show(context, AuthStrings.passwordsMismatch, isError: true);
       return;
     }
 
@@ -179,62 +174,84 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
             () => setState(() => _obscurePassword = !_obscurePassword),
           ),
         ),
-        if (_showConfirmPassword) ...[
-          const SizedBox(height: 20),
-          AuthUnderlineField(
-            controller: _confirm,
-            label: AuthStrings.labelConfirmPassword,
-            hint: AuthStrings.hintConfirmPassword,
-            obscureText: _obscureConfirm,
-            prefixIcon: Icons.lock_outline,
-            suffix: _visibilityToggle(
-              _obscureConfirm,
-              () => setState(() => _obscureConfirm = !_obscureConfirm),
-            ),
-          ),
-        ],
-        if (_showRememberForgot) ...[
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              SizedBox(
-                width: 22,
-                height: 22,
-                child: Checkbox(
-                  value: _remember,
-                  onChanged: (v) => setState(() => _remember = v ?? false),
-                  activeColor: AuthUiColors.accentRed,
-                  checkColor: Colors.white,
-                  side: const BorderSide(
-                    color: AuthUiColors.cardText,
-                    width: 1.5,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(AuthStrings.rememberMe, style: _labelStyle),
-              const Spacer(),
-              TextButton(
-                onPressed: () => context.go('/forgot-password'),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  foregroundColor: AuthUiColors.cardTextMuted,
-                ),
-                child: const Text(
-                  AuthStrings.forgotPassword,
-                  style: TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    fontSize: 13,
-                    color: AuthUiColors.cardTextMuted,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+        AnimatedSize(
+          duration: WebMotion.resolve(context, WebMotion.normal),
+          curve: WebMotion.curve,
+          alignment: Alignment.topCenter,
+          child: _showConfirmPassword
+              ? Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    AuthUnderlineField(
+                      controller: _confirm,
+                      label: AuthStrings.labelConfirmPassword,
+                      hint: AuthStrings.hintConfirmPassword,
+                      obscureText: _obscureConfirm,
+                      prefixIcon: Icons.lock_outline,
+                      suffix: _visibilityToggle(
+                        _obscureConfirm,
+                        () => setState(
+                          () => _obscureConfirm = !_obscureConfirm,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+        ),
+        AnimatedSize(
+          duration: WebMotion.resolve(context, WebMotion.normal),
+          curve: WebMotion.curve,
+          alignment: Alignment.topCenter,
+          child: _showRememberForgot
+              ? Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: Checkbox(
+                            value: _remember,
+                            onChanged: (v) =>
+                                setState(() => _remember = v ?? false),
+                            activeColor: AuthUiColors.accentRed,
+                            checkColor: Colors.white,
+                            side: const BorderSide(
+                              color: AuthUiColors.cardText,
+                              width: 1.5,
+                            ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(AuthStrings.rememberMe, style: _labelStyle),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () => context.go('/forgot-password'),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            foregroundColor: AuthUiColors.cardTextMuted,
+                          ),
+                          child: const Text(
+                            AuthStrings.forgotPassword,
+                            style: TextStyle(
+                              fontFamily: AppFonts.lexendDeca,
+                              fontSize: 13,
+                              color: AuthUiColors.cardTextMuted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+        ),
         const SizedBox(height: 24),
         WpggPrimaryButton(
           label: _mode == AuthFlowMode.login
@@ -286,13 +303,35 @@ class _AuthFlowPageState extends State<AuthFlowPage> {
                   )
                 : null,
             child: AuthCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _header(),
-                  const SizedBox(height: 28),
-                  _form(loading),
-                ],
+              child: AnimatedSwitcher(
+                duration: WebMotion.resolve(context, WebMotion.normal),
+                switchInCurve: WebMotion.curve,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final curved = CurvedAnimation(
+                    parent: animation,
+                    curve: WebMotion.curve,
+                  );
+                  return FadeTransition(
+                    opacity: curved,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.04),
+                        end: Offset.zero,
+                      ).animate(curved),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Column(
+                  key: ValueKey(_mode),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _header(),
+                    const SizedBox(height: 28),
+                    _form(loading),
+                  ],
+                ),
               ),
             ),
           ),

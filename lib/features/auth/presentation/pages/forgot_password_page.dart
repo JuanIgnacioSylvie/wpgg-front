@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -38,16 +39,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthPasswordResetEmailSent) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AuthStrings.forgotPasswordSuccess)),
-      );
+      WpggSnackBar.show(context, AuthStrings.forgotPasswordSuccess);
       context.go('/login');
       return;
     }
     if (state is AuthError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
+      WpggSnackBar.show(context, state.message, isError: true);
     }
   }
 

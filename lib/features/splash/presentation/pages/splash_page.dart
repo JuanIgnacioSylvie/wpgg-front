@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/web/web_motion.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
@@ -22,9 +23,11 @@ class _SplashPageState extends State<SplashPage>
   static const _fullText = 'WPGG';
   var _displayText = '';
   var _showCursor = true;
+  var _exiting = false;
   Timer? _typeTimer;
   Timer? _cursorTimer;
   late final AnimationController _progressController;
+  late final AnimationController _exitController;
 
   @override
   void initState() {
@@ -33,6 +36,11 @@ class _SplashPageState extends State<SplashPage>
       vsync: this,
       duration: const Duration(milliseconds: 2800),
     )..forward();
+
+    _exitController = AnimationController(
+      vsync: this,
+      duration: WebMotion.splashExit,
+    );
 
     var index = 0;
     _typeTimer = Timer.periodic(const Duration(milliseconds: 120), (timer) {
@@ -61,7 +69,18 @@ class _SplashPageState extends State<SplashPage>
     final profile = await sl<GetSummonerProfileUseCase>()();
     if (!mounted) return;
     final needsLink = profile.fold((_) => false, (s) => s == null);
-    context.go(needsLink ? '/auth/link-riot' : '/home');
+    await _navigateWithFade(needsLink ? '/auth/link-riot' : '/home');
+  }
+
+  Future<void> _navigateWithFade(String location) async {
+    if (!mounted) return;
+    if (!WebMotion.animationsEnabled(context)) {
+      context.go(location);
+      return;
+    }
+    setState(() => _exiting = true);
+    await _exitController.forward();
+    if (mounted) context.go(location);
   }
 
   Future<void> _navigate() async {
@@ -77,7 +96,7 @@ class _SplashPageState extends State<SplashPage>
     if (!mounted) return;
     await refreshed.fold(
       (_) async {
-        if (mounted) context.go('/login');
+        if (mounted) await _navigateWithFade('/login');
       },
       (_) => _goAfterSession(),
     );
@@ -88,6 +107,7 @@ class _SplashPageState extends State<SplashPage>
     _typeTimer?.cancel();
     _cursorTimer?.cancel();
     _progressController.dispose();
+    _exitController.dispose();
     super.dispose();
   }
 
@@ -101,41 +121,56 @@ class _SplashPageState extends State<SplashPage>
     final primary =
         isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
+    final exitAnim = CurvedAnimation(
+      parent: _exitController,
+      curve: WebMotion.curve,
+    );
+
     return Scaffold(
       backgroundColor: bg,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: _displayText,
-                    style: AppTextStyles.wallpoetSplashPrimary(context),
+      body: FadeTransition(
+        opacity: _exiting
+            ? Tween<double>(begin: 1, end: 0).animate(exitAnim)
+            : const AlwaysStoppedAnimation(1),
+        child: ScaleTransition(
+          scale: _exiting
+              ? Tween<double>(begin: 1, end: 0.96).animate(exitAnim)
+              : const AlwaysStoppedAnimation(1),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _displayText,
+                        style: AppTextStyles.wallpoetSplashPrimary(context),
+                      ),
+                      if (_showCursor)
+                        TextSpan(
+                          text: '|',
+                          style: AppTextStyles.wallpoetSplashAccent(context),
+                        ),
+                    ],
                   ),
-                  if (_showCursor)
-                    TextSpan(
-                      text: '|',
-                      style: AppTextStyles.wallpoetSplashAccent(context),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 48),
-            SizedBox(
-              width: 160,
-              child: AnimatedBuilder(
-                animation: _progressController,
-                builder: (_, __) => LinearProgressIndicator(
-                  value: _progressController.value,
-                  backgroundColor: border,
-                  valueColor: AlwaysStoppedAnimation<Color>(primary),
-                  minHeight: 2,
                 ),
-              ),
+                const SizedBox(height: 48),
+                SizedBox(
+                  width: 160,
+                  child: AnimatedBuilder(
+                    animation: _progressController,
+                    builder: (_, __) => LinearProgressIndicator(
+                      value: _progressController.value,
+                      backgroundColor: border,
+                      valueColor: AlwaysStoppedAnimation<Color>(primary),
+                      minHeight: 2,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

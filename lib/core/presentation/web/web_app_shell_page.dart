@@ -15,6 +15,7 @@ import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'web_dot_grid_background.dart';
 import 'web_profile_dialog.dart';
 import 'web_shell_scope.dart';
+import 'web_shell_transition.dart';
 import 'web_sidebar.dart';
 import 'web_top_bar.dart';
 
@@ -165,7 +166,9 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
                         ),
                         Expanded(
                           child: WebDotGridBackground(
-                            child: widget.navigationShell,
+                            child: WebShellBranchTransition(
+                              navigationShell: widget.navigationShell,
+                            ),
                           ),
                         ),
                       ],

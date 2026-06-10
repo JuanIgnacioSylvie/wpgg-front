@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -41,8 +42,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       final token = GoRouterState.of(context).uri.queryParameters['token'];
       if (token == null || token.trim().isEmpty) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(AuthStrings.resetPasswordInvalidLink)),
+        WpggSnackBar.show(
+          context,
+          AuthStrings.resetPasswordInvalidLink,
+          isError: true,
         );
         context.go('/forgot-password');
         return;
@@ -54,16 +57,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthPasswordResetCompleted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AuthStrings.resetPasswordSuccess)),
-      );
+      WpggSnackBar.show(context, AuthStrings.resetPasswordSuccess);
       context.go('/login');
       return;
     }
     if (state is AuthError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
+      WpggSnackBar.show(context, state.message, isError: true);
     }
   }
 
@@ -78,8 +77,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _submit(bool loading) {
     if (loading || _token == null) return;
     if (_password.text != _confirm.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AuthStrings.passwordsMismatch)),
+      WpggSnackBar.show(
+        context,
+        AuthStrings.passwordsMismatch,
+        isError: true,
       );
       return;
     }

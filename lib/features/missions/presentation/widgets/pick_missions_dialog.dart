@@ -5,6 +5,7 @@ import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/presentation/web/web_animations.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/utils/mission_day.dart';
@@ -121,8 +122,10 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                 child: BlocConsumer<MissionsBloc, MissionsState>(
                   listener: (context, state) {
                     if (state.pickError != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(state.pickError!)),
+                      WpggSnackBar.show(
+                        context,
+                        state.pickError!,
+                        isError: true,
                       );
                     }
                   },

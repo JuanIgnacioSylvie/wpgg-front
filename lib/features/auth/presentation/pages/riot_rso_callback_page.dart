@@ -7,6 +7,7 @@ import '../../../../core/oauth/riot_rso_fragment_parser.dart';
 import '../../../../core/platform/browser_oauth_uri.dart';
 import '../../../../core/platform/oauth_callback_fragment_capture.dart';
 import '../../../../core/platform/strip_url_fragment.dart';
+import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../domain/repositories/auth_repository.dart';
 
@@ -75,9 +76,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
       _status = statusLine;
       _done = true;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login Riot completado')),
-    );
+    WpggSnackBar.show(context, 'Login Riot completado');
     Future<void>.delayed(const Duration(milliseconds: 400), () {
       if (mounted) context.go('/home');
     });
