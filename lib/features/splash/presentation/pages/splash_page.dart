@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/web/web_animations.dart';
+import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/web/web_dot_grid_background.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../../auth/domain/usecases/refresh_token_usecase.dart';
@@ -18,14 +20,14 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
-  static const _fullText = 'WPGG';
-  var _displayText = '';
-  var _showCursor = true;
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  static const _logoAsset = 'assets/icons/logo_w.png';
+  static const _loadDuration = Duration(milliseconds: 2800);
+  static const _logoSize = 72.0;
+  static const _logoIconSize = 38.0;
+  static const _progressWidth = 200.0;
+
   var _exiting = false;
-  Timer? _typeTimer;
-  Timer? _cursorTimer;
   late final AnimationController _progressController;
   late final AnimationController _exitController;
 
@@ -34,7 +36,7 @@ class _SplashPageState extends State<SplashPage>
     super.initState();
     _progressController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2800),
+      duration: _loadDuration,
     )..forward();
 
     _exitController = AnimationController(
@@ -42,27 +44,7 @@ class _SplashPageState extends State<SplashPage>
       duration: WebMotion.splashExit,
     );
 
-    var index = 0;
-    _typeTimer = Timer.periodic(const Duration(milliseconds: 120), (timer) {
-      if (!mounted) return;
-      if (index < _fullText.length) {
-        setState(() => _displayText = _fullText.substring(0, index + 1));
-        index++;
-      } else {
-        timer.cancel();
-        _cursorTimer?.cancel();
-        Future<void>.delayed(const Duration(milliseconds: 400), () {
-          if (mounted) setState(() => _showCursor = false);
-        });
-      }
-    });
-
-    _cursorTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      if (!mounted || !_showCursor) return;
-      setState(() => _showCursor = !_showCursor);
-    });
-
-    Future<void>.delayed(const Duration(milliseconds: 2800), _navigate);
+    Future<void>.delayed(_loadDuration, _navigate);
   }
 
   Future<void> _goAfterSession() async {
@@ -104,8 +86,6 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   void dispose() {
-    _typeTimer?.cancel();
-    _cursorTimer?.cancel();
     _progressController.dispose();
     _exitController.dispose();
     super.dispose();
@@ -113,62 +93,96 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg =
-        isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final border =
-        isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final primary =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-
     final exitAnim = CurvedAnimation(
       parent: _exitController,
       curve: WebMotion.curve,
     );
 
     return Scaffold(
-      backgroundColor: bg,
-      body: FadeTransition(
-        opacity: _exiting
-            ? Tween<double>(begin: 1, end: 0).animate(exitAnim)
-            : const AlwaysStoppedAnimation(1),
-        child: ScaleTransition(
-          scale: _exiting
-              ? Tween<double>(begin: 1, end: 0.96).animate(exitAnim)
+      backgroundColor: WebColors.background,
+      body: WebDotGridBackground(
+        child: FadeTransition(
+          opacity: _exiting
+              ? Tween<double>(begin: 1, end: 0).animate(exitAnim)
               : const AlwaysStoppedAnimation(1),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: _displayText,
-                        style: AppTextStyles.wallpoetSplashPrimary(context),
+          child: ScaleTransition(
+            scale: _exiting
+                ? Tween<double>(
+                    begin: 1,
+                    end: WebMotion.scaleEnter,
+                  ).animate(exitAnim)
+                : const AlwaysStoppedAnimation(1),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  WebAnimatedAppear(
+                    child: Container(
+                      width: _logoSize,
+                      height: _logoSize,
+                      decoration: BoxDecoration(
+                        color: WebColors.accent,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: WebColors.accent.withValues(alpha: 0.4),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
-                      if (_showCursor)
-                        TextSpan(
-                          text: '|',
-                          style: AppTextStyles.wallpoetSplashAccent(context),
+                      child: Center(
+                        child: Image.asset(
+                          _logoAsset,
+                          width: _logoIconSize,
+                          height: _logoIconSize,
+                          fit: BoxFit.contain,
                         ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 48),
-                SizedBox(
-                  width: 160,
-                  child: AnimatedBuilder(
-                    animation: _progressController,
-                    builder: (_, __) => LinearProgressIndicator(
-                      value: _progressController.value,
-                      backgroundColor: border,
-                      valueColor: AlwaysStoppedAnimation<Color>(primary),
-                      minHeight: 2,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  const WebAnimatedAppear(
+                    staggerIndex: 1,
+                    child: Text(
+                      'WPGG',
+                      style: TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        color: WebColors.textPrimary,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  WebAnimatedAppear(
+                    staggerIndex: 2,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: SizedBox(
+                        width: _progressWidth,
+                        height: 3,
+                        child: ColoredBox(
+                          color: WebColors.border,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: AnimatedBuilder(
+                              animation: _progressController,
+                              builder: (_, __) => FractionallySizedBox(
+                                widthFactor: _progressController.value,
+                                child: const ColoredBox(
+                                  color: WebColors.accent,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -362,4 +362,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storeComingSoon => 'Purchases will be available soon.';
+
+  @override
+  String get storeOrderHistory => 'Your purchases';
+
+  @override
+  String get storeNoOrders =>
+      'You haven\'t bought anything from the store yet.';
+
+  @override
+  String get storePurchaseSuccessTitle => 'Purchase successful!';
+
+  @override
+  String storePurchaseSuccessBody(int rp) {
+    return 'Your $rp RP gift card is ready. Save the key somewhere safe.';
+  }
+
+  @override
+  String get storeYourKey => 'Your Riot Key';
+
+  @override
+  String get storeCopyKey => 'Copy key';
+
+  @override
+  String get storeKeyCopied => 'Key copied to clipboard';
+
+  @override
+  String get storeDone => 'Done';
+
+  @override
+  String get storeOutOfStock => 'This product is out of stock.';
+
+  @override
+  String get storePurchaseError =>
+      'Could not complete the purchase. Please try again.';
 }

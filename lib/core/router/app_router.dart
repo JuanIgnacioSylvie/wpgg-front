@@ -23,6 +23,7 @@ import '../../features/profile/presentation/pages/faqs_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/terms_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
+import '../../features/store/presentation/bloc/store_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/store/presentation/pages/store_page.dart';
 import '../../features/store/presentation/pages/web_store_page.dart';
@@ -133,6 +134,7 @@ final GoRouter appRouter = GoRouter(
             BlocProvider.value(value: sl<RiotBloc>()),
             BlocProvider.value(value: sl<MissionsBloc>()),
             BlocProvider.value(value: sl<WalletBloc>()),
+            BlocProvider.value(value: sl<StoreBloc>()),
           ],
           child: kIsWeb
               ? WebAppShellPage(navigationShell: navigationShell)

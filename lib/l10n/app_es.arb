@@ -131,5 +131,20 @@
       "product": {"type": "String"}
     }
   },
-  "storeComingSoon": "Las compras estarán disponibles muy pronto."
+  "storeComingSoon": "Las compras estarán disponibles muy pronto.",
+  "storeOrderHistory": "Tus compras",
+  "storeNoOrders": "Todavía no compraste nada en la tienda.",
+  "storePurchaseSuccessTitle": "¡Compra exitosa!",
+  "storePurchaseSuccessBody": "Tu gift card de {rp} RP ya está lista. Guardá la key en un lugar seguro.",
+  "@storePurchaseSuccessBody": {
+    "placeholders": {
+      "rp": {"type": "int"}
+    }
+  },
+  "storeYourKey": "Tu Riot Key",
+  "storeCopyKey": "Copiar key",
+  "storeKeyCopied": "Key copiada al portapapeles",
+  "storeDone": "Listo",
+  "storeOutOfStock": "No hay stock disponible para este producto.",
+  "storePurchaseError": "No se pudo completar la compra. Intentá de nuevo."
 }

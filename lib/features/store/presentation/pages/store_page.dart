@@ -9,7 +9,10 @@ import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
+import '../../data/datasources/store_remote_datasource.dart';
 import '../../domain/store_catalog.dart';
+import '../bloc/store_bloc.dart';
+import '../widgets/store_order_history.dart';
 import '../widgets/store_product_card.dart';
 
 class StorePage extends StatefulWidget {
@@ -21,24 +24,31 @@ class StorePage extends StatefulWidget {
 
 class _StorePageState extends State<StorePage> {
   var _walletRequested = false;
+  var _ordersRequested = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _requestWalletIfVisible();
+    _requestDataIfVisible();
   }
 
-  void _requestWalletIfVisible() {
-    if (_walletRequested) return;
+  void _requestDataIfVisible() {
     final route = ModalRoute.of(context);
     if (route == null || !route.isCurrent) return;
-    _walletRequested = true;
-    context.read<WalletBloc>().add(const LoadWallet());
+
+    if (!_walletRequested) {
+      _walletRequested = true;
+      context.read<WalletBloc>().add(const LoadWallet());
+    }
+    if (!_ordersRequested) {
+      _ordersRequested = true;
+      context.read<StoreBloc>().add(const LoadStoreOrders());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _requestWalletIfVisible();
+    _requestDataIfVisible();
     final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
 
@@ -51,34 +61,71 @@ class _StorePageState extends State<StorePage> {
 
         return WpggGradientScaffold(
           appBar: WpggAppBar(summoner: summoner, ddragon: ddragon),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.storeTitle,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: WpggBrand.white,
-                  ),
+          body: BlocBuilder<StoreBloc, StoreState>(
+            builder: (context, state) {
+              final orders = switch (state) {
+                StoreLoaded(:final orders) => orders,
+                _ => const <StoreOrderResult>[],
+              };
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.storeTitle,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: WpggBrand.white,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.storeSubtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: WpggBrand.white.withValues(alpha: 0.75),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    for (final product in StoreCatalog.products) ...[
+                      StoreProductCard(product: product),
+                      const SizedBox(height: 16),
+                    ],
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.storeOrderHistory,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: WpggBrand.white,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (state is StoreLoading)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: CircularProgressIndicator(
+                            color: WpggBrand.primary,
+                          ),
+                        ),
+                      )
+                    else if (state is StoreError)
+                      Text(
+                        state.message,
+                        style: TextStyle(
+                          color: WpggBrand.white.withValues(alpha: 0.75),
+                        ),
+                      )
+                    else
+                      StoreOrderHistory(orders: orders),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.storeSubtitle,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: WpggBrand.white.withValues(alpha: 0.75),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                for (final product in StoreCatalog.products) ...[
-                  StoreProductCard(product: product),
-                  const SizedBox(height: 16),
-                ],
-              ],
-            ),
+              );
+            },
           ),
         );
       },

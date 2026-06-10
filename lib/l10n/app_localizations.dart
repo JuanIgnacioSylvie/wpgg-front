@@ -733,6 +733,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchases will be available soon.'**
   String get storeComingSoon;
+
+  /// No description provided for @storeOrderHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Your purchases'**
+  String get storeOrderHistory;
+
+  /// No description provided for @storeNoOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t bought anything from the store yet.'**
+  String get storeNoOrders;
+
+  /// No description provided for @storePurchaseSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase successful!'**
+  String get storePurchaseSuccessTitle;
+
+  /// No description provided for @storePurchaseSuccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {rp} RP gift card is ready. Save the key somewhere safe.'**
+  String storePurchaseSuccessBody(int rp);
+
+  /// No description provided for @storeYourKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Riot Key'**
+  String get storeYourKey;
+
+  /// No description provided for @storeCopyKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy key'**
+  String get storeCopyKey;
+
+  /// No description provided for @storeKeyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Key copied to clipboard'**
+  String get storeKeyCopied;
+
+  /// No description provided for @storeDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get storeDone;
+
+  /// No description provided for @storeOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'This product is out of stock.'**
+  String get storeOutOfStock;
+
+  /// No description provided for @storePurchaseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete the purchase. Please try again.'**
+  String get storePurchaseError;
 }
 
 class _AppLocalizationsDelegate
