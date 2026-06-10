@@ -7,6 +7,8 @@
   "languageEnglish": "English",
   "languageSpanish": "Spanish",
   "retry": "Retry",
+  "welcomeMissionBadge": "GIFT MISSION",
+  "welcomeMissionSection": "Gift mission",
   "inProgress": "In Progress",
   "missionDayResets": "Mission day {date} · resets 00:00 {timezone}",
   "@missionDayResets": {

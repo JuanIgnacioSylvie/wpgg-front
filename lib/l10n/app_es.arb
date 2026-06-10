@@ -7,6 +7,8 @@
   "languageEnglish": "Inglés",
   "languageSpanish": "Español",
   "retry": "Reintentar",
+  "welcomeMissionBadge": "MISIÓN DE REGALO",
+  "welcomeMissionSection": "Misión de regalo",
   "inProgress": "En progreso",
   "missionDayResets": "Día de misión {date} · reinicia 00:00 {timezone}",
   "dayEndsIn": "Día termina en: {time}",

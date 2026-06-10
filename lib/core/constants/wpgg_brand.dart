@@ -11,6 +11,8 @@ abstract final class WpggBrand {
   static const Color easyAccent = Color(0xFF27C840);
   static const Color mediumAccent = Color(0xFFFF8D28);
   static const Color hardAccent = Color(0xFFFF383C);
+  static const Color welcomeAccent = Color(0xFFE8A317);
+  static const Color welcomeAccentSoft = Color(0xFFFFF4D6);
   static const Color navSelected = Color(0xFFFF383C);
   static const Color missionSecondaryBg = Color(0xFFEBF5FF);
   static const Color cardSurface = Color(0xFFFFFFFF);

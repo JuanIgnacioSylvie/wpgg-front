@@ -30,6 +30,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get retry => 'Reintentar';
 
   @override
+  String get welcomeMissionBadge => 'MISIÓN DE REGALO';
+
+  @override
+  String get welcomeMissionSection => 'Misión de regalo';
+
+  @override
   String get inProgress => 'En progreso';
 
   @override

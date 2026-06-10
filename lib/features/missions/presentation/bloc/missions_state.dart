@@ -4,6 +4,7 @@ enum MissionsLoadStatus { initial, loading, loaded, error }
 
 class MissionsHomeData extends Equatable {
   const MissionsHomeData({
+    this.welcome,
     required this.primary,
     required this.secondary,
     required this.past,
@@ -12,6 +13,7 @@ class MissionsHomeData extends Equatable {
     required this.missionDayTimezone,
   });
 
+  final MissionCardEntity? welcome;
   final MissionCardEntity? primary;
   final List<MissionCardEntity> secondary;
   final List<MissionCardEntity> past;
@@ -20,8 +22,15 @@ class MissionsHomeData extends Equatable {
   final String missionDayTimezone;
 
   @override
-  List<Object?> get props =>
-      [primary, secondary, past, endsInSeconds, missionDate, missionDayTimezone];
+  List<Object?> get props => [
+        welcome,
+        primary,
+        secondary,
+        past,
+        endsInSeconds,
+        missionDate,
+        missionDayTimezone,
+      ];
 }
 
 class MissionsPickData extends Equatable {

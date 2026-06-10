@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// No description provided for @welcomeMissionBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'GIFT MISSION'**
+  String get welcomeMissionBadge;
+
+  /// No description provided for @welcomeMissionSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift mission'**
+  String get welcomeMissionSection;
+
   /// No description provided for @inProgress.
   ///
   /// In en, this message translates to:

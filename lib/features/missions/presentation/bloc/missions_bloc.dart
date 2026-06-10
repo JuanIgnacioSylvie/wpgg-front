@@ -44,6 +44,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
       emit(state.copyWith(
         homeStatus: MissionsLoadStatus.loaded,
         home: MissionsHomeData(
+          welcome: home.welcome,
           primary: home.primary,
           secondary: home.secondary,
           past: home.past,

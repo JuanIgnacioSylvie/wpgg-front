@@ -4,9 +4,12 @@ class MissionCardModel extends MissionCardEntity {
   const MissionCardModel({
     required super.id,
     super.offerId,
+    super.kind,
     required super.difficulty,
     required super.titleEs,
     required super.titleEn,
+    super.subtitleEs,
+    super.subtitleEn,
     required super.rewardWpgg,
     required super.status,
     required super.progressPercent,
@@ -18,9 +21,12 @@ class MissionCardModel extends MissionCardEntity {
     return MissionCardModel(
       id: json['id'] as String,
       offerId: json['offerId'] as String?,
+      kind: _kind(json['kind'] as String?),
       difficulty: _difficulty(json['difficulty'] as String?),
       titleEs: json['titleEs'] as String? ?? '',
       titleEn: json['titleEn'] as String? ?? '',
+      subtitleEs: json['subtitleEs'] as String?,
+      subtitleEn: json['subtitleEn'] as String?,
       rewardWpgg: (json['rewardWpgg'] as num?)?.toInt() ?? 0,
       status: _status(json['status'] as String?),
       progressPercent: (json['progressPercent'] as num?)?.toInt() ?? 0,
@@ -29,6 +35,13 @@ class MissionCardModel extends MissionCardEntity {
           ? DateTime.tryParse(json['endsAt'] as String)
           : null,
     );
+  }
+
+  static MissionKind _kind(String? raw) {
+    if (raw?.toUpperCase() == 'WELCOME') {
+      return MissionKind.welcome;
+    }
+    return MissionKind.standard;
   }
 
   static MissionDifficulty _difficulty(String? raw) {

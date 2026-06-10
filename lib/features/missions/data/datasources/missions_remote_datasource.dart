@@ -3,6 +3,7 @@ import '../models/mission_card_model.dart';
 
 class MissionsHomeResponse {
   MissionsHomeResponse({
+    this.welcome,
     required this.primary,
     required this.secondary,
     required this.past,
@@ -11,6 +12,7 @@ class MissionsHomeResponse {
     required this.missionDayTimezone,
   });
 
+  final MissionCardModel? welcome;
   final MissionCardModel? primary;
   final List<MissionCardModel> secondary;
   final List<MissionCardModel> past;
@@ -58,6 +60,11 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
       missionDate: data['missionDate'] as String? ?? '',
       missionDayTimezone:
           data['missionDayTimezone'] as String? ?? 'UTC',
+      welcome: data['welcome'] != null
+          ? MissionCardModel.fromJson(
+              data['welcome'] as Map<String, dynamic>,
+            )
+          : null,
       primary: data['primary'] != null
           ? MissionCardModel.fromJson(
               data['primary'] as Map<String, dynamic>,

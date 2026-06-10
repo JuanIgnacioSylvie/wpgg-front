@@ -16,6 +16,13 @@ Color difficultyColor(MissionDifficulty d) {
   }
 }
 
+Color missionAccentColor(MissionCardEntity mission) {
+  if (mission.isWelcome) {
+    return WpggBrand.welcomeAccent;
+  }
+  return difficultyColor(mission.difficulty);
+}
+
 String difficultyLabel(MissionDifficulty d, AppLocalizations l10n) {
   switch (d) {
     case MissionDifficulty.easy:

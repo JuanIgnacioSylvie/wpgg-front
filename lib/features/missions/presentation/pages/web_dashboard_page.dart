@@ -20,6 +20,7 @@ import '../widgets/draggable_web_mission_card.dart';
 import '../widgets/pick_missions_dialog.dart';
 import '../widgets/web_mission_card.dart';
 import '../widgets/web_mission_trash_zone.dart';
+import '../widgets/web_mission_welcome_card.dart';
 
 class WebDashboardPage extends StatefulWidget {
   const WebDashboardPage({super.key});
@@ -40,6 +41,10 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
     final activeCount =
         (home.primary != null ? 1 : 0) + home.secondary.length;
     return activeCount < 3;
+  }
+
+  int _standardActiveCount(MissionsHomeData home) {
+    return (home.primary != null ? 1 : 0) + home.secondary.length;
   }
 
   List<MissionCardEntity> _activeMissions(MissionsHomeData home) {
@@ -195,9 +200,15 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (home.welcome != null) ...[
+                              _SectionHeader(title: l10n.welcomeMissionSection),
+                              const SizedBox(height: 16),
+                              WebMissionWelcomeCard(mission: home.welcome!),
+                              const SizedBox(height: 32),
+                            ],
                             _SectionHeader(
                               title: l10n.inProgress,
-                              count: activeMissions.length,
+                              count: _standardActiveCount(home),
                             ),
                             const SizedBox(height: 20),
                             Wrap(

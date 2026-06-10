@@ -21,6 +21,7 @@ import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_tertiary_card.dart';
+import '../widgets/mission_welcome_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -177,6 +178,8 @@ class _HomePageState extends State<HomePage> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 100),
                     children: [
+                    if (home.welcome != null)
+                      MissionWelcomeCard(mission: home.welcome!),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                       child: Column(
