@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'core/firebase/firebase_bootstrap.dart';
 import 'core/platform/configure_url_strategy.dart';
 import 'core/platform/oauth_callback_fragment_capture.dart';
 import 'core/di/injection_container.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   captureOauthCallbackFragmentAtAppStart();
   WidgetsFlutterBinding.ensureInitialized();
   configureUrlStrategy();
+  await bootstrapFirebase();
   await initDependencies();
   runApp(const WpggApp());
 }

@@ -91,4 +91,12 @@ class ApiClient {
   }) {
     return _dio.post<T>(path, data: data, options: options);
   }
+
+  Future<Response<T>> delete<T>(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) {
+    return _dio.delete<T>(path, data: data, options: options);
+  }
 }

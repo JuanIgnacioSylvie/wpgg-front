@@ -59,4 +59,10 @@ abstract final class AppConstants {
     'WPGG_TURNSTILE_SITE_KEY',
     defaultValue: '',
   );
+
+  /// FCM Web Push VAPID public key (Firebase Console → Cloud Messaging → Web Push certificates).
+  static const String firebaseVapidKey = String.fromEnvironment(
+    'WPGG_FIREBASE_VAPID_KEY',
+    defaultValue: '',
+  );
 }

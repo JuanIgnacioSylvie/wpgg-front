@@ -11,6 +11,7 @@ import '../../../features/riot/domain/entities/summoner_entity.dart';
 import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/riot/presentation/bloc/riot_event.dart';
 import '../../../features/riot/presentation/bloc/riot_state.dart';
+import '../../../features/notifications/presentation/bloc/notifications_bloc.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../l10n/l10n_extension.dart';
 import 'web_dot_grid_background.dart';
@@ -77,6 +78,8 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
   }
 
   Future<void> _logout() async {
+    await context.read<NotificationsBloc>().unregisterPushToken();
+    if (!mounted) return;
     context.read<AuthBloc>().add(const LogoutRequested());
   }
 

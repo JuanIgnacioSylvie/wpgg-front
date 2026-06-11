@@ -15,6 +15,7 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
+import '../../../notifications/presentation/bloc/notifications_bloc.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import 'faqs_page.dart';
@@ -76,6 +77,7 @@ class _ProfilePageState extends State<ProfilePage>
     ));
 
     context.read<WalletBloc>().add(const LoadWallet());
+    context.read<NotificationsBloc>().add(const LoadNotificationPreference());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.embeddedInPanel) {
@@ -353,18 +355,47 @@ class _ProfilePageState extends State<ProfilePage>
                           _SettingsCard(
                             useWebStyle: useWeb,
                             children: [
-                              _SettingsRow(
-                                icon: Icons.notifications_none,
-                                label: l10n.generalNotification,
-                                useWebStyle: useWeb,
-                                trailing: Switch(
-                                  value: true,
-                                  onChanged: null,
-                                  activeThumbColor: WpggBrand.white,
-                                  activeTrackColor: useWeb
-                                      ? WebColors.accent
-                                      : WpggBrand.primary,
-                                ),
+                              BlocConsumer<NotificationsBloc, NotificationsState>(
+                                listener: (context, state) {
+                                  if (state is NotificationsLoaded &&
+                                      state.errorMessage != null) {
+                                    WpggSnackBar.show(
+                                      context,
+                                      state.errorMessage!,
+                                      isError: true,
+                                    );
+                                  }
+                                },
+                                builder: (context, notifState) {
+                                  final enabled = switch (notifState) {
+                                    NotificationsLoading(:final enabled) =>
+                                      enabled,
+                                    NotificationsLoaded(:final enabled) =>
+                                      enabled,
+                                    _ => false,
+                                  };
+                                  final loading =
+                                      notifState is NotificationsLoading;
+                                  return _SettingsRow(
+                                    icon: Icons.notifications_none,
+                                    label: l10n.generalNotification,
+                                    useWebStyle: useWeb,
+                                    trailing: Switch(
+                                      value: enabled,
+                                      onChanged: loading
+                                          ? null
+                                          : (value) => context
+                                              .read<NotificationsBloc>()
+                                              .add(ToggleNotifications(
+                                                enabled: value,
+                                              )),
+                                      activeThumbColor: WpggBrand.white,
+                                      activeTrackColor: useWeb
+                                          ? WebColors.accent
+                                          : WpggBrand.primary,
+                                    ),
+                                  );
+                                },
                               ),
                               Divider(
                                 height: 1,
