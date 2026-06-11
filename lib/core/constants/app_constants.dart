@@ -65,4 +65,10 @@ abstract final class AppConstants {
     'WPGG_FIREBASE_VAPID_KEY',
     defaultValue: '',
   );
+
+  /// Firebase Web API key (public client key; pass at build time, do not commit).
+  static const String firebaseApiKey = String.fromEnvironment(
+    'WPGG_FIREBASE_API_KEY',
+    defaultValue: '',
+  );
 }

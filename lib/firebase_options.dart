@@ -1,5 +1,5 @@
-// Firebase config for WPGG (project wpgg-7e831).
-// Web app registered in Firebase Console. Android/iOS: run `flutterfire configure`.
+// Firebase web config — API key via compile-time define (not committed).
+// Run scripts/prepare-firebase-web.ps1 before build for the service worker.
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
@@ -28,12 +28,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAGdATr33G-dPeQfVggKbqkK1RyaGYp1pA',
-    appId: '1:966474300066:web:d50c60fc81bac09d80f5fb',
-    messagingSenderId: '966474300066',
-    projectId: 'wpgg-7e831',
-    authDomain: 'wpgg-7e831.firebaseapp.com',
-    storageBucket: 'wpgg-7e831.firebasestorage.app',
-    measurementId: 'G-7FE09H8SDH',
+    apiKey: String.fromEnvironment('WPGG_FIREBASE_API_KEY'),
+    appId: String.fromEnvironment(
+      'FIREBASE_APP_ID',
+      defaultValue: '1:966474300066:web:d50c60fc81bac09d80f5fb',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '966474300066',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'wpgg-7e831',
+    ),
+    authDomain: String.fromEnvironment(
+      'FIREBASE_AUTH_DOMAIN',
+      defaultValue: 'wpgg-7e831.firebaseapp.com',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'wpgg-7e831.firebasestorage.app',
+    ),
+    measurementId: String.fromEnvironment(
+      'FIREBASE_MEASUREMENT_ID',
+      defaultValue: 'G-7FE09H8SDH',
+    ),
   );
 }
