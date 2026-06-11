@@ -37,6 +37,7 @@ import '../presentation/pages/unavailable_page.dart';
 import '../presentation/web/web_app_shell_page.dart';
 import '../presentation/wpgg_transaction_feedback_host.dart';
 import '../../features/missions/presentation/pages/web_dashboard_page.dart';
+import '../../features/landing/presentation/pages/landing_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 
 Widget _authFlowRoute(Widget child) {
@@ -63,12 +64,21 @@ int shellBranchIndexForNav(int navIndex) {
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: kIsWeb ? '/' : '/splash',
   redirect: (context, state) {
-    return normalizeOAuthDeepLinkLocation(state.uri.toString());
+    final oauth = normalizeOAuthDeepLinkLocation(state.uri.toString());
+    if (oauth != null) return oauth;
+    if (!kIsWeb && state.matchedLocation == '/') {
+      return '/splash';
+    }
+    return null;
   },
   errorBuilder: (context, state) => const UnavailablePage(),
   routes: [
+    GoRoute(
+      path: '/',
+      builder: (_, __) => const LandingPage(),
+    ),
     GoRoute(
       path: '/splash',
       builder: (_, __) => const SplashPage(),

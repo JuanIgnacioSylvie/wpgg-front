@@ -22,6 +22,7 @@ import '../../features/auth/domain/usecases/resend_verification_email_usecase.da
 import '../../features/auth/domain/usecases/reset_password_usecase.dart';
 import '../../features/auth/domain/usecases/verify_email_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/landing/data/datasources/contact_remote_datasource.dart';
 import '../../features/ddragon/data/datasources/ddragon_remote_datasource.dart';
 import '../../features/ddragon/data/repositories/ddragon_repository_impl.dart';
 import '../../features/ddragon/domain/repositories/ddragon_repository.dart';
@@ -64,6 +65,9 @@ Future<void> initDependencies() async {
 
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(sl<ApiClient>()),
+  );
+  sl.registerLazySingleton<ContactRemoteDataSource>(
+    () => ContactRemoteDataSource(sl<ApiClient>()),
   );
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
