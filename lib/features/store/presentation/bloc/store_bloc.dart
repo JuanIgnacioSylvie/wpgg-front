@@ -80,6 +80,8 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
     } catch (e) {
       emit(StoreLoaded(
         orders: existingOrders,
+        purchasing: false,
+        lastPurchase: null,
         purchaseError: e.toString(),
       ));
     }

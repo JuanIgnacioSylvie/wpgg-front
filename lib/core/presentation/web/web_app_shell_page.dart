@@ -114,9 +114,9 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
 
             final ddragon = context.watch<DDragonProvider>();
 
-            return Material(
-              color: Colors.black,
-              child: Row(
+            return Scaffold(
+              backgroundColor: Colors.black,
+              body: Row(
                 children: [
                   BlocBuilder<WalletBloc, WalletState>(
                     builder: (context, walletState) {

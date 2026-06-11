@@ -28,6 +28,9 @@ String friendlyStorePurchaseError(String raw, dynamic l10n) {
   if (lower.contains('out of stock')) {
     return l10n.storeOutOfStock;
   }
+  if (lower.contains('product not found')) {
+    return l10n.storePurchaseError;
+  }
   return l10n.storePurchaseError;
 }
 
