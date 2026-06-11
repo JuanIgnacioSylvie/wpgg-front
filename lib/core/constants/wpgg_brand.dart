@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 /// WPGG brand palette from product design.
 abstract final class WpggBrand {
+  /// WPGG = Well Played Good Game.
+  static const String tagline = 'Well Played Good Game';
+  static const String taglineDisplay = 'Well Played · Good Game';
+
   static const Color primary = Color(0xFFAD1F0F);
   static const Color primaryDark = Color(0xFF8A180C);
   static const Color white = Color(0xFFFFFFFF);

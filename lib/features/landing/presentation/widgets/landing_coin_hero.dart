@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 
@@ -45,14 +46,11 @@ class _LandingCoinHeroState extends State<LandingCoinHero>
       duration: const Duration(milliseconds: 1400),
     );
 
-    final entranceCurve = CurvedAnimation(
-      parent: _entrance,
-      curve: const Interval(0, 0.85, curve: Curves.elasticOut),
+    // elasticOut overshoots past 1.0 — fine for scale, but incompatible with
+    // TweenSequence which asserts t ∈ [0, 1].
+    _entranceScale = Tween<double>(begin: 0.15, end: 1.0).animate(
+      CurvedAnimation(parent: _entrance, curve: Curves.elasticOut),
     );
-    _entranceScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.15, end: 1.12), weight: 70),
-      TweenSequenceItem(tween: Tween(begin: 1.12, end: 1.0), weight: 30),
-    ]).animate(entranceCurve);
     _entranceFlip = Tween<double>(begin: math.pi * 1.5, end: 0).animate(
       CurvedAnimation(parent: _entrance, curve: Curves.easeOutCubic),
     );
@@ -145,16 +143,16 @@ class _LandingCoinHeroState extends State<LandingCoinHero>
                   Transform.translate(
                     offset: Offset(0, floatY),
                     child: Opacity(
-                      opacity: _entranceOpacity.value,
+                      opacity: _entranceOpacity.value.clamp(0.0, 1.0),
                       child: Transform.scale(
-                        scale: _entranceScale.value,
+                        scale: _entranceScale.value.clamp(0.01, 2.0),
                         child: Transform(
                           alignment: Alignment.center,
                           transform: Matrix4.identity()
                             ..setEntry(3, 2, 0.0015)
                             ..rotateY(_entranceFlip.value),
                           child: DecoratedBox(
-                          decoration: BoxDecoration(
+                            decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -172,25 +170,25 @@ class _LandingCoinHeroState extends State<LandingCoinHero>
                                 spreadRadius: 2,
                               ),
                             ],
-                          ),
-                          child: Image.asset(
-                            _coinAsset,
-                            width: coinSize,
-                            height: coinSize,
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.high,
+                            ),
+                            child: Image.asset(
+                              _coinAsset,
+                              width: coinSize,
+                              height: coinSize,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.high,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
                 ],
               ),
             ),
             const SizedBox(height: 28),
             Opacity(
-              opacity: _entranceOpacity.value,
+              opacity: _entranceOpacity.value.clamp(0.0, 1.0),
               child: Column(
                 children: [
                   Text(
@@ -204,7 +202,7 @@ class _LandingCoinHeroState extends State<LandingCoinHero>
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Win · Play · Get Gold',
+                    WpggBrand.taglineDisplay,
                     style: TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       fontSize: 15,

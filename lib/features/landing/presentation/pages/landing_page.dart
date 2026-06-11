@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/storage/secure_storage.dart';
@@ -234,7 +235,7 @@ class _LandingPageState extends State<LandingPage> {
                         _LandingSection(
                           title: '¿Qué es WPGG?',
                           subtitle:
-                              'Win · Play · Get Gold — estadísticas de LoL que te pagan por jugar.',
+                              '${WpggBrand.tagline} — estadísticas de LoL que te pagan por jugar.',
                           body:
                               'Completás misiones diarias basadas en tu actividad en partidas ranked, acumulás tokens WPGG y los usás en la tienda para gift cards de Riot Points o los retirás a tu wallet. Es un sistema de recompensas pensado para jugadores, no para especuladores.',
                           bullets: const [
