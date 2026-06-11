@@ -223,8 +223,8 @@ class _ExpandedPrice extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Precio en USD · actualizado cada 60s',
+          Text(
+            context.l10n.tokenPriceUpdatedHint,
             style: TextStyle(
               color: WebColors.textMuted,
               fontSize: 12,

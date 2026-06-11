@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/app_fonts.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
 import '../widgets/mission_day_countdown.dart';
 import 'web_colors.dart';
@@ -9,7 +10,7 @@ import 'web_motion.dart';
 class WebTopBar extends StatelessWidget {
   const WebTopBar({
     super.key,
-    this.sectionTitle = 'Dashboard',
+    required this.sectionTitle,
     this.showAddButton = true,
     this.addButtonEnabled = true,
     this.showDayCountdown = false,
@@ -164,7 +165,7 @@ class _TopBarAddButtonState extends State<_TopBarAddButton> {
               Icon(Icons.add, color: fgColor, size: 16),
               const SizedBox(width: 4),
               Text(
-                'Agregar',
+                context.l10n.addMissionButton,
                 style: TextStyle(
                   color: fgColor,
                   fontSize: 13,
@@ -179,15 +180,15 @@ class _TopBarAddButtonState extends State<_TopBarAddButton> {
   }
 }
 
-String webSectionTitleForLocation(String location) {
+String webSectionTitleForLocation(AppLocalizations l10n, String location) {
   if (location.startsWith('/missions/by-day')) {
-    return 'Misiones por día';
+    return l10n.missionsByDays;
   }
   if (location.startsWith('/store')) {
-    return 'Tienda';
+    return l10n.storeTitle;
   }
   if (location.startsWith('/finance')) {
-    return 'Finanzas';
+    return l10n.financeTitle;
   }
-  return 'Dashboard';
+  return l10n.navDashboard;
 }

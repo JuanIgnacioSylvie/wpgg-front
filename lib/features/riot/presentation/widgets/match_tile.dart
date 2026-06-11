@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../domain/entities/match_entity.dart';
 
@@ -14,6 +16,7 @@ class MatchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final onSurface = theme.colorScheme.onSurface;
@@ -23,7 +26,7 @@ class MatchTile extends StatelessWidget {
       match.championName,
       championId: match.championId,
     );
-    final ago = _relative(match.endedAt);
+    final ago = _relative(l10n, match.endedAt);
     final duration = _formatDuration(match.durationSeconds);
     final endedClock = DateFormat.Hm().format(match.endedAt.toLocal());
 
@@ -52,7 +55,7 @@ class MatchTile extends StatelessWidget {
                       Text(
                         match.championName.isNotEmpty
                             ? match.championName
-                            : 'Campeón ${match.championId}',
+                            : l10n.matchChampionFallback(match.championId),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleMedium
@@ -90,7 +93,7 @@ class MatchTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  match.win ? 'Victoria' : 'Derrota',
+                  match.win ? l10n.matchWin : l10n.matchLoss,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: isDark ? AppColors.darkTextPrimary : Colors.white,
                     fontWeight: FontWeight.w600,
@@ -147,11 +150,11 @@ class MatchTile extends StatelessWidget {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
-  static String _relative(DateTime t) {
+  static String _relative(AppLocalizations l10n, DateTime t) {
     final diff = DateTime.now().difference(t);
-    if (diff.isNegative || diff.inMinutes < 1) return 'hace instantes';
-    if (diff.inMinutes < 60) return 'hace ${diff.inMinutes} min';
-    if (diff.inHours < 24) return 'hace ${diff.inHours} h';
-    return 'hace ${diff.inDays} d';
+    if (diff.isNegative || diff.inMinutes < 1) return l10n.timeAgoJustNow;
+    if (diff.inMinutes < 60) return l10n.timeAgoMinutes(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.timeAgoHours(diff.inHours);
+    return l10n.timeAgoDays(diff.inDays);
   }
 }

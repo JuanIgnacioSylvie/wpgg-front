@@ -427,4 +427,279 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get viewOnGeckoTerminal => 'Ver en GeckoTerminal';
+
+  @override
+  String get authLoginSwitchLine => 'Si no tenés una cuenta';
+
+  @override
+  String get authLoginSwitchLink => 'Registrate acá !';
+
+  @override
+  String get authRegisterSwitchLine => 'Si ya tenés una cuenta';
+
+  @override
+  String get authRegisterSwitchLink => 'Iniciá sesión acá !';
+
+  @override
+  String get authSwitchLinkPrefix => 'Podés ';
+
+  @override
+  String get riotNotFoundTitle => 'Cuenta no encontrada.';
+
+  @override
+  String get riotNotFoundBody =>
+      'No encontramos una cuenta de WPGG vinculada a ese Riot ID. Registrate primero en WPGG.';
+
+  @override
+  String get riotNotFoundRegister => 'Registrate';
+
+  @override
+  String get riotAlreadyExistsTitle => 'Ya tenés una cuenta.';
+
+  @override
+  String get riotAlreadyExistsBody =>
+      'Ya existe una cuenta de WPGG vinculada a este Riot ID. Iniciá sesión con Riot o con tu email.';
+
+  @override
+  String get riotAlreadyExistsSignInRiot => 'Iniciar sesión con Riot';
+
+  @override
+  String get linkRiotBody =>
+      'Vinculá tu cuenta de Riot Games para completar tu registro.';
+
+  @override
+  String get authLabelEmail => 'Email';
+
+  @override
+  String get authHintEmail => 'Ingresá tu correo electrónico';
+
+  @override
+  String get authLabelPassword => 'Contraseña';
+
+  @override
+  String get authHintPassword => 'Ingresá tu contraseña';
+
+  @override
+  String get authLabelConfirmPassword => 'Confirmar contraseña';
+
+  @override
+  String get authHintConfirmPassword => 'Confirmá tu contraseña';
+
+  @override
+  String get authRememberMe => 'Recordarme';
+
+  @override
+  String get authForgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get authButtonLogin => 'Iniciar sesión';
+
+  @override
+  String get authButtonRegister => 'Registrate';
+
+  @override
+  String get authRiotFooter => 'o continuá con';
+
+  @override
+  String get authPasswordsMismatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get authForgotPasswordBody =>
+      'Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get authForgotPasswordSuccess =>
+      'Si existe una cuenta con ese email, te enviamos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get authButtonSendResetLink => 'Enviar enlace';
+
+  @override
+  String get authBackToLogin => 'Volver al inicio de sesión';
+
+  @override
+  String get authResetPasswordTitle => 'Nueva contraseña';
+
+  @override
+  String get authResetPasswordBody =>
+      'Elegí una contraseña nueva para tu cuenta.';
+
+  @override
+  String get authButtonResetPassword => 'Restablecer contraseña';
+
+  @override
+  String get authResetPasswordSuccess =>
+      'Tu contraseña fue actualizada. Ya podés iniciar sesión.';
+
+  @override
+  String get authResetPasswordInvalidLink =>
+      'El enlace no es válido o expiró. Pedí uno nuevo desde el inicio de sesión.';
+
+  @override
+  String get authVerifyEmailTitle => 'Confirmá tu email';
+
+  @override
+  String get authVerifyEmailBody =>
+      'Te enviamos un enlace a tu correo. Abrilo para activar tu cuenta.';
+
+  @override
+  String get authVerifyEmailResent =>
+      'Si la cuenta existe y no está verificada, reenviamos el enlace.';
+
+  @override
+  String get authVerifyEmailSuccess =>
+      'Tu email fue confirmado. ¡Bienvenido a WPGG!';
+
+  @override
+  String get authVerifyEmailInvalidLink =>
+      'El enlace no es válido o expiró. Pedí uno nuevo desde el registro.';
+
+  @override
+  String get authButtonResendVerification => 'Reenviar enlace';
+
+  @override
+  String get authTurnstileRequired =>
+      'Completá la verificación de seguridad antes de continuar.';
+
+  @override
+  String get authVerifyEmailConfirming => 'Confirmando tu email…';
+
+  @override
+  String get riotLoginCompleted => 'Login Riot completado';
+
+  @override
+  String get riotCallbackTitle => 'Riot';
+
+  @override
+  String get riotGoToDashboard => 'Ir al panel';
+
+  @override
+  String get riotGoToLogin => 'Ir al inicio de sesión';
+
+  @override
+  String get riotSessionTokensInUrl =>
+      'Sesión iniciada con Riot (tokens en la URL).';
+
+  @override
+  String get riotSessionCookies => 'Sesión iniciada con Riot (cookies).';
+
+  @override
+  String get riotSessionUpdated =>
+      'Cuenta Riot autenticada; sesión de la app actualizada.';
+
+  @override
+  String get riotSessionViaExchange => 'Sesión WPGG vía canje Riot.';
+
+  @override
+  String get riotIdentityError =>
+      'El servidor no pudo obtener tu identidad de Riot. Probá iniciar sesión de nuevo.';
+
+  @override
+  String riotIdentityErrorWithDesc(String desc) {
+    return 'El servidor no pudo obtener tu identidad de Riot: $desc';
+  }
+
+  @override
+  String get riotNoSessionAfterLogin =>
+      'No se recibió sesión tras el login con Riot.';
+
+  @override
+  String get financeTitle => 'Finanzas';
+
+  @override
+  String get financeSubtitle => 'Precio del token y movimientos de tu wallet';
+
+  @override
+  String get financeYourBalance => 'Tu balance';
+
+  @override
+  String get balanceLabel => 'Saldo';
+
+  @override
+  String get financeFilterAll => 'Todos';
+
+  @override
+  String get financeFilterAllTransactions => 'Todas las transacciones';
+
+  @override
+  String get financeFilterIncome => 'Ingresos';
+
+  @override
+  String get financeFilterExpense => 'Gastos';
+
+  @override
+  String get financeNoChartData => 'Sin datos del gráfico';
+
+  @override
+  String get financeNoTransactions => 'Sin movimientos';
+
+  @override
+  String get tokenPriceUpdatedHint => 'Precio en USD · actualizado cada 60s';
+
+  @override
+  String get navDashboard => 'Panel';
+
+  @override
+  String get navNotifications => 'Notificaciones';
+
+  @override
+  String get sidebarExpandMenu => 'Expandir menú';
+
+  @override
+  String get sidebarCollapse => 'Colapsar';
+
+  @override
+  String get addMissionButton => 'Agregar';
+
+  @override
+  String matchChampionFallback(int id) {
+    return 'Campeón $id';
+  }
+
+  @override
+  String get matchWin => 'Victoria';
+
+  @override
+  String get matchLoss => 'Derrota';
+
+  @override
+  String get timeAgoJustNow => 'hace instantes';
+
+  @override
+  String timeAgoMinutes(int count) {
+    return 'hace $count min';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    return 'hace $count h';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    return 'hace $count d';
+  }
+
+  @override
+  String rankedWinrate(String percent) {
+    return 'Winrate $percent%';
+  }
+
+  @override
+  String get queueRankedSolo => 'Solo/Duo';
+
+  @override
+  String get queueRankedFlex => 'Flex 5v5';
+
+  @override
+  String get queueRankedTft => 'TFT Clasificatoria';
+
+  @override
+  String get queueArena => 'Arena';
+
+  @override
+  String get queueAram => 'ARAM';
+
+  @override
+  String get queueNormal => 'Normal';
 }

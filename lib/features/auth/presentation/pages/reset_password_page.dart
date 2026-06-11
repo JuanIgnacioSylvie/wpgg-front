@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -44,7 +44,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         if (!mounted) return;
         WpggSnackBar.show(
           context,
-          AuthStrings.resetPasswordInvalidLink,
+          context.l10n.authResetPasswordInvalidLink,
           isError: true,
         );
         context.go('/forgot-password');
@@ -57,12 +57,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthPasswordResetCompleted) {
-      WpggSnackBar.show(context, AuthStrings.resetPasswordSuccess);
+      WpggSnackBar.show(context, context.l10n.authResetPasswordSuccess);
       context.go('/login');
       return;
     }
     if (state is AuthError) {
-      WpggSnackBar.show(context, state.message, isError: true);
+      WpggSnackBar.show(
+        context,
+        context.localizeAuthError(state.message),
+        isError: true,
+      );
     }
   }
 
@@ -79,7 +83,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     if (_password.text != _confirm.text) {
       WpggSnackBar.show(
         context,
-        AuthStrings.passwordsMismatch,
+        context.l10n.authPasswordsMismatch,
         isError: true,
       );
       return;
@@ -105,6 +109,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final token = _token;
     return StreamBuilder<AuthState>(
       stream: _authBloc.stream,
@@ -122,9 +127,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          AuthStrings.resetPasswordTitle,
-                          style: TextStyle(
+                        Text(
+                          l10n.authResetPasswordTitle,
+                          style: const TextStyle(
                             fontFamily: AppFonts.lexendDeca,
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
@@ -132,9 +137,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          AuthStrings.resetPasswordBody,
-                          style: TextStyle(
+                        Text(
+                          l10n.authResetPasswordBody,
+                          style: const TextStyle(
                             fontFamily: AppFonts.lexendDeca,
                             fontSize: 14,
                             color: AuthUiColors.cardTextMuted,
@@ -143,8 +148,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         const SizedBox(height: 28),
                         AuthUnderlineField(
                           controller: _password,
-                          label: AuthStrings.labelPassword,
-                          hint: AuthStrings.hintPassword,
+                          label: l10n.authLabelPassword,
+                          hint: l10n.authHintPassword,
                           obscureText: _obscurePassword,
                           prefixIcon: Icons.lock_outline,
                           suffix: _visibilityToggle(
@@ -157,8 +162,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         const SizedBox(height: 20),
                         AuthUnderlineField(
                           controller: _confirm,
-                          label: AuthStrings.labelConfirmPassword,
-                          hint: AuthStrings.hintConfirmPassword,
+                          label: l10n.authLabelConfirmPassword,
+                          hint: l10n.authHintConfirmPassword,
                           obscureText: _obscureConfirm,
                           prefixIcon: Icons.lock_outline,
                           suffix: _visibilityToggle(
@@ -170,7 +175,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ),
                         const SizedBox(height: 24),
                         WpggPrimaryButton(
-                          label: AuthStrings.buttonResetPassword,
+                          label: l10n.authButtonResetPassword,
                           isLoading: loading,
                           onPressed: loading ? null : () => _submit(loading),
                         ),
@@ -180,9 +185,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           style: TextButton.styleFrom(
                             foregroundColor: AuthUiColors.cardTextMuted,
                           ),
-                          child: const Text(
-                            AuthStrings.backToLogin,
-                            style: TextStyle(fontFamily: AppFonts.lexendDeca),
+                          child: Text(
+                            l10n.authBackToLogin,
+                            style: const TextStyle(fontFamily: AppFonts.lexendDeca),
                           ),
                         ),
                       ],

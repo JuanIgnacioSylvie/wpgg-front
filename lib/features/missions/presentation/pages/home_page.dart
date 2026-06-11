@@ -265,8 +265,8 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
                           children: [
-                            const Text(
-                              'Pass Missions',
+                            Text(
+                              l10n.passMissions,
                               style: TextStyle(
                                 color: WpggBrand.white,
                                 fontSize: 18,

@@ -847,6 +847,498 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View on GeckoTerminal'**
   String get viewOnGeckoTerminal;
+
+  /// No description provided for @authLoginSwitchLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get authLoginSwitchLine;
+
+  /// No description provided for @authLoginSwitchLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up here!'**
+  String get authLoginSwitchLink;
+
+  /// No description provided for @authRegisterSwitchLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get authRegisterSwitchLine;
+
+  /// No description provided for @authRegisterSwitchLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in here!'**
+  String get authRegisterSwitchLink;
+
+  /// No description provided for @authSwitchLinkPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'You can '**
+  String get authSwitchLinkPrefix;
+
+  /// No description provided for @riotNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account not found.'**
+  String get riotNotFoundTitle;
+
+  /// No description provided for @riotNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find a WPGG account linked to that Riot ID. Sign up on WPGG first.'**
+  String get riotNotFoundBody;
+
+  /// No description provided for @riotNotFoundRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get riotNotFoundRegister;
+
+  /// No description provided for @riotAlreadyExistsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an account.'**
+  String get riotAlreadyExistsTitle;
+
+  /// No description provided for @riotAlreadyExistsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A WPGG account is already linked to this Riot ID. Sign in with Riot or email.'**
+  String get riotAlreadyExistsBody;
+
+  /// No description provided for @riotAlreadyExistsSignInRiot.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Riot'**
+  String get riotAlreadyExistsSignInRiot;
+
+  /// No description provided for @linkRiotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Link your Riot Games account to complete registration.'**
+  String get linkRiotBody;
+
+  /// No description provided for @authLabelEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authLabelEmail;
+
+  /// No description provided for @authHintEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get authHintEmail;
+
+  /// No description provided for @authLabelPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authLabelPassword;
+
+  /// No description provided for @authHintPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get authHintPassword;
+
+  /// No description provided for @authLabelConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get authLabelConfirmPassword;
+
+  /// No description provided for @authHintConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your password'**
+  String get authHintConfirmPassword;
+
+  /// No description provided for @authRememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me'**
+  String get authRememberMe;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get authForgotPassword;
+
+  /// No description provided for @authButtonLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get authButtonLogin;
+
+  /// No description provided for @authButtonRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get authButtonRegister;
+
+  /// No description provided for @authRiotFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'or continue with'**
+  String get authRiotFooter;
+
+  /// No description provided for @authPasswordsMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match'**
+  String get authPasswordsMismatch;
+
+  /// No description provided for @authForgotPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we\'ll send a reset link.'**
+  String get authForgotPasswordBody;
+
+  /// No description provided for @authForgotPasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account exists, we sent a reset link.'**
+  String get authForgotPasswordSuccess;
+
+  /// No description provided for @authButtonSendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send link'**
+  String get authButtonSendResetLink;
+
+  /// No description provided for @authBackToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to log in'**
+  String get authBackToLogin;
+
+  /// No description provided for @authResetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get authResetPasswordTitle;
+
+  /// No description provided for @authResetPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new password for your account.'**
+  String get authResetPasswordBody;
+
+  /// No description provided for @authButtonResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get authButtonResetPassword;
+
+  /// No description provided for @authResetPasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated. You can log in now.'**
+  String get authResetPasswordSuccess;
+
+  /// No description provided for @authResetPasswordInvalidLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or expired link. Request a new one from log in.'**
+  String get authResetPasswordInvalidLink;
+
+  /// No description provided for @authVerifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email'**
+  String get authVerifyEmailTitle;
+
+  /// No description provided for @authVerifyEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a link to your email. Open it to activate your account.'**
+  String get authVerifyEmailBody;
+
+  /// No description provided for @authVerifyEmailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'If the account exists and isn\'t verified, we resent the link.'**
+  String get authVerifyEmailResent;
+
+  /// No description provided for @authVerifyEmailSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Email confirmed. Welcome to WPGG!'**
+  String get authVerifyEmailSuccess;
+
+  /// No description provided for @authVerifyEmailInvalidLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or expired link. Request a new one from sign up.'**
+  String get authVerifyEmailInvalidLink;
+
+  /// No description provided for @authButtonResendVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend link'**
+  String get authButtonResendVerification;
+
+  /// No description provided for @authTurnstileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the security check before continuing.'**
+  String get authTurnstileRequired;
+
+  /// No description provided for @authVerifyEmailConfirming.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming your email…'**
+  String get authVerifyEmailConfirming;
+
+  /// No description provided for @riotLoginCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Riot login complete'**
+  String get riotLoginCompleted;
+
+  /// No description provided for @riotCallbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Riot'**
+  String get riotCallbackTitle;
+
+  /// No description provided for @riotGoToDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to dashboard'**
+  String get riotGoToDashboard;
+
+  /// No description provided for @riotGoToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to log in'**
+  String get riotGoToLogin;
+
+  /// No description provided for @riotSessionTokensInUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with Riot (tokens in URL).'**
+  String get riotSessionTokensInUrl;
+
+  /// No description provided for @riotSessionCookies.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with Riot (cookies).'**
+  String get riotSessionCookies;
+
+  /// No description provided for @riotSessionUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Riot account authenticated; app session updated.'**
+  String get riotSessionUpdated;
+
+  /// No description provided for @riotSessionViaExchange.
+  ///
+  /// In en, this message translates to:
+  /// **'WPGG session via Riot exchange.'**
+  String get riotSessionViaExchange;
+
+  /// No description provided for @riotIdentityError.
+  ///
+  /// In en, this message translates to:
+  /// **'The server couldn\'t get your Riot identity. Try signing in again.'**
+  String get riotIdentityError;
+
+  /// No description provided for @riotIdentityErrorWithDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The server couldn\'t get your Riot identity: {desc}'**
+  String riotIdentityErrorWithDesc(String desc);
+
+  /// No description provided for @riotNoSessionAfterLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'No session received after Riot login.'**
+  String get riotNoSessionAfterLogin;
+
+  /// No description provided for @financeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get financeTitle;
+
+  /// No description provided for @financeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Token price and your wallet activity'**
+  String get financeSubtitle;
+
+  /// No description provided for @financeYourBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance'**
+  String get financeYourBalance;
+
+  /// No description provided for @balanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balanceLabel;
+
+  /// No description provided for @financeFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get financeFilterAll;
+
+  /// No description provided for @financeFilterAllTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'All transactions'**
+  String get financeFilterAllTransactions;
+
+  /// No description provided for @financeFilterIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get financeFilterIncome;
+
+  /// No description provided for @financeFilterExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get financeFilterExpense;
+
+  /// No description provided for @financeNoChartData.
+  ///
+  /// In en, this message translates to:
+  /// **'No chart data'**
+  String get financeNoChartData;
+
+  /// No description provided for @financeNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions'**
+  String get financeNoTransactions;
+
+  /// No description provided for @tokenPriceUpdatedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Price in USD · updated every 60s'**
+  String get tokenPriceUpdatedHint;
+
+  /// No description provided for @navDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// No description provided for @navNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get navNotifications;
+
+  /// No description provided for @sidebarExpandMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand menu'**
+  String get sidebarExpandMenu;
+
+  /// No description provided for @sidebarCollapse.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse'**
+  String get sidebarCollapse;
+
+  /// No description provided for @addMissionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addMissionButton;
+
+  /// No description provided for @matchChampionFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Champion {id}'**
+  String matchChampionFallback(int id);
+
+  /// No description provided for @matchWin.
+  ///
+  /// In en, this message translates to:
+  /// **'Victory'**
+  String get matchWin;
+
+  /// No description provided for @matchLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Defeat'**
+  String get matchLoss;
+
+  /// No description provided for @timeAgoJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeAgoJustNow;
+
+  /// No description provided for @timeAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String timeAgoMinutes(int count);
+
+  /// No description provided for @timeAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h ago'**
+  String timeAgoHours(int count);
+
+  /// No description provided for @timeAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String timeAgoDays(int count);
+
+  /// No description provided for @rankedWinrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Win rate {percent}%'**
+  String rankedWinrate(String percent);
+
+  /// No description provided for @queueRankedSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo/Duo'**
+  String get queueRankedSolo;
+
+  /// No description provided for @queueRankedFlex.
+  ///
+  /// In en, this message translates to:
+  /// **'Flex 5v5'**
+  String get queueRankedFlex;
+
+  /// No description provided for @queueRankedTft.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked TFT'**
+  String get queueRankedTft;
+
+  /// No description provided for @queueArena.
+  ///
+  /// In en, this message translates to:
+  /// **'Arena'**
+  String get queueArena;
+
+  /// No description provided for @queueAram.
+  ///
+  /// In en, this message translates to:
+  /// **'ARAM'**
+  String get queueAram;
+
+  /// No description provided for @queueNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get queueNormal;
 }
 
 class _AppLocalizationsDelegate

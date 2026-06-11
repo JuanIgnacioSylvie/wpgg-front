@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -70,6 +71,7 @@ class _FinancePageState extends State<FinancePage> {
                   child: CircularProgressIndicator(color: WpggBrand.primary),
                 );
               }
+              final l10n = context.l10n;
               if (state is WalletError) {
                 return Center(
                   child: Text(
@@ -121,7 +123,10 @@ class _FinancePageState extends State<FinancePage> {
                           ),
                           const SizedBox(height: 16),
                           Expanded(
-                            child: _Chart(points: state.chart),
+                            child: _Chart(
+                              points: state.chart,
+                              emptyLabel: l10n.financeNoChartData,
+                            ),
                           ),
                         ],
                       ),
@@ -143,7 +148,7 @@ class _FinancePageState extends State<FinancePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _Tab(
-                                label: 'All Transactions',
+                                label: l10n.financeFilterAllTransactions,
                                 selected: _tabIndex == 0,
                                 onTap: () {
                                   setState(() => _tabIndex = 0);
@@ -153,7 +158,7 @@ class _FinancePageState extends State<FinancePage> {
                                 },
                               ),
                               _Tab(
-                                label: 'Income',
+                                label: l10n.financeFilterIncome,
                                 selected: _tabIndex == 1,
                                 onTap: () {
                                   setState(() => _tabIndex = 1);
@@ -163,7 +168,7 @@ class _FinancePageState extends State<FinancePage> {
                                 },
                               ),
                               _Tab(
-                                label: 'Expense',
+                                label: l10n.financeFilterExpense,
                                 selected: _tabIndex == 2,
                                 onTap: () {
                                   setState(() => _tabIndex = 2);
@@ -237,15 +242,16 @@ class _FinancePageState extends State<FinancePage> {
 }
 
 class _Chart extends StatelessWidget {
-  const _Chart({required this.points});
+  const _Chart({required this.points, required this.emptyLabel});
 
   final List<MarketChartPoint> points;
+  final String emptyLabel;
 
   @override
   Widget build(BuildContext context) {
     if (points.isEmpty) {
-      return const Center(
-        child: Text('No chart data', style: TextStyle(color: WpggBrand.white)),
+      return Center(
+        child: Text(emptyLabel, style: const TextStyle(color: WpggBrand.white)),
       );
     }
     final spots = <FlSpot>[];

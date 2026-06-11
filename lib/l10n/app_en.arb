@@ -183,5 +183,117 @@
   "transactionSuccessRerollMission": "Mission rerolled",
   "transactionSuccessCancelMission": "Mission deleted",
   "transactionFailedGeneric": "The action could not be completed. Please try again.",
-  "viewOnGeckoTerminal": "View on GeckoTerminal"
+  "viewOnGeckoTerminal": "View on GeckoTerminal",
+  "authLoginSwitchLine": "Don't have an account?",
+  "authLoginSwitchLink": "Sign up here!",
+  "authRegisterSwitchLine": "Already have an account?",
+  "authRegisterSwitchLink": "Log in here!",
+  "authSwitchLinkPrefix": "You can ",
+  "riotNotFoundTitle": "Account not found.",
+  "riotNotFoundBody": "We couldn't find a WPGG account linked to that Riot ID. Sign up on WPGG first.",
+  "riotNotFoundRegister": "Sign up",
+  "riotAlreadyExistsTitle": "You already have an account.",
+  "riotAlreadyExistsBody": "A WPGG account is already linked to this Riot ID. Sign in with Riot or email.",
+  "riotAlreadyExistsSignInRiot": "Sign in with Riot",
+  "linkRiotBody": "Link your Riot Games account to complete registration.",
+  "authLabelEmail": "Email",
+  "authHintEmail": "Enter your email",
+  "authLabelPassword": "Password",
+  "authHintPassword": "Enter your password",
+  "authLabelConfirmPassword": "Confirm password",
+  "authHintConfirmPassword": "Confirm your password",
+  "authRememberMe": "Remember me",
+  "authForgotPassword": "Forgot your password?",
+  "authButtonLogin": "Log in",
+  "authButtonRegister": "Sign up",
+  "authRiotFooter": "or continue with",
+  "authPasswordsMismatch": "Passwords don't match",
+  "authForgotPasswordBody": "Enter your email and we'll send a reset link.",
+  "authForgotPasswordSuccess": "If an account exists, we sent a reset link.",
+  "authButtonSendResetLink": "Send link",
+  "authBackToLogin": "Back to log in",
+  "authResetPasswordTitle": "New password",
+  "authResetPasswordBody": "Choose a new password for your account.",
+  "authButtonResetPassword": "Reset password",
+  "authResetPasswordSuccess": "Password updated. You can log in now.",
+  "authResetPasswordInvalidLink": "Invalid or expired link. Request a new one from log in.",
+  "authVerifyEmailTitle": "Confirm your email",
+  "authVerifyEmailBody": "We sent a link to your email. Open it to activate your account.",
+  "authVerifyEmailResent": "If the account exists and isn't verified, we resent the link.",
+  "authVerifyEmailSuccess": "Email confirmed. Welcome to WPGG!",
+  "authVerifyEmailInvalidLink": "Invalid or expired link. Request a new one from sign up.",
+  "authButtonResendVerification": "Resend link",
+  "authTurnstileRequired": "Complete the security check before continuing.",
+  "authVerifyEmailConfirming": "Confirming your email…",
+  "riotLoginCompleted": "Riot login complete",
+  "riotCallbackTitle": "Riot",
+  "riotGoToDashboard": "Go to dashboard",
+  "riotGoToLogin": "Go to log in",
+  "riotSessionTokensInUrl": "Signed in with Riot (tokens in URL).",
+  "riotSessionCookies": "Signed in with Riot (cookies).",
+  "riotSessionUpdated": "Riot account authenticated; app session updated.",
+  "riotSessionViaExchange": "WPGG session via Riot exchange.",
+  "riotIdentityError": "The server couldn't get your Riot identity. Try signing in again.",
+  "riotIdentityErrorWithDesc": "The server couldn't get your Riot identity: {desc}",
+  "@riotIdentityErrorWithDesc": {
+    "placeholders": {
+      "desc": {"type": "String"}
+    }
+  },
+  "riotNoSessionAfterLogin": "No session received after Riot login.",
+  "financeTitle": "Finance",
+  "financeSubtitle": "Token price and your wallet activity",
+  "financeYourBalance": "Your balance",
+  "balanceLabel": "Balance",
+  "financeFilterAll": "All",
+  "financeFilterAllTransactions": "All transactions",
+  "financeFilterIncome": "Income",
+  "financeFilterExpense": "Expense",
+  "financeNoChartData": "No chart data",
+  "financeNoTransactions": "No transactions",
+  "tokenPriceUpdatedHint": "Price in USD · updated every 60s",
+  "navDashboard": "Dashboard",
+  "navNotifications": "Notifications",
+  "sidebarExpandMenu": "Expand menu",
+  "sidebarCollapse": "Collapse",
+  "addMissionButton": "Add",
+  "matchChampionFallback": "Champion {id}",
+  "@matchChampionFallback": {
+    "placeholders": {
+      "id": {"type": "int"}
+    }
+  },
+  "matchWin": "Victory",
+  "matchLoss": "Defeat",
+  "timeAgoJustNow": "just now",
+  "timeAgoMinutes": "{count} min ago",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoHours": "{count} h ago",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoDays": "{count} d ago",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rankedWinrate": "Win rate {percent}%",
+  "@rankedWinrate": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "queueRankedSolo": "Solo/Duo",
+  "queueRankedFlex": "Flex 5v5",
+  "queueRankedTft": "Ranked TFT",
+  "queueArena": "Arena",
+  "queueAram": "ARAM",
+  "queueNormal": "Normal"
 }

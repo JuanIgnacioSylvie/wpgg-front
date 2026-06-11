@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -39,12 +39,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthPasswordResetEmailSent) {
-      WpggSnackBar.show(context, AuthStrings.forgotPasswordSuccess);
+      WpggSnackBar.show(context, context.l10n.authForgotPasswordSuccess);
       context.go('/login');
       return;
     }
     if (state is AuthError) {
-      WpggSnackBar.show(context, state.message, isError: true);
+      WpggSnackBar.show(
+        context,
+        context.localizeAuthError(state.message),
+        isError: true,
+      );
     }
   }
 
@@ -62,6 +66,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return StreamBuilder<AuthState>(
       stream: _authBloc.stream,
       initialData: _authBloc.state,
@@ -73,9 +78,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    AuthStrings.forgotPasswordTitle,
-                    style: TextStyle(
+                  Text(
+                    l10n.authForgotPassword,
+                    style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
@@ -83,9 +88,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    AuthStrings.forgotPasswordBody,
-                    style: TextStyle(
+                  Text(
+                    l10n.authForgotPasswordBody,
+                    style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       fontSize: 14,
                       color: AuthUiColors.cardTextMuted,
@@ -94,14 +99,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 28),
                   AuthUnderlineField(
                     controller: _email,
-                    label: AuthStrings.labelEmail,
-                    hint: AuthStrings.hintEmail,
+                    label: l10n.authLabelEmail,
+                    hint: l10n.authHintEmail,
                     keyboardType: TextInputType.emailAddress,
                     prefixIcon: Icons.mail_outline,
                   ),
                   const SizedBox(height: 24),
                   WpggPrimaryButton(
-                    label: AuthStrings.buttonSendResetLink,
+                    label: l10n.authButtonSendResetLink,
                     isLoading: loading,
                     onPressed: loading ? null : () => _submit(loading),
                   ),
@@ -111,9 +116,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     style: TextButton.styleFrom(
                       foregroundColor: AuthUiColors.cardTextMuted,
                     ),
-                    child: const Text(
-                      AuthStrings.backToLogin,
-                      style: TextStyle(fontFamily: AppFonts.lexendDeca),
+                    child: Text(
+                      l10n.authBackToLogin,
+                      style: const TextStyle(fontFamily: AppFonts.lexendDeca),
                     ),
                   ),
                 ],

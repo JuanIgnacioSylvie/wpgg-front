@@ -465,8 +465,8 @@ class _BalancePill extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Saldo',
+                  Text(
+                    context.l10n.balanceLabel,
                     style: TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       color: WebColors.textMuted,

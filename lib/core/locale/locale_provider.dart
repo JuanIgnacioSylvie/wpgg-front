@@ -8,7 +8,7 @@ class LocaleProvider extends ChangeNotifier {
 
   static const _prefKey = 'app_locale';
 
-  Locale _locale = const Locale('es');
+  Locale _locale = const Locale('en');
 
   Locale get locale => _locale;
 

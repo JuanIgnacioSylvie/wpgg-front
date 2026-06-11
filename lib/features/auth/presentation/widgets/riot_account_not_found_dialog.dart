@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
-import '../auth_strings.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import 'wpgg_primary_button.dart';
 
 /// Modal caso 1: login Riot sin cuenta WPGG previa.
@@ -20,6 +20,7 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Dialog(
       backgroundColor: AuthUiColors.cardBackground,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -33,13 +34,13 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AuthStrings.riotNotFoundTitle,
-                        style: TextStyle(
+                        l10n.riotNotFoundTitle,
+                        style: const TextStyle(
                           fontFamily: AppFonts.lexendDeca,
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -47,10 +48,10 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
                           height: 1.25,
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
-                        AuthStrings.riotNotFoundBody,
-                        style: TextStyle(
+                        l10n.riotNotFoundBody,
+                        style: const TextStyle(
                           fontFamily: AppFonts.lexendDeca,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -75,7 +76,7 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             WpggPrimaryButton(
-              label: AuthStrings.riotNotFoundRegister,
+              label: l10n.riotNotFoundRegister,
               onPressed: () {
                 Navigator.of(context).pop();
                 context.go('/register');
@@ -83,7 +84,7 @@ class _RiotAccountNotFoundDialog extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             WpggCancelButton(
-              label: AuthStrings.riotNotFoundCancel,
+              label: l10n.cancel,
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

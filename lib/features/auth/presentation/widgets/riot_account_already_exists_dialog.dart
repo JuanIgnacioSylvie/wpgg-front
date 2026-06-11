@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -18,7 +18,11 @@ Future<void> showRiotAccountAlreadyExistsDialog(BuildContext context) {
     builder: (dialogContext) => BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthError) {
-          WpggSnackBar.show(context, state.message, isError: true);
+          WpggSnackBar.show(
+            context,
+            context.localizeAuthError(state.message),
+            isError: true,
+          );
         }
       },
       child: const _RiotAccountAlreadyExistsDialog(),
@@ -31,6 +35,7 @@ class _RiotAccountAlreadyExistsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Dialog(
       backgroundColor: AuthUiColors.cardBackground,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -44,13 +49,13 @@ class _RiotAccountAlreadyExistsDialog extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AuthStrings.riotAlreadyExistsTitle,
-                        style: TextStyle(
+                        l10n.riotAlreadyExistsTitle,
+                        style: const TextStyle(
                           fontFamily: AppFonts.lexendDeca,
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -58,10 +63,10 @@ class _RiotAccountAlreadyExistsDialog extends StatelessWidget {
                           height: 1.25,
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
-                        AuthStrings.riotAlreadyExistsBody,
-                        style: TextStyle(
+                        l10n.riotAlreadyExistsBody,
+                        style: const TextStyle(
                           fontFamily: AppFonts.lexendDeca,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -86,7 +91,7 @@ class _RiotAccountAlreadyExistsDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             WpggPrimaryButton(
-              label: AuthStrings.riotAlreadyExistsSignInRiot,
+              label: l10n.riotAlreadyExistsSignInRiot,
               onPressed: () {
                 Navigator.of(context).pop();
                 context.read<AuthBloc>().add(
@@ -96,7 +101,7 @@ class _RiotAccountAlreadyExistsDialog extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             WpggCancelButton(
-              label: AuthStrings.riotAlreadyExistsCancel,
+              label: l10n.cancel,
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/oauth/riot_rso_fragment_parser.dart';
 import '../../../../core/platform/browser_oauth_uri.dart';
 import '../../../../core/platform/oauth_callback_fragment_capture.dart';
@@ -41,20 +43,15 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _handleRedirect());
   }
 
-  String _oauthErrorMessage(String code, String? desc) {
+  String _oauthErrorMessage(AppLocalizations l10n, String code, String? desc) {
     if (code == 'riot_session_unavailable') {
-      final tail = desc != null && desc.isNotEmpty ? '\n\nDetalle del servidor: $desc' : '';
-      return 'No se pudo generar el enlace de sesión (riot_session). Suele ser un '
-          'problema temporal del servidor o de la base de datos (p. ej. migraciones '
-          'pendientes). Quien opera el back debería revisar logs, aplicar '
-          '`prisma migrate deploy` si corresponde y volver a intentar. '
-          'Podés reintentar el login con Riot cuando esté resuelto.$tail';
+      final tail = desc != null && desc.isNotEmpty ? '\n\n$desc' : '';
+      return '${l10n.riotIdentityError}$tail';
     }
     if (code == 'rso_no_subject') {
       return desc != null && desc.isNotEmpty
-          ? 'El servidor no pudo obtener tu identidad de Riot: $desc'
-          : 'El servidor no pudo obtener tu identidad de Riot (rso_no_subject). '
-              'Probá iniciar sesión de nuevo.';
+          ? l10n.riotIdentityErrorWithDesc(desc)
+          : l10n.riotIdentityError;
     }
     if (desc != null && desc.isNotEmpty) {
       return 'Error: $code — $desc';
@@ -76,7 +73,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
       _status = statusLine;
       _done = true;
     });
-    WpggSnackBar.show(context, 'Login Riot completado');
+    WpggSnackBar.show(context, context.l10n.riotLoginCompleted);
     Future<void>.delayed(const Duration(milliseconds: 400), () {
       if (mounted) context.go('/home');
     });
@@ -103,6 +100,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
           ? (_oauthLocationUri ?? browserOAuthLocationUri())
           : GoRouterState.of(context).uri;
       final parsed = parseRiotRsoCallbackUri(locationUri);
+      final l10n = context.l10n;
 
       if (parsed.hasOAuthError) {
         final code = parsed.oauthError ?? 'unknown';
@@ -119,7 +117,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
         }
         final desc = parsed.oauthErrorDescription;
         setState(() {
-          _status = _oauthErrorMessage(code, desc);
+          _status = _oauthErrorMessage(l10n, code, desc);
           _done = true;
         });
         return;
@@ -144,7 +142,7 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
           return;
         }
         await _finishSuccess(
-          statusLine: 'Sesión WPGG vía canje Riot (riot_session).',
+          statusLine: l10n.riotSessionViaExchange,
         );
         return;
       }
@@ -220,10 +218,10 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
 
       await _finishSuccess(
         statusLine: haveAppAccessFromQuery
-            ? 'Sesión iniciada con Riot (tokens en la URL).'
+            ? l10n.riotSessionTokensInUrl
             : parsed.sessionFromCookiesOnly
-                ? 'Sesión iniciada con Riot (cookies).'
-                : 'Cuenta Riot autenticada; sesión de la app actualizada.',
+                ? l10n.riotSessionCookies
+                : l10n.riotSessionUpdated,
       );
     } finally {
       clearCapturedOauthCallbackFragment();
@@ -232,9 +230,10 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Riot')),
+      appBar: AppBar(title: Text(l10n.riotCallbackTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -261,7 +260,9 @@ class _RiotRsoCallbackPageState extends State<RiotRsoCallbackPage> {
                   onPressed: () =>
                       context.go(_savedSessionOk ? '/home' : '/login'),
                   child: Text(
-                    _savedSessionOk ? 'Ir al panel' : 'Ir al inicio de sesión',
+                    _savedSessionOk
+                        ? l10n.riotGoToDashboard
+                        : l10n.riotGoToLogin,
                   ),
                 ),
               ],

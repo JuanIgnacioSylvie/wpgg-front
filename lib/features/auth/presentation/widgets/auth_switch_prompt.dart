@@ -8,11 +8,13 @@ class AuthSwitchPrompt extends StatelessWidget {
   const AuthSwitchPrompt({
     super.key,
     required this.line1,
+    required this.linkPrefix,
     required this.linkText,
     required this.onLinkTap,
   });
 
   final String line1;
+  final String linkPrefix;
   final String linkText;
   final VoidCallback onLinkTap;
 
@@ -32,7 +34,7 @@ class AuthSwitchPrompt extends StatelessWidget {
         text: TextSpan(
           style: _baseStyle,
           children: [
-            TextSpan(text: '$line1\nPodés '),
+            TextSpan(text: '$line1\n$linkPrefix'),
             TextSpan(
               text: linkText,
               style: const TextStyle(

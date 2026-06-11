@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/riot_queue_labels.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../domain/entities/ranked_entry_entity.dart';
 
@@ -14,6 +15,7 @@ class RankedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final dd = context.watch<DDragonProvider>();
@@ -30,7 +32,7 @@ class RankedBadge extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              riotQueueLabel(entry.queueType),
+              riotQueueLabel(l10n, entry.queueType),
               style: theme.textTheme.labelLarge,
             ),
             const SizedBox(height: 8),
@@ -71,7 +73,7 @@ class RankedBadge extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Winrate ${winrate.toStringAsFixed(0)}%',
+              l10n.rankedWinrate(winrate.toStringAsFixed(0)),
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: 4),

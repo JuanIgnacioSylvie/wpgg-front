@@ -7,9 +7,9 @@ import '../../../../core/config/app_public_config.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/turnstile_widget.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -44,11 +44,15 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
   void _onAuthState(AuthState state) {
     if (!mounted) return;
     if (state is AuthVerificationEmailSent) {
-      WpggSnackBar.show(context, AuthStrings.verifyEmailResent);
+      WpggSnackBar.show(context, context.l10n.authVerifyEmailResent);
       return;
     }
     if (state is AuthError) {
-      WpggSnackBar.show(context, state.message, isError: true);
+      WpggSnackBar.show(
+        context,
+        context.localizeAuthError(state.message),
+        isError: true,
+      );
       resetTurnstileWidget();
       setState(() => _turnstileToken = null);
     }
@@ -64,7 +68,8 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
     if (loading) return;
     if (_needsTurnstile &&
         (_turnstileToken == null || _turnstileToken!.isEmpty)) {
-      WpggSnackBar.show(context, AuthStrings.turnstileRequired, isError: true);
+      WpggSnackBar.show(context, context.l10n.authTurnstileRequired,
+          isError: true);
       return;
     }
     _authBloc.add(
@@ -77,6 +82,7 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return StreamBuilder<AuthState>(
       stream: _authBloc.stream,
       initialData: _authBloc.state,
@@ -89,7 +95,7 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    AuthStrings.verifyEmailTitle,
+                    l10n.authVerifyEmailTitle,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
@@ -100,7 +106,7 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    AuthStrings.verifyEmailBody,
+                    l10n.authVerifyEmailBody,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
@@ -132,16 +138,16 @@ class _RegisterCheckEmailPageState extends State<RegisterCheckEmailPage> {
                   ],
                   const SizedBox(height: 24),
                   WpggPrimaryButton(
-                    label: AuthStrings.buttonResendVerification,
+                    label: l10n.authButtonResendVerification,
                     isLoading: loading,
                     onPressed: loading ? null : () => _resend(loading),
                   ),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: loading ? null : () => context.go('/login'),
-                    child: const Text(
-                      AuthStrings.backToLogin,
-                      style: TextStyle(
+                    child: Text(
+                      l10n.authBackToLogin,
+                      style: const TextStyle(
                         fontFamily: AppFonts.lexendDeca,
                         color: AuthUiColors.cardTextMuted,
                       ),

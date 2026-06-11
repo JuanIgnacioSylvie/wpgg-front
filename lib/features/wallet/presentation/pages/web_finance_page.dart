@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_section_header.dart';
@@ -81,14 +82,15 @@ class _WebFinancePageState extends State<WebFinancePage> {
         final walletLoading = loaded == null &&
             (state is WalletLoading || state is WalletInitial);
 
+        final l10n = context.l10n;
         return SingleChildScrollView(
           padding: const EdgeInsets.all(32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const WebSectionHeader(
-                title: 'Finanzas',
-                subtitle: 'Precio del token y movimientos de tu wallet',
+              WebSectionHeader(
+                title: l10n.financeTitle,
+                subtitle: l10n.financeSubtitle,
               ),
               const SizedBox(height: 24),
               const WpggPriceWidget(),
@@ -131,6 +133,7 @@ class _WalletPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return WebAnimatedSwitcher(
       child: Column(
         key: ValueKey('wallet-${state.summary.balance}'),
@@ -147,8 +150,8 @@ class _WalletPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Tu balance',
+                Text(
+                  l10n.financeYourBalance,
                   style: TextStyle(
                     color: WebColors.textMuted,
                     fontSize: 12,
@@ -170,17 +173,17 @@ class _WalletPanel extends StatelessWidget {
           Row(
             children: [
               _FilterTab(
-                label: 'Todos',
+                label: l10n.financeFilterAll,
                 selected: tabIndex == 0,
                 onTap: () => onTabChanged(0),
               ),
               _FilterTab(
-                label: 'Ingresos',
+                label: l10n.financeFilterIncome,
                 selected: tabIndex == 1,
                 onTap: () => onTabChanged(1),
               ),
               _FilterTab(
-                label: 'Gastos',
+                label: l10n.financeFilterExpense,
                 selected: tabIndex == 2,
                 onTap: () => onTabChanged(2),
               ),
@@ -196,8 +199,8 @@ class _WalletPanel extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: WebColors.borderSubtle),
               ),
-              child: const Text(
-                'Sin movimientos',
+              child: Text(
+                l10n.financeNoTransactions,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: WebColors.textSecondary),
               ),

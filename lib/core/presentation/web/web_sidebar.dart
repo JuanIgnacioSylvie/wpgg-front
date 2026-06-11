@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../constants/app_fonts.dart';
 import '../../constants/wpgg_brand.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/riot/domain/entities/summoner_entity.dart';
@@ -37,39 +38,42 @@ class WebSidebar extends StatelessWidget {
   final int? balance;
   final VoidCallback onLogout;
 
-  static const _items = [
-    _NavItem(
-      outline: 'assets/icons/home.svg',
-      filled: 'assets/icons/home_filled.svg',
-      label: 'Dashboard',
-    ),
-    _NavItem(
-      outline: 'assets/icons/calendar.svg',
-      filled: 'assets/icons/calendar_filled.svg',
-      label: 'Misiones por día',
-    ),
-    _NavItem(
-      icon: Icons.storefront_outlined,
-      selectedIcon: Icons.storefront,
-      label: 'Tienda',
-    ),
-    _NavItem(
-      outline: 'assets/icons/chart_bar.svg',
-      filled: 'assets/icons/chart_bar_filled.svg',
-      label: 'Finanzas',
-    ),
-  ];
-
   static const _branchIndices = [0, 1, 2, 3];
 
-  static const _profileItem = _NavItem(
-    outline: 'assets/icons/profile.svg',
-    filled: 'assets/icons/profile_filled.svg',
-    label: 'Perfil',
-  );
+  static List<_NavItem> _items(AppLocalizations l10n) => [
+        _NavItem(
+          outline: 'assets/icons/home.svg',
+          filled: 'assets/icons/home_filled.svg',
+          label: l10n.navDashboard,
+        ),
+        _NavItem(
+          outline: 'assets/icons/calendar.svg',
+          filled: 'assets/icons/calendar_filled.svg',
+          label: l10n.missionsByDays,
+        ),
+        _NavItem(
+          icon: Icons.storefront_outlined,
+          selectedIcon: Icons.storefront,
+          label: l10n.storeTitle,
+        ),
+        _NavItem(
+          outline: 'assets/icons/chart_bar.svg',
+          filled: 'assets/icons/chart_bar_filled.svg',
+          label: l10n.financeTitle,
+        ),
+      ];
+
+  static _NavItem _profileItem(AppLocalizations l10n) => _NavItem(
+        outline: 'assets/icons/profile.svg',
+        filled: 'assets/icons/profile_filled.svg',
+        label: l10n.profile,
+      );
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final items = _items(l10n);
+    final profileItem = _profileItem(l10n);
     return AnimatedContainer(
       duration: WebMotion.resolve(context, WebMotion.normal),
       curve: WebMotion.curve,
@@ -109,8 +113,8 @@ class WebSidebar extends StatelessWidget {
                     3 => 3,
                     _ => 0,
                   },
-            items: _items,
-            profileItem: _profileItem,
+            items: items,
+            profileItem: profileItem,
             branchIndices: _branchIndices,
             profileSelected: profileSelected,
             onBranchTap: onTap,
@@ -149,10 +153,10 @@ class WebSidebar extends StatelessWidget {
           const Divider(height: 1, color: WebColors.borderSubtle),
           const SizedBox(height: 8),
           _SidebarNavRow(
-            item: const _NavItem(
+            item: _NavItem(
               outline: 'assets/icons/notification.svg',
               filled: 'assets/icons/notification.svg',
-              label: 'Notificaciones',
+              label: l10n.navNotifications,
             ),
             expanded: expanded,
             selected: false,
@@ -375,7 +379,7 @@ class _SidebarToggleRowState extends State<_SidebarToggleRow> {
         onEnter: (_) => setState(() => _hovered = true),
         onExit: (_) => setState(() => _hovered = false),
         child: Tooltip(
-          message: widget.expanded ? '' : 'Expandir menú',
+          message: widget.expanded ? '' : context.l10n.sidebarExpandMenu,
           child: GestureDetector(
             onTap: widget.onTap,
             child: AnimatedContainer(
@@ -395,8 +399,8 @@ class _SidebarToggleRowState extends State<_SidebarToggleRow> {
                             duration:
                                 WebMotion.resolve(context, WebMotion.normal),
                             curve: WebMotion.curve,
-                            child: const Text(
-                              'Colapsar',
+                            child: Text(
+                              context.l10n.sidebarCollapse,
                               style: TextStyle(
                                 fontFamily: AppFonts.lexendDeca,
                                 fontSize: 13,
@@ -552,8 +556,8 @@ class _SidebarBalance extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Saldo',
+                Text(
+                  context.l10n.balanceLabel,
                   style: TextStyle(
                     fontFamily: AppFonts.lexendDeca,
                     color: WebColors.textMuted,

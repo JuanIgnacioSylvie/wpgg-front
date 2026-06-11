@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../riot/domain/usecases/get_summoner_profile_usecase.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -41,7 +41,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         if (!mounted) return;
         WpggSnackBar.show(
           context,
-          AuthStrings.verifyEmailInvalidLink,
+          context.l10n.authVerifyEmailInvalidLink,
           isError: true,
         );
         context.go('/register');
@@ -59,7 +59,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     final res = await sl<GetSummonerProfileUseCase>()();
     if (!mounted) return;
     final needsLink = res.fold((_) => false, (s) => s == null);
-    WpggSnackBar.show(context, AuthStrings.verifyEmailSuccess);
+    WpggSnackBar.show(context, context.l10n.authVerifyEmailSuccess);
     context.go(needsLink ? '/auth/link-riot' : '/home');
   }
 
@@ -70,7 +70,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       return;
     }
     if (state is AuthError) {
-      WpggSnackBar.show(context, state.message, isError: true);
+      WpggSnackBar.show(
+        context,
+        context.localizeAuthError(state.message),
+        isError: true,
+      );
     }
   }
 
@@ -82,6 +86,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return StreamBuilder<AuthState>(
       stream: _authBloc.stream,
       initialData: _authBloc.state,
@@ -94,7 +99,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    AuthStrings.verifyEmailTitle,
+                    l10n.authVerifyEmailTitle,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
@@ -106,8 +111,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   const SizedBox(height: 16),
                   Text(
                     loading
-                        ? 'Confirmando tu email…'
-                        : AuthStrings.verifyEmailInvalidLink,
+                        ? l10n.authVerifyEmailConfirming
+                        : l10n.authVerifyEmailInvalidLink,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
@@ -122,7 +127,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   ] else ...[
                     const SizedBox(height: 24),
                     WpggPrimaryButton(
-                      label: AuthStrings.backToLogin,
+                      label: l10n.authBackToLogin,
                       onPressed: () => context.go('/login'),
                     ),
                   ],

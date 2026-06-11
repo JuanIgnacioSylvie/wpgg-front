@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/l10n/auth_error_codes.dart';
 import '../../../../core/oauth/riot_rso_mobile_auth.dart';
 import '../../../../core/oauth/riot_rso_sign_in_url.dart';
 import '../../../../core/oauth/riot_sign_in_navigate.dart';
@@ -237,7 +238,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
     if (!outcome.hasRiotSessionCode) {
-      emit(const AuthError('No se recibió sesión tras el login con Riot.'));
+      emit(const AuthError(AuthErrorCodes.riotNoSession));
       return;
     }
 

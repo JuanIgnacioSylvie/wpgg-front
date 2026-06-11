@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
-import '../auth_strings.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -41,7 +41,11 @@ class _LinkRiotScreenState extends State<LinkRiotScreen> {
       return;
     }
     if (state is AuthError) {
-      WpggSnackBar.show(context, state.message, isError: true);
+      WpggSnackBar.show(
+        context,
+        context.localizeAuthError(state.message),
+        isError: true,
+      );
     }
   }
 
@@ -58,16 +62,17 @@ class _LinkRiotScreenState extends State<LinkRiotScreen> {
       initialData: _authBloc.state,
       builder: (context, snapshot) {
         final loading = snapshot.data is AuthLoading;
+        final l10n = context.l10n;
         return AuthLexendScope(
           child: AuthScreenScaffold(
             child: AuthCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    AuthStrings.linkRiotBody,
+                  Text(
+                    l10n.linkRiotBody,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       color: AuthUiColors.cardText,
                       fontSize: 15,

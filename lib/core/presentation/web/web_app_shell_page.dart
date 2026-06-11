@@ -12,6 +12,7 @@ import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/riot/presentation/bloc/riot_event.dart';
 import '../../../features/riot/presentation/bloc/riot_state.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../l10n/l10n_extension.dart';
 import 'web_dot_grid_background.dart';
 import 'web_profile_dialog.dart';
 import 'web_shell_scope.dart';
@@ -93,7 +94,8 @@ class _WebAppShellPageState extends State<WebAppShellPage> {
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     final sidebarIndex = webSidebarIndexForLocation(location);
-    final sectionTitle = webSectionTitleForLocation(location);
+    final sectionTitle =
+        webSectionTitleForLocation(context.l10n, location);
     final isDashboard = sidebarIndex == 0;
 
     return MultiBlocListener(

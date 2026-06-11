@@ -155,5 +155,117 @@
   "transactionSuccessRerollMission": "Misión cambiada",
   "transactionSuccessCancelMission": "Misión eliminada",
   "transactionFailedGeneric": "No se pudo completar la acción. Intentá de nuevo.",
-  "viewOnGeckoTerminal": "Ver en GeckoTerminal"
+  "viewOnGeckoTerminal": "Ver en GeckoTerminal",
+  "authLoginSwitchLine": "Si no tenés una cuenta",
+  "authLoginSwitchLink": "Registrate acá !",
+  "authRegisterSwitchLine": "Si ya tenés una cuenta",
+  "authRegisterSwitchLink": "Iniciá sesión acá !",
+  "authSwitchLinkPrefix": "Podés ",
+  "riotNotFoundTitle": "Cuenta no encontrada.",
+  "riotNotFoundBody": "No encontramos una cuenta de WPGG vinculada a ese Riot ID. Registrate primero en WPGG.",
+  "riotNotFoundRegister": "Registrate",
+  "riotAlreadyExistsTitle": "Ya tenés una cuenta.",
+  "riotAlreadyExistsBody": "Ya existe una cuenta de WPGG vinculada a este Riot ID. Iniciá sesión con Riot o con tu email.",
+  "riotAlreadyExistsSignInRiot": "Iniciar sesión con Riot",
+  "linkRiotBody": "Vinculá tu cuenta de Riot Games para completar tu registro.",
+  "authLabelEmail": "Email",
+  "authHintEmail": "Ingresá tu correo electrónico",
+  "authLabelPassword": "Contraseña",
+  "authHintPassword": "Ingresá tu contraseña",
+  "authLabelConfirmPassword": "Confirmar contraseña",
+  "authHintConfirmPassword": "Confirmá tu contraseña",
+  "authRememberMe": "Recordarme",
+  "authForgotPassword": "¿Olvidaste tu contraseña?",
+  "authButtonLogin": "Iniciar sesión",
+  "authButtonRegister": "Registrate",
+  "authRiotFooter": "o continuá con",
+  "authPasswordsMismatch": "Las contraseñas no coinciden",
+  "authForgotPasswordBody": "Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.",
+  "authForgotPasswordSuccess": "Si existe una cuenta con ese email, te enviamos un enlace para restablecer tu contraseña.",
+  "authButtonSendResetLink": "Enviar enlace",
+  "authBackToLogin": "Volver al inicio de sesión",
+  "authResetPasswordTitle": "Nueva contraseña",
+  "authResetPasswordBody": "Elegí una contraseña nueva para tu cuenta.",
+  "authButtonResetPassword": "Restablecer contraseña",
+  "authResetPasswordSuccess": "Tu contraseña fue actualizada. Ya podés iniciar sesión.",
+  "authResetPasswordInvalidLink": "El enlace no es válido o expiró. Pedí uno nuevo desde el inicio de sesión.",
+  "authVerifyEmailTitle": "Confirmá tu email",
+  "authVerifyEmailBody": "Te enviamos un enlace a tu correo. Abrilo para activar tu cuenta.",
+  "authVerifyEmailResent": "Si la cuenta existe y no está verificada, reenviamos el enlace.",
+  "authVerifyEmailSuccess": "Tu email fue confirmado. ¡Bienvenido a WPGG!",
+  "authVerifyEmailInvalidLink": "El enlace no es válido o expiró. Pedí uno nuevo desde el registro.",
+  "authButtonResendVerification": "Reenviar enlace",
+  "authTurnstileRequired": "Completá la verificación de seguridad antes de continuar.",
+  "authVerifyEmailConfirming": "Confirmando tu email…",
+  "riotLoginCompleted": "Login Riot completado",
+  "riotCallbackTitle": "Riot",
+  "riotGoToDashboard": "Ir al panel",
+  "riotGoToLogin": "Ir al inicio de sesión",
+  "riotSessionTokensInUrl": "Sesión iniciada con Riot (tokens en la URL).",
+  "riotSessionCookies": "Sesión iniciada con Riot (cookies).",
+  "riotSessionUpdated": "Cuenta Riot autenticada; sesión de la app actualizada.",
+  "riotSessionViaExchange": "Sesión WPGG vía canje Riot.",
+  "riotIdentityError": "El servidor no pudo obtener tu identidad de Riot. Probá iniciar sesión de nuevo.",
+  "riotIdentityErrorWithDesc": "El servidor no pudo obtener tu identidad de Riot: {desc}",
+  "@riotIdentityErrorWithDesc": {
+    "placeholders": {
+      "desc": {"type": "String"}
+    }
+  },
+  "riotNoSessionAfterLogin": "No se recibió sesión tras el login con Riot.",
+  "financeTitle": "Finanzas",
+  "financeSubtitle": "Precio del token y movimientos de tu wallet",
+  "financeYourBalance": "Tu balance",
+  "balanceLabel": "Saldo",
+  "financeFilterAll": "Todos",
+  "financeFilterAllTransactions": "Todas las transacciones",
+  "financeFilterIncome": "Ingresos",
+  "financeFilterExpense": "Gastos",
+  "financeNoChartData": "Sin datos del gráfico",
+  "financeNoTransactions": "Sin movimientos",
+  "tokenPriceUpdatedHint": "Precio en USD · actualizado cada 60s",
+  "navDashboard": "Panel",
+  "navNotifications": "Notificaciones",
+  "sidebarExpandMenu": "Expandir menú",
+  "sidebarCollapse": "Colapsar",
+  "addMissionButton": "Agregar",
+  "matchChampionFallback": "Campeón {id}",
+  "@matchChampionFallback": {
+    "placeholders": {
+      "id": {"type": "int"}
+    }
+  },
+  "matchWin": "Victoria",
+  "matchLoss": "Derrota",
+  "timeAgoJustNow": "hace instantes",
+  "timeAgoMinutes": "hace {count} min",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoHours": "hace {count} h",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoDays": "hace {count} d",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rankedWinrate": "Winrate {percent}%",
+  "@rankedWinrate": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "queueRankedSolo": "Solo/Duo",
+  "queueRankedFlex": "Flex 5v5",
+  "queueRankedTft": "TFT Clasificatoria",
+  "queueArena": "Arena",
+  "queueAram": "ARAM",
+  "queueNormal": "Normal"
 }
