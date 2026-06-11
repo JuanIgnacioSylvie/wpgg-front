@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/config/app_public_config.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/turnstile_widget.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
@@ -37,6 +38,7 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
   }
 
   Future<void> _submit() async {
+    final l10n = context.l10n;
     if (_submitting || _submitted) return;
     if (!_formKey.currentState!.validate()) return;
 
@@ -44,7 +46,7 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
         (_turnstileToken == null || _turnstileToken!.isEmpty)) {
       WpggSnackBar.show(
         context,
-        'Completá la verificación de seguridad antes de enviar.',
+        l10n.landingSponsorTurnstileRequired,
         isError: true,
       );
       return;
@@ -63,10 +65,7 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
         _submitting = false;
         _submitted = true;
       });
-      WpggSnackBar.show(
-        context,
-        '¡Gracias! Recibimos tu propuesta y te vamos a contactar.',
-      );
+      WpggSnackBar.show(context, l10n.landingSponsorThanksSnackbar);
     } on ContactException catch (e) {
       if (!mounted) return;
       setState(() => _submitting = false);
@@ -80,7 +79,7 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
       setState(() => _turnstileToken = null);
       WpggSnackBar.show(
         context,
-        'No pudimos enviar tu propuesta. Intentá de nuevo.',
+        l10n.landingSponsorSubmitError,
         isError: true,
       );
     }
@@ -88,6 +87,8 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     if (_submitted) {
       return Container(
         width: double.infinity,
@@ -100,11 +101,11 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.check_circle_outline, color: WebColors.online, size: 36),
+            const Icon(Icons.check_circle_outline, color: WebColors.online, size: 36),
             const SizedBox(height: 16),
             Text(
-              'Propuesta enviada',
-              style: TextStyle(
+              l10n.landingSponsorSentTitle,
+              style: const TextStyle(
                 fontFamily: AppFonts.lexendDeca,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -113,8 +114,8 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Gracias por tu interés en apoyar WPGG. Revisamos cada propuesta y te respondemos a la brevedad.',
-              style: TextStyle(
+              l10n.landingSponsorSentBody,
+              style: const TextStyle(
                 fontFamily: AppFonts.lexendDeca,
                 fontSize: 14,
                 height: 1.55,
@@ -141,11 +142,11 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
           children: [
             _LandingField(
               controller: _company,
-              label: 'Empresa o marca',
-              hint: 'Tu organización',
+              label: l10n.landingSponsorCompanyLabel,
+              hint: l10n.landingSponsorCompanyHint,
               validator: (v) {
                 if (v == null || v.trim().length < 2) {
-                  return 'Ingresá el nombre de tu empresa o marca';
+                  return l10n.landingSponsorCompanyError;
                 }
                 return null;
               },
@@ -153,13 +154,13 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
             const SizedBox(height: 16),
             _LandingField(
               controller: _email,
-              label: 'Email de contacto',
-              hint: 'hola@tuempresa.com',
+              label: l10n.landingSponsorEmailLabel,
+              hint: l10n.landingSponsorEmailHint,
               keyboardType: TextInputType.emailAddress,
               validator: (v) {
                 final value = v?.trim() ?? '';
                 if (value.isEmpty || !value.contains('@')) {
-                  return 'Ingresá un email válido';
+                  return l10n.landingSponsorEmailError;
                 }
                 return null;
               },
@@ -167,13 +168,12 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
             const SizedBox(height: 16),
             _LandingField(
               controller: _message,
-              label: 'Tu propuesta',
-              hint:
-                  'Contanos qué tipo de colaboración tenés en mente: activación, premios, branding, etc.',
+              label: l10n.landingSponsorMessageLabel,
+              hint: l10n.landingSponsorMessageHint,
               maxLines: 5,
               validator: (v) {
                 if (v == null || v.trim().length < 20) {
-                  return 'Contanos un poco más sobre tu propuesta (mín. 20 caracteres)';
+                  return l10n.landingSponsorMessageError;
                 }
                 return null;
               },
@@ -189,7 +189,7 @@ class _LandingSponsorFormState extends State<LandingSponsorForm> {
             ],
             const SizedBox(height: 24),
             WpggPrimaryButton(
-              label: 'Enviar propuesta',
+              label: l10n.landingSponsorSubmit,
               isLoading: _submitting,
               onPressed: _submitting ? null : _submit,
             ),
@@ -224,7 +224,7 @@ class _LandingField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: AppFonts.lexendDeca,
             fontSize: 13,
             fontWeight: FontWeight.w500,
@@ -237,14 +237,14 @@ class _LandingField extends StatelessWidget {
           validator: validator,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: AppFonts.lexendDeca,
             fontSize: 14,
             color: WebColors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               fontFamily: AppFonts.lexendDeca,
               color: WebColors.textMuted,
               fontSize: 14,

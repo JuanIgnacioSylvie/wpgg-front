@@ -711,4 +711,272 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get queueNormal => 'Normal';
+
+  @override
+  String get landingNavMissions => 'Misiones';
+
+  @override
+  String get landingNavCoin => 'La Coin';
+
+  @override
+  String get landingNavSponsors => 'Sponsors';
+
+  @override
+  String get landingNavLogin => 'Iniciar sesión';
+
+  @override
+  String get landingNavGetStarted => 'Empezar';
+
+  @override
+  String get landingHeroTitle =>
+      'Jugá League of Legends.\nGaná WPGG. Canjeá por RP o retirá.';
+
+  @override
+  String get landingHeroSubtitle =>
+      'WPGG es una plataforma de misiones diarias de LoL con recompensas reales. Sin promesas mágicas, sin caja negra: todo respaldado por un pool fijo y verificable on-chain.';
+
+  @override
+  String get landingCtaCreateAccount => 'Crear cuenta gratis';
+
+  @override
+  String get landingCtaHowItWorks => 'Cómo funciona';
+
+  @override
+  String get landingWhatTitle => '¿Qué es WPGG?';
+
+  @override
+  String landingWhatSubtitle(String tagline) {
+    return '$tagline — estadísticas de LoL que te pagan por jugar.';
+  }
+
+  @override
+  String get landingWhatBody =>
+      'Completás misiones diarias basadas en tu actividad en partidas ranked, acumulás tokens WPGG y los usás en la tienda para gift cards de Riot Points o los retirás a tu wallet. Es un sistema de recompensas pensado para jugadores, no para especuladores.';
+
+  @override
+  String get landingWhatBullet1 => 'Vinculás tu cuenta de Riot de forma segura';
+
+  @override
+  String get landingWhatBullet2 =>
+      'Elegís misiones fáciles, medias o difíciles cada día';
+
+  @override
+  String get landingWhatBullet3 =>
+      'Sumás WPGG al completarlas — sin trucos, sin letra chica escondida';
+
+  @override
+  String get landingMissionsTitle => 'Misiones diarias';
+
+  @override
+  String get landingMissionsSubtitle =>
+      'Jugá como siempre. Sumá recompensas de verdad.';
+
+  @override
+  String get landingMissionsBody =>
+      'Cada día tenés un set de misiones: desde cosas simples como jugar una partida, hasta desafíos de rendimiento como superar un KDA o encadenar victorias. Elegís las que te cierran, las completás en ranked y cobrás.';
+
+  @override
+  String get landingMissionsBullet1 =>
+      'Fáciles, medias y difíciles — vos elegís el riesgo';
+
+  @override
+  String get landingMissionsBullet2 =>
+      'Podés rerollear misiones que no te gusten (con costo en WPGG)';
+
+  @override
+  String get landingMissionsBullet3 =>
+      'Las recompensas varían según dificultad — sin inflación infinita';
+
+  @override
+  String get landingCoinTitle => 'La WPGG Coin';
+
+  @override
+  String get landingCoinSubtitle => 'Transparencia total. Sin caja negra.';
+
+  @override
+  String get landingCoinBody =>
+      'El token WPGG está deployado en Polygon Mainnet y es auditable en PolygonScan. La liquidez está respaldada por un pool fijo en QuickSwap (par WPGG/USDC): es lo que es, no crece mágicamente ni promete retornos infinitos.';
+
+  @override
+  String get landingCoinBullet1 => 'Contrato verificable públicamente on-chain';
+
+  @override
+  String get landingCoinBullet2 =>
+      'Pool fijo en QuickSwap — liquidez real, no promesas';
+
+  @override
+  String get landingCoinBullet3 =>
+      'Podés ver el estado del pool y auditar todo vos mismo';
+
+  @override
+  String get landingCoinHighlightTitle => 'Pool fijo, expectativas claras';
+
+  @override
+  String get landingCoinHighlightBody =>
+      'El pool de liquidez tiene un tamaño fijo. Eso significa que el sistema es honesto sobre lo que puede entregar: recompensas reales y canjeables, no un esquema para hacerte millonario farmeando partidas.';
+
+  @override
+  String get landingNotRichTitle => 'No te vas a hacer rico';
+
+  @override
+  String get landingNotRichSubtitle =>
+      'Y lo decimos sin rodeos, porque la honestidad es el proyecto.';
+
+  @override
+  String get landingNotRichBody =>
+      'WPGG no es un juego de inversión ni un esquema de farming infinito. Nadie se hace rico completando misiones. Es para que compres RP en la tienda con tus tokens, o retires las coins y le compres unas flores a tu novia o te tomes una birra con los pibes.';
+
+  @override
+  String get landingNotRichBullet1 =>
+      'Recompensas modestas y reales — alcanzan para RP o un gustito';
+
+  @override
+  String get landingNotRichBullet2 =>
+      'Sin promesas de multiplicar plata ni retornos garantizados';
+
+  @override
+  String get landingNotRichBullet3 =>
+      'Si buscás especular, este no es tu lugar (y está bien)';
+
+  @override
+  String get landingUseTitle => '¿Qué podés hacer con tus WPGG?';
+
+  @override
+  String get landingUseSubtitle => 'Usalos en la app o llevátelos afuera.';
+
+  @override
+  String get landingUseBody =>
+      'Tus tokens tienen utilidad concreta dentro y fuera de WPGG.';
+
+  @override
+  String get landingUseBullet1 =>
+      'Comprar gift cards de Riot Points en la tienda WPGG';
+
+  @override
+  String get landingUseBullet2 =>
+      'Retirar WPGG a tu wallet personal en Polygon';
+
+  @override
+  String get landingUseBullet3 =>
+      'Canjearlos por lo que quieras: birra, flores, lo que se te ocurra';
+
+  @override
+  String get landingStepsTitle => 'Empezá en 4 pasos';
+
+  @override
+  String get landingStep1Title => 'Creá tu cuenta';
+
+  @override
+  String get landingStep1Body =>
+      'Registrate con email o entrá con tu cuenta de Riot.';
+
+  @override
+  String get landingStep2Title => 'Elegí tus misiones';
+
+  @override
+  String get landingStep2Body =>
+      'Seleccioná el set del día según tu tiempo y skill.';
+
+  @override
+  String get landingStep3Title => 'Jugá ranked';
+
+  @override
+  String get landingStep3Body =>
+      'Las misiones se validan con tus partidas reales.';
+
+  @override
+  String get landingStep4Title => 'Cobrá y canjeá';
+
+  @override
+  String get landingStep4Body => 'Sumá WPGG, comprá RP o retirá a tu wallet.';
+
+  @override
+  String get landingSponsorsTitle => '¿Querés apoyar el proyecto?';
+
+  @override
+  String get landingSponsorsBody =>
+      'Buscamos sponsors y partners que quieran sumarse a una comunidad de jugadores de LoL con un modelo transparente. Si tenés una propuesta de colaboración, activación o branding, escribinos.';
+
+  @override
+  String get landingFaqTitle => 'Preguntas frecuentes';
+
+  @override
+  String get landingFaqBody =>
+      '¿Necesitás saber más sobre misiones, retiros o el token? Tenemos una sección completa de FAQs dentro de la app.';
+
+  @override
+  String get landingFaqLink => 'Ver todas las FAQs →';
+
+  @override
+  String get landingFooterTerms => 'Términos';
+
+  @override
+  String get landingFooterFaqs => 'FAQs';
+
+  @override
+  String get landingFooterLogin => 'Iniciar sesión';
+
+  @override
+  String get landingFooterRegister => 'Registrarse';
+
+  @override
+  String get landingFooterDisclaimer =>
+      'WPGG no está afiliado, asociado ni respaldado por Riot Games, Inc. League of Legends y Riot Games son marcas registradas de Riot Games, Inc.';
+
+  @override
+  String landingFooterCopyright(int year) {
+    return '© $year WPGG. Todos los derechos reservados.';
+  }
+
+  @override
+  String get landingSponsorSentTitle => 'Propuesta enviada';
+
+  @override
+  String get landingSponsorSentBody =>
+      'Gracias por tu interés en apoyar WPGG. Revisamos cada propuesta y te respondemos a la brevedad.';
+
+  @override
+  String get landingSponsorThanksSnackbar =>
+      '¡Gracias! Recibimos tu propuesta y te vamos a contactar.';
+
+  @override
+  String get landingSponsorCompanyLabel => 'Empresa o marca';
+
+  @override
+  String get landingSponsorCompanyHint => 'Tu organización';
+
+  @override
+  String get landingSponsorCompanyError =>
+      'Ingresá el nombre de tu empresa o marca';
+
+  @override
+  String get landingSponsorEmailLabel => 'Email de contacto';
+
+  @override
+  String get landingSponsorEmailHint => 'hola@tuempresa.com';
+
+  @override
+  String get landingSponsorEmailError => 'Ingresá un email válido';
+
+  @override
+  String get landingSponsorMessageLabel => 'Tu propuesta';
+
+  @override
+  String get landingSponsorMessageHint =>
+      'Contanos qué tipo de colaboración tenés en mente: activación, premios, branding, etc.';
+
+  @override
+  String get landingSponsorMessageError =>
+      'Contanos un poco más sobre tu propuesta (mín. 20 caracteres)';
+
+  @override
+  String get landingSponsorSubmit => 'Enviar propuesta';
+
+  @override
+  String get landingSponsorTurnstileRequired =>
+      'Completá la verificación de seguridad antes de enviar.';
+
+  @override
+  String get landingSponsorSubmitError =>
+      'No pudimos enviar tu propuesta. Intentá de nuevo.';
 }

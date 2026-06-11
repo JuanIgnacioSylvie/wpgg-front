@@ -44,6 +44,10 @@ class WpggApp extends StatelessWidget {
           themeAnimationCurve: WebMotion.curve,
           locale: localeProvider.locale,
           supportedLocales: AppLocalizations.supportedLocales,
+          localeListResolutionCallback: (locales, supported) {
+            // Default to English unless the user picked a language in settings.
+            return localeProvider.locale;
+          },
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           routerConfig: appRouter,
           debugShowCheckedModeBanner: false,

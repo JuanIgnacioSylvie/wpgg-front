@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
-import '../../../../core/storage/secure_storage.dart';
-import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_dot_grid_background.dart';
+import '../../../../core/storage/secure_storage.dart';
+import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../widgets/landing_coin_hero.dart';
+import '../widgets/landing_language_menu.dart';
 import '../widgets/landing_sponsor_form.dart';
 
 class LandingPage extends StatefulWidget {
@@ -63,6 +66,7 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final maxContent = MediaQuery.sizeOf(context).width.clamp(0, 1080).toDouble();
 
     return Scaffold(
@@ -99,24 +103,25 @@ class _LandingPageState extends State<LandingPage> {
               actions: [
                 if (MediaQuery.sizeOf(context).width >= 720) ...[
                   _NavLink(
-                    label: 'Misiones',
+                    label: l10n.landingNavMissions,
                     onTap: () => _scrollTo(_missionsKey),
                   ),
                   _NavLink(
-                    label: 'La Coin',
+                    label: l10n.landingNavCoin,
                     onTap: () => _scrollTo(_coinKey),
                   ),
                   _NavLink(
-                    label: 'Sponsors',
+                    label: l10n.landingNavSponsors,
                     onTap: () => _scrollTo(_sponsorsKey),
                   ),
                   const SizedBox(width: 8),
                 ],
+                const LandingLanguageMenu(),
                 TextButton(
                   onPressed: () => context.go('/login'),
                   child: Text(
-                    'Iniciar sesión',
-                    style: TextStyle(
+                    l10n.landingNavLogin,
+                    style: const TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -138,8 +143,8 @@ class _LandingPageState extends State<LandingPage> {
                       ),
                     ),
                     child: Text(
-                      'Empezar',
-                      style: TextStyle(
+                      l10n.landingNavGetStarted,
+                      style: const TextStyle(
                         fontFamily: AppFonts.lexendDeca,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -164,9 +169,9 @@ class _LandingPageState extends State<LandingPage> {
                         WebAnimatedAppear(
                           staggerIndex: 1,
                           child: Text(
-                            'Jugá League of Legends.\nGaná WPGG. Canjeá por RP o retirá.',
+                            l10n.landingHeroTitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: AppFonts.lexendDeca,
                               fontSize: 28,
                               fontWeight: FontWeight.w600,
@@ -179,9 +184,9 @@ class _LandingPageState extends State<LandingPage> {
                         WebAnimatedAppear(
                           staggerIndex: 2,
                           child: Text(
-                            'WPGG es una plataforma de misiones diarias de LoL con recompensas reales. Sin promesas mágicas, sin caja negra: todo respaldado por un pool fijo y verificable on-chain.',
+                            l10n.landingHeroSubtitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: AppFonts.lexendDeca,
                               fontSize: 16,
                               height: 1.6,
@@ -200,7 +205,7 @@ class _LandingPageState extends State<LandingPage> {
                               SizedBox(
                                 width: 200,
                                 child: WpggPrimaryButton(
-                                  label: 'Crear cuenta gratis',
+                                  label: l10n.landingCtaCreateAccount,
                                   onPressed: () => context.go('/register'),
                                 ),
                               ),
@@ -218,8 +223,8 @@ class _LandingPageState extends State<LandingPage> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Cómo funciona',
-                                    style: TextStyle(
+                                    l10n.landingCtaHowItWorks,
+                                    style: const TextStyle(
                                       fontFamily: AppFonts.lexendDeca,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -233,29 +238,26 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                         const SizedBox(height: 72),
                         _LandingSection(
-                          title: '¿Qué es WPGG?',
-                          subtitle:
-                              '${WpggBrand.tagline} — estadísticas de LoL que te pagan por jugar.',
-                          body:
-                              'Completás misiones diarias basadas en tu actividad en partidas ranked, acumulás tokens WPGG y los usás en la tienda para gift cards de Riot Points o los retirás a tu wallet. Es un sistema de recompensas pensado para jugadores, no para especuladores.',
-                          bullets: const [
-                            'Vinculás tu cuenta de Riot de forma segura',
-                            'Elegís misiones fáciles, medias o difíciles cada día',
-                            'Sumás WPGG al completarlas — sin trucos, sin letra chica escondida',
+                          title: l10n.landingWhatTitle,
+                          subtitle: l10n.landingWhatSubtitle(WpggBrand.tagline),
+                          body: l10n.landingWhatBody,
+                          bullets: [
+                            l10n.landingWhatBullet1,
+                            l10n.landingWhatBullet2,
+                            l10n.landingWhatBullet3,
                           ],
                         ),
                         const SizedBox(height: 56),
                         KeyedSubtree(
                           key: _missionsKey,
                           child: _LandingSection(
-                            title: 'Misiones diarias',
-                            subtitle: 'Jugá como siempre. Sumá recompensas de verdad.',
-                            body:
-                                'Cada día tenés un set de misiones: desde cosas simples como jugar una partida, hasta desafíos de rendimiento como superar un KDA o encadenar victorias. Elegís las que te cierran, las completás en ranked y cobrás.',
-                            bullets: const [
-                              'Fáciles, medias y difíciles — vos elegís el riesgo',
-                              'Podés rerollear misiones que no te gusten (con costo en WPGG)',
-                              'Las recompensas varían según dificultad — sin inflación infinita',
+                            title: l10n.landingMissionsTitle,
+                            subtitle: l10n.landingMissionsSubtitle,
+                            body: l10n.landingMissionsBody,
+                            bullets: [
+                              l10n.landingMissionsBullet1,
+                              l10n.landingMissionsBullet2,
+                              l10n.landingMissionsBullet3,
                             ],
                             accent: WebColors.online,
                           ),
@@ -264,71 +266,53 @@ class _LandingPageState extends State<LandingPage> {
                         KeyedSubtree(
                           key: _coinKey,
                           child: _LandingSection(
-                            title: 'La WPGG Coin',
-                            subtitle: 'Transparencia total. Sin caja negra.',
-                            body:
-                                'El token WPGG está deployado en Polygon Mainnet y es auditable en PolygonScan. La liquidez está respaldada por un pool fijo en QuickSwap (par WPGG/USDC): es lo que es, no crece mágicamente ni promete retornos infinitos.',
-                            bullets: const [
-                              'Contrato verificable públicamente on-chain',
-                              'Pool fijo en QuickSwap — liquidez real, no promesas',
-                              'Podés ver el estado del pool y auditar todo vos mismo',
+                            title: l10n.landingCoinTitle,
+                            subtitle: l10n.landingCoinSubtitle,
+                            body: l10n.landingCoinBody,
+                            bullets: [
+                              l10n.landingCoinBullet1,
+                              l10n.landingCoinBullet2,
+                              l10n.landingCoinBullet3,
                             ],
                             highlight: _HighlightCard(
                               icon: Icons.verified_outlined,
-                              title: 'Pool fijo, expectativas claras',
-                              body:
-                                  'El pool de liquidez tiene un tamaño fijo. Eso significa que el sistema es honesto sobre lo que puede entregar: recompensas reales y canjeables, no un esquema para hacerte millonario farmeando partidas.',
+                              title: l10n.landingCoinHighlightTitle,
+                              body: l10n.landingCoinHighlightBody,
                             ),
                           ),
                         ),
                         const SizedBox(height: 56),
                         _LandingSection(
-                          title: 'No te vas a hacer rico',
-                          subtitle: 'Y lo decimos sin rodeos, porque la honestidad es el proyecto.',
-                          body:
-                              'WPGG no es un juego de inversión ni un esquema de farming infinito. Nadie se hace rico completando misiones. Es para que compres RP en la tienda con tus tokens, o retires las coins y le compres unas flores a tu novia o te tomes una birra con los pibes.',
-                          bullets: const [
-                            'Recompensas modestas y reales — alcanzan para RP o un gustito',
-                            'Sin promesas de multiplicar plata ni retornos garantizados',
-                            'Si buscás especular, este no es tu lugar (y está bien)',
+                          title: l10n.landingNotRichTitle,
+                          subtitle: l10n.landingNotRichSubtitle,
+                          body: l10n.landingNotRichBody,
+                          bullets: [
+                            l10n.landingNotRichBullet1,
+                            l10n.landingNotRichBullet2,
+                            l10n.landingNotRichBullet3,
                           ],
                           accent: const Color(0xFFE8A317),
                         ),
                         const SizedBox(height: 56),
                         _LandingSection(
-                          title: '¿Qué podés hacer con tus WPGG?',
-                          subtitle: 'Usalos en la app o llevátelos afuera.',
-                          body: 'Tus tokens tienen utilidad concreta dentro y fuera de WPGG.',
-                          bullets: const [
-                            'Comprar gift cards de Riot Points en la tienda WPGG',
-                            'Retirar WPGG a tu wallet personal en Polygon',
-                            'Canjearlos por lo que quieras: birra, flores, lo que se te ocurra',
+                          title: l10n.landingUseTitle,
+                          subtitle: l10n.landingUseSubtitle,
+                          body: l10n.landingUseBody,
+                          bullets: [
+                            l10n.landingUseBullet1,
+                            l10n.landingUseBullet2,
+                            l10n.landingUseBullet3,
                           ],
                         ),
                         const SizedBox(height: 56),
                         WebAnimatedAppear(
                           child: _StepsSection(
-                            steps: const [
-                              (
-                                '1',
-                                'Creá tu cuenta',
-                                'Registrate con email o entrá con tu cuenta de Riot.',
-                              ),
-                              (
-                                '2',
-                                'Elegí tus misiones',
-                                'Seleccioná el set del día según tu tiempo y skill.',
-                              ),
-                              (
-                                '3',
-                                'Jugá ranked',
-                                'Las misiones se validan con tus partidas reales.',
-                              ),
-                              (
-                                '4',
-                                'Cobrá y canjeá',
-                                'Sumá WPGG, comprá RP o retirá a tu wallet.',
-                              ),
+                            title: l10n.landingStepsTitle,
+                            steps: [
+                              ('1', l10n.landingStep1Title, l10n.landingStep1Body),
+                              ('2', l10n.landingStep2Title, l10n.landingStep2Body),
+                              ('3', l10n.landingStep3Title, l10n.landingStep3Body),
+                              ('4', l10n.landingStep4Title, l10n.landingStep4Body),
                             ],
                           ),
                         ),
@@ -339,8 +323,8 @@ class _LandingPageState extends State<LandingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '¿Querés apoyar el proyecto?',
-                                style: TextStyle(
+                                l10n.landingSponsorsTitle,
+                                style: const TextStyle(
                                   fontFamily: AppFonts.lexendDeca,
                                   fontSize: 28,
                                   fontWeight: FontWeight.w600,
@@ -349,8 +333,8 @@ class _LandingPageState extends State<LandingPage> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                'Buscamos sponsors y partners que quieran sumarse a una comunidad de jugadores de LoL con un modelo transparente. Si tenés una propuesta de colaboración, activación o branding, escribinos.',
-                                style: TextStyle(
+                                l10n.landingSponsorsBody,
+                                style: const TextStyle(
                                   fontFamily: AppFonts.lexendDeca,
                                   fontSize: 15,
                                   height: 1.6,
@@ -375,8 +359,8 @@ class _LandingPageState extends State<LandingPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Preguntas frecuentes',
-                                  style: TextStyle(
+                                  l10n.landingFaqTitle,
+                                  style: const TextStyle(
                                     fontFamily: AppFonts.lexendDeca,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,
@@ -385,8 +369,8 @@ class _LandingPageState extends State<LandingPage> {
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
-                                  '¿Necesitás saber más sobre misiones, retiros o el token? Tenemos una sección completa de FAQs dentro de la app.',
-                                  style: TextStyle(
+                                  l10n.landingFaqBody,
+                                  style: const TextStyle(
                                     fontFamily: AppFonts.lexendDeca,
                                     fontSize: 14,
                                     height: 1.55,
@@ -397,8 +381,8 @@ class _LandingPageState extends State<LandingPage> {
                                 TextButton(
                                   onPressed: () => context.go('/profile/faqs'),
                                   child: Text(
-                                    'Ver todas las FAQs →',
-                                    style: TextStyle(
+                                    l10n.landingFaqLink,
+                                    style: const TextStyle(
                                       fontFamily: AppFonts.lexendDeca,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -608,8 +592,9 @@ class _HighlightCard extends StatelessWidget {
 }
 
 class _StepsSection extends StatelessWidget {
-  const _StepsSection({required this.steps});
+  const _StepsSection({required this.title, required this.steps});
 
+  final String title;
   final List<(String, String, String)> steps;
 
   @override
@@ -620,8 +605,8 @@ class _StepsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Empezá en 4 pasos',
-          style: TextStyle(
+          title,
+          style: const TextStyle(
             fontFamily: AppFonts.lexendDeca,
             fontSize: 28,
             fontWeight: FontWeight.w600,
@@ -714,6 +699,8 @@ class _LandingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -727,7 +714,7 @@ class _LandingFooter extends StatelessWidget {
               height: 28,
             ),
             const SizedBox(width: 10),
-            Text(
+            const Text(
               'WPGG',
               style: TextStyle(
                 fontFamily: AppFonts.wallpoet,
@@ -744,27 +731,27 @@ class _LandingFooter extends StatelessWidget {
           runSpacing: 8,
           children: [
             _FooterLink(
-              label: 'Términos',
+              label: l10n.landingFooterTerms,
               onTap: () => context.go('/profile/terms'),
             ),
             _FooterLink(
-              label: 'FAQs',
+              label: l10n.landingFooterFaqs,
               onTap: () => context.go('/profile/faqs'),
             ),
             _FooterLink(
-              label: 'Iniciar sesión',
+              label: l10n.landingFooterLogin,
               onTap: () => context.go('/login'),
             ),
             _FooterLink(
-              label: 'Registrarse',
+              label: l10n.landingFooterRegister,
               onTap: () => context.go('/register'),
             ),
           ],
         ),
         const SizedBox(height: 20),
         Text(
-          'WPGG no está afiliado, asociado ni respaldado por Riot Games, Inc. League of Legends y Riot Games son marcas registradas de Riot Games, Inc.',
-          style: TextStyle(
+          l10n.landingFooterDisclaimer,
+          style: const TextStyle(
             fontFamily: AppFonts.lexendDeca,
             fontSize: 12,
             height: 1.5,
@@ -773,8 +760,8 @@ class _LandingFooter extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '© ${DateTime.now().year} WPGG. Todos los derechos reservados.',
-          style: TextStyle(
+          l10n.landingFooterCopyright(DateTime.now().year),
+          style: const TextStyle(
             fontFamily: AppFonts.lexendDeca,
             fontSize: 12,
             color: WebColors.textMuted,

@@ -1361,6 +1361,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Normal'**
   String get queueNormal;
+
+  /// No description provided for @landingNavMissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Missions'**
+  String get landingNavMissions;
+
+  /// No description provided for @landingNavCoin.
+  ///
+  /// In en, this message translates to:
+  /// **'The Coin'**
+  String get landingNavCoin;
+
+  /// No description provided for @landingNavSponsors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsors'**
+  String get landingNavSponsors;
+
+  /// No description provided for @landingNavLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get landingNavLogin;
+
+  /// No description provided for @landingNavGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get landingNavGetStarted;
+
+  /// No description provided for @landingHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Play League of Legends.\nEarn WPGG. Redeem for RP or withdraw.'**
+  String get landingHeroTitle;
+
+  /// No description provided for @landingHeroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WPGG is a daily LoL missions platform with real rewards. No magic promises, no black box — everything backed by a fixed, on-chain verifiable pool.'**
+  String get landingHeroSubtitle;
+
+  /// No description provided for @landingCtaCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create free account'**
+  String get landingCtaCreateAccount;
+
+  /// No description provided for @landingCtaHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get landingCtaHowItWorks;
+
+  /// No description provided for @landingWhatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is WPGG?'**
+  String get landingWhatTitle;
+
+  /// No description provided for @landingWhatSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{tagline} — LoL stats that reward you for playing.'**
+  String landingWhatSubtitle(String tagline);
+
+  /// No description provided for @landingWhatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete daily missions based on your ranked activity, earn WPGG tokens, and use them in the store for Riot Points gift cards or withdraw to your wallet. A reward system built for players, not speculators.'**
+  String get landingWhatBody;
+
+  /// No description provided for @landingWhatBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Link your Riot account securely'**
+  String get landingWhatBullet1;
+
+  /// No description provided for @landingWhatBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick easy, medium, or hard missions every day'**
+  String get landingWhatBullet2;
+
+  /// No description provided for @landingWhatBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn WPGG when you complete them — no tricks, no hidden fine print'**
+  String get landingWhatBullet3;
+
+  /// No description provided for @landingMissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily missions'**
+  String get landingMissionsTitle;
+
+  /// No description provided for @landingMissionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Play like always. Earn real rewards.'**
+  String get landingMissionsSubtitle;
+
+  /// No description provided for @landingMissionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day you get a set of missions — from simple ones like playing a match to performance challenges like hitting a KDA target or stacking wins. Pick what fits, complete them in ranked, and get paid.'**
+  String get landingMissionsBody;
+
+  /// No description provided for @landingMissionsBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy, medium, and hard — you choose the risk'**
+  String get landingMissionsBullet1;
+
+  /// No description provided for @landingMissionsBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Reroll missions you don\'t like (costs WPGG)'**
+  String get landingMissionsBullet2;
+
+  /// No description provided for @landingMissionsBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards vary by difficulty — no infinite inflation'**
+  String get landingMissionsBullet3;
+
+  /// No description provided for @landingCoinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The WPGG Coin'**
+  String get landingCoinTitle;
+
+  /// No description provided for @landingCoinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full transparency. No black box.'**
+  String get landingCoinSubtitle;
+
+  /// No description provided for @landingCoinBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The WPGG token is deployed on Polygon Mainnet and auditable on PolygonScan. Liquidity is backed by a fixed pool on QuickSwap (WPGG/USDC pair): what you see is what you get — it doesn\'t grow magically or promise infinite returns.'**
+  String get landingCoinBody;
+
+  /// No description provided for @landingCoinBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Publicly verifiable on-chain contract'**
+  String get landingCoinBullet1;
+
+  /// No description provided for @landingCoinBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed pool on QuickSwap — real liquidity, not promises'**
+  String get landingCoinBullet2;
+
+  /// No description provided for @landingCoinBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'You can inspect the pool and audit everything yourself'**
+  String get landingCoinBullet3;
+
+  /// No description provided for @landingCoinHighlightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed pool, clear expectations'**
+  String get landingCoinHighlightTitle;
+
+  /// No description provided for @landingCoinHighlightBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The liquidity pool has a fixed size. That means the system is honest about what it can deliver: real, redeemable rewards — not a scheme to get rich farming matches.'**
+  String get landingCoinHighlightBody;
+
+  /// No description provided for @landingNotRichTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re not getting rich'**
+  String get landingNotRichTitle;
+
+  /// No description provided for @landingNotRichSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We say it straight because honesty is the project.'**
+  String get landingNotRichSubtitle;
+
+  /// No description provided for @landingNotRichBody.
+  ///
+  /// In en, this message translates to:
+  /// **'WPGG is not an investment game or infinite farming scheme. Nobody gets rich completing missions. It\'s for buying RP in the store with your tokens, or withdrawing coins to buy flowers for your partner or grab a beer with friends.'**
+  String get landingNotRichBody;
+
+  /// No description provided for @landingNotRichBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Modest, real rewards — enough for RP or a treat'**
+  String get landingNotRichBullet1;
+
+  /// No description provided for @landingNotRichBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'No promises to multiply money or guaranteed returns'**
+  String get landingNotRichBullet2;
+
+  /// No description provided for @landingNotRichBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'re here to speculate, this isn\'t your place (and that\'s fine)'**
+  String get landingNotRichBullet3;
+
+  /// No description provided for @landingUseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What can you do with your WPGG?'**
+  String get landingUseTitle;
+
+  /// No description provided for @landingUseSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use them in the app or take them out.'**
+  String get landingUseSubtitle;
+
+  /// No description provided for @landingUseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your tokens have concrete utility inside and outside WPGG.'**
+  String get landingUseBody;
+
+  /// No description provided for @landingUseBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy Riot Points gift cards in the WPGG store'**
+  String get landingUseBullet1;
+
+  /// No description provided for @landingUseBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw WPGG to your personal wallet on Polygon'**
+  String get landingUseBullet2;
+
+  /// No description provided for @landingUseBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend them on whatever you want: beer, flowers, you name it'**
+  String get landingUseBullet3;
+
+  /// No description provided for @landingStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started in 4 steps'**
+  String get landingStepsTitle;
+
+  /// No description provided for @landingStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get landingStep1Title;
+
+  /// No description provided for @landingStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with email or log in with your Riot account.'**
+  String get landingStep1Body;
+
+  /// No description provided for @landingStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your missions'**
+  String get landingStep2Title;
+
+  /// No description provided for @landingStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose today\'s set based on your time and skill.'**
+  String get landingStep2Body;
+
+  /// No description provided for @landingStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Play ranked'**
+  String get landingStep3Title;
+
+  /// No description provided for @landingStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Missions are validated against your real matches.'**
+  String get landingStep3Body;
+
+  /// No description provided for @landingStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn and redeem'**
+  String get landingStep4Title;
+
+  /// No description provided for @landingStep4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Stack WPGG, buy RP, or withdraw to your wallet.'**
+  String get landingStep4Body;
+
+  /// No description provided for @landingSponsorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to support the project?'**
+  String get landingSponsorsTitle;
+
+  /// No description provided for @landingSponsorsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re looking for sponsors and partners who want to join a League of Legends player community with a transparent model. If you have a collaboration, activation, or branding proposal, reach out.'**
+  String get landingSponsorsBody;
+
+  /// No description provided for @landingFaqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get landingFaqTitle;
+
+  /// No description provided for @landingFaqBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Need to know more about missions, withdrawals, or the token? We have a full FAQ section inside the app.'**
+  String get landingFaqBody;
+
+  /// No description provided for @landingFaqLink.
+  ///
+  /// In en, this message translates to:
+  /// **'See all FAQs →'**
+  String get landingFaqLink;
+
+  /// No description provided for @landingFooterTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get landingFooterTerms;
+
+  /// No description provided for @landingFooterFaqs.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQs'**
+  String get landingFooterFaqs;
+
+  /// No description provided for @landingFooterLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get landingFooterLogin;
+
+  /// No description provided for @landingFooterRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get landingFooterRegister;
+
+  /// No description provided for @landingFooterDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'WPGG is not affiliated with, associated with, or endorsed by Riot Games, Inc. League of Legends and Riot Games are trademarks of Riot Games, Inc.'**
+  String get landingFooterDisclaimer;
+
+  /// No description provided for @landingFooterCopyright.
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} WPGG. All rights reserved.'**
+  String landingFooterCopyright(int year);
+
+  /// No description provided for @landingSponsorSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal sent'**
+  String get landingSponsorSentTitle;
+
+  /// No description provided for @landingSponsorSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for your interest in supporting WPGG. We review every proposal and will get back to you soon.'**
+  String get landingSponsorSentBody;
+
+  /// No description provided for @landingSponsorThanksSnackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks! We received your proposal and will be in touch.'**
+  String get landingSponsorThanksSnackbar;
+
+  /// No description provided for @landingSponsorCompanyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Company or brand'**
+  String get landingSponsorCompanyLabel;
+
+  /// No description provided for @landingSponsorCompanyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your organization'**
+  String get landingSponsorCompanyHint;
+
+  /// No description provided for @landingSponsorCompanyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your company or brand name'**
+  String get landingSponsorCompanyError;
+
+  /// No description provided for @landingSponsorEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact email'**
+  String get landingSponsorEmailLabel;
+
+  /// No description provided for @landingSponsorEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'hello@yourcompany.com'**
+  String get landingSponsorEmailHint;
+
+  /// No description provided for @landingSponsorEmailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get landingSponsorEmailError;
+
+  /// No description provided for @landingSponsorMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your proposal'**
+  String get landingSponsorMessageLabel;
+
+  /// No description provided for @landingSponsorMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what kind of collaboration you have in mind: activation, prizes, branding, etc.'**
+  String get landingSponsorMessageHint;
+
+  /// No description provided for @landingSponsorMessageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us a bit more about your proposal (min. 20 characters)'**
+  String get landingSponsorMessageError;
+
+  /// No description provided for @landingSponsorSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send proposal'**
+  String get landingSponsorSubmit;
+
+  /// No description provided for @landingSponsorTurnstileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the security check before sending.'**
+  String get landingSponsorTurnstileRequired;
+
+  /// No description provided for @landingSponsorSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t send your proposal. Please try again.'**
+  String get landingSponsorSubmitError;
 }
 
 class _AppLocalizationsDelegate
