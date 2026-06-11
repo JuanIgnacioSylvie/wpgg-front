@@ -13,6 +13,7 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
+import '../../../landing/presentation/widgets/public_web_page_shell.dart';
 import '../widgets/profile_panel_header.dart';
 
 class FaqsPage extends StatefulWidget {
@@ -20,11 +21,13 @@ class FaqsPage extends StatefulWidget {
     super.key,
     this.embeddedInPanel = false,
     this.useWebPanelStyle = false,
+    this.standaloneWeb = false,
     this.onBack,
   });
 
   final bool embeddedInPanel;
   final bool useWebPanelStyle;
+  final bool standaloneWeb;
   final VoidCallback? onBack;
 
   @override
@@ -55,55 +58,62 @@ class _FaqsPageState extends State<FaqsPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final items = _items(context);
-    final useWeb = widget.useWebPanelStyle;
+    final useWeb = widget.useWebPanelStyle || widget.standaloneWeb;
 
-    final body = SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        8,
-        20,
-        widget.embeddedInPanel ? 24 : 32,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.faqsIntro,
-            style: TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              fontSize: 14,
-              height: 1.5,
-              color: useWeb
-                  ? WebColors.textSecondary
-                  : WpggBrand.white.withValues(alpha: 0.85),
-            ),
+    final faqContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.faqsIntro,
+          style: TextStyle(
+            fontFamily: AppFonts.lexendDeca,
+            fontSize: 14,
+            height: 1.5,
+            color: useWeb
+                ? WebColors.textSecondary
+                : WpggBrand.white.withValues(alpha: 0.85),
           ),
-          const SizedBox(height: 20),
-          ...List.generate(items.length, (index) {
-            final item = items[index];
-            final isExpanded = _expanded.contains(index);
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _FaqTile(
-                question: item.question,
-                answer: item.answer,
-                expanded: isExpanded,
-                useWebStyle: useWeb,
-                onTap: () {
-                  setState(() {
-                    if (isExpanded) {
-                      _expanded.remove(index);
-                    } else {
-                      _expanded.add(index);
-                    }
-                  });
-                },
-              ),
-            );
-          }),
-        ],
-      ),
+        ),
+        const SizedBox(height: 20),
+        ...List.generate(items.length, (index) {
+          final item = items[index];
+          final isExpanded = _expanded.contains(index);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _FaqTile(
+              question: item.question,
+              answer: item.answer,
+              expanded: isExpanded,
+              useWebStyle: useWeb,
+              onTap: () {
+                setState(() {
+                  if (isExpanded) {
+                    _expanded.remove(index);
+                  } else {
+                    _expanded.add(index);
+                  }
+                });
+              },
+            ),
+          );
+        }),
+        SizedBox(height: widget.embeddedInPanel ? 24 : 32),
+      ],
     );
+
+    final body = widget.standaloneWeb
+        ? faqContent
+        : SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            child: faqContent,
+          );
+
+    if (widget.standaloneWeb) {
+      return PublicWebPageShell(
+        title: l10n.faqsTitle,
+        child: body,
+      );
+    }
 
     if (widget.embeddedInPanel) {
       return Column(

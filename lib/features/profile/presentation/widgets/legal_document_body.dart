@@ -12,6 +12,7 @@ class LegalDocumentBody extends StatelessWidget {
     required this.lastUpdated,
     required this.sections,
     this.useWebStyle = false,
+    this.scrollable = true,
     this.bottomPadding = 32,
   });
 
@@ -19,6 +20,7 @@ class LegalDocumentBody extends StatelessWidget {
   final String lastUpdated;
   final List<LegalSection> sections;
   final bool useWebStyle;
+  final bool scrollable;
   final double bottomPadding;
 
   @override
@@ -32,43 +34,48 @@ class LegalDocumentBody extends StatelessWidget {
         ? WebColors.textSecondary
         : WpggBrand.cardTextDark.withValues(alpha: 0.85);
 
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          subtitle,
+          style: TextStyle(
+            fontFamily: AppFonts.lexendDeca,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: useWebStyle ? WebColors.accent : WpggBrand.primary,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          lastUpdated,
+          style: TextStyle(
+            fontFamily: AppFonts.lexendDeca,
+            fontSize: 12,
+            color: mutedColor,
+          ),
+        ),
+        const SizedBox(height: 20),
+        ...sections.map(
+          (section) => Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: _SectionBlock(
+              section: section,
+              titleColor: titleColor,
+              bodyColor: bodyColor,
+              useWebStyle: useWebStyle,
+            ),
+          ),
+        ),
+        SizedBox(height: bottomPadding),
+      ],
+    );
+
+    if (!scrollable) return content;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(20, 8, 20, bottomPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: useWebStyle ? WebColors.accent : WpggBrand.primary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            lastUpdated,
-            style: TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              fontSize: 12,
-              color: mutedColor,
-            ),
-          ),
-          const SizedBox(height: 20),
-          ...sections.map(
-            (section) => Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: _SectionBlock(
-                section: section,
-                titleColor: titleColor,
-                bodyColor: bodyColor,
-                useWebStyle: useWebStyle,
-              ),
-            ),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+      child: content,
     );
   }
 }

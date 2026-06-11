@@ -141,6 +141,14 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/faqs',
+      builder: (_, __) => const FaqsPage(standaloneWeb: true),
+    ),
+    GoRoute(
+      path: '/terms',
+      builder: (_, __) => const TermsPage(standaloneWeb: true),
+    ),
+    GoRoute(
       path: '/profile/faqs',
       builder: (_, __) => BlocProvider.value(
         value: sl<RiotBloc>(),

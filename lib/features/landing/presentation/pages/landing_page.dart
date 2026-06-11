@@ -379,7 +379,7 @@ class _LandingPageState extends State<LandingPage> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextButton(
-                                  onPressed: () => context.go('/profile/faqs'),
+                                  onPressed: () => context.go('/faqs'),
                                   child: Text(
                                     l10n.landingFaqLink,
                                     style: const TextStyle(
@@ -732,11 +732,11 @@ class _LandingFooter extends StatelessWidget {
           children: [
             _FooterLink(
               label: l10n.landingFooterTerms,
-              onTap: () => context.go('/profile/terms'),
+              onTap: () => context.go('/terms'),
             ),
             _FooterLink(
               label: l10n.landingFooterFaqs,
-              onTap: () => context.go('/profile/faqs'),
+              onTap: () => context.go('/faqs'),
             ),
             _FooterLink(
               label: l10n.landingFooterLogin,

@@ -10,6 +10,7 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
+import '../../../landing/presentation/widgets/public_web_page_shell.dart';
 import '../../data/terms_content.dart';
 import '../widgets/legal_document_body.dart';
 import '../widgets/profile_panel_header.dart';
@@ -19,11 +20,13 @@ class TermsPage extends StatelessWidget {
     super.key,
     this.embeddedInPanel = false,
     this.useWebPanelStyle = false,
+    this.standaloneWeb = false,
     this.onBack,
   });
 
   final bool embeddedInPanel;
   final bool useWebPanelStyle;
+  final bool standaloneWeb;
   final VoidCallback? onBack;
 
   @override
@@ -33,13 +36,22 @@ class TermsPage extends StatelessWidget {
         Provider.of<LocaleProvider>(context).languageCode;
     final sections = TermsContent.sectionsForLanguageCode(languageCode);
 
+    final useWebStyle = useWebPanelStyle || standaloneWeb;
     final body = LegalDocumentBody(
       subtitle: TermsContent.subtitleForLanguageCode(languageCode),
       lastUpdated: TermsContent.lastUpdatedForLanguageCode(languageCode),
       sections: sections,
-      useWebStyle: useWebPanelStyle,
+      useWebStyle: useWebStyle,
+      scrollable: !standaloneWeb,
       bottomPadding: embeddedInPanel ? 24 : 32,
     );
+
+    if (standaloneWeb) {
+      return PublicWebPageShell(
+        title: l10n.termsAndConditionsTitle,
+        child: body,
+      );
+    }
 
     if (embeddedInPanel) {
       return Column(
