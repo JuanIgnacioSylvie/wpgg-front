@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../constants/app_constants.dart';
+import '../crypto/payload_crypto_key_store.dart';
 import '../storage/secure_storage.dart';
 import 'auth_interceptor.dart';
 import 'http_client_config.dart';
+import 'payload_encryption_interceptor.dart';
 import 'web_credentials_interceptor.dart';
 
 Map<String, String> _defaultHeaders() {
@@ -45,14 +47,28 @@ class ApiClient {
       _dio.interceptors.add(WebCredentialsInterceptor());
     }
 
+    _payloadCryptoKeyStore = PayloadCryptoKeyStore(_dio);
     _dio.interceptors.addAll([
+      PayloadEncryptionInterceptor(_payloadCryptoKeyStore),
       AuthInterceptor(dio: _dio, storage: _secureStorage),
-      PrettyDioLogger(requestBody: true, responseBody: true),
+      PrettyDioLogger(
+        requestBody: true,
+        responseBody: true,
+        filter: (options, args) {
+          if (options.headers['X-WPGG-Encrypted'] == '1' && !args.isResponse) {
+            return false;
+          }
+          return true;
+        },
+      ),
     ]);
   }
 
   final SecureStorage _secureStorage;
   late final Dio _dio;
+  late final PayloadCryptoKeyStore _payloadCryptoKeyStore;
+
+  PayloadCryptoKeyStore get payloadCryptoKeyStore => _payloadCryptoKeyStore;
 
   Dio get raw => _dio;
 
