@@ -20,6 +20,9 @@ class DexScreenerDataSource {
   static const wpggGeckoTerminalUrl =
       'https://www.geckoterminal.com/polygon_pos/tokens/$wpggContractAddress';
 
+  static const wpggCoinMarketCapUrl =
+      'https://coinmarketcap.com/currencies/well-played-good-game/';
+
   static const wpggPolygonPairPath =
       '/latest/dex/pairs/polygon/0x7f9a8901c73c3f62777dac914491b98a03430f17';
 

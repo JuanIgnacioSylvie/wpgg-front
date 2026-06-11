@@ -363,6 +363,7 @@
   "landingFooterFaqs": "FAQs",
   "landingFooterLogin": "Log in",
   "landingFooterRegister": "Sign up",
+  "landingFooterCoinMarketCap": "CoinMarketCap",
   "landingFooterDisclaimer": "WPGG is not affiliated with, associated with, or endorsed by Riot Games, Inc. League of Legends and Riot Games are trademarks of Riot Games, Inc.",
   "landingFooterCopyright": "© {year} WPGG. All rights reserved.",
   "@landingFooterCopyright": {

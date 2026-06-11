@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/link.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
@@ -11,6 +12,7 @@ import '../../../../core/presentation/web/web_dot_grid_background.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
+import '../../../wallet/data/datasources/dexscreener_datasource.dart';
 import '../widgets/landing_coin_hero.dart';
 import '../widgets/landing_language_menu.dart';
 import '../widgets/landing_sponsor_form.dart';
@@ -746,6 +748,10 @@ class _LandingFooter extends StatelessWidget {
               label: l10n.landingFooterRegister,
               onTap: () => context.go('/register'),
             ),
+            _FooterLink(
+              label: l10n.landingFooterCoinMarketCap,
+              uri: Uri.parse(DexScreenerDataSource.wpggCoinMarketCapUrl),
+            ),
           ],
         ),
         const SizedBox(height: 20),
@@ -773,23 +779,37 @@ class _LandingFooter extends StatelessWidget {
 }
 
 class _FooterLink extends StatelessWidget {
-  const _FooterLink({required this.label, required this.onTap});
+  const _FooterLink({
+    required this.label,
+    this.onTap,
+    this.uri,
+  }) : assert(onTap != null || uri != null);
 
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Uri? uri;
+
+  static final _labelStyle = TextStyle(
+    fontFamily: AppFonts.lexendDeca,
+    fontSize: 13,
+    color: WebColors.textSecondary,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: AppFonts.lexendDeca,
-          fontSize: 13,
-          color: WebColors.textSecondary,
+    final labelWidget = Text(label, style: _labelStyle);
+
+    if (uri != null) {
+      return Link(
+        uri: uri!,
+        target: LinkTarget.blank,
+        builder: (context, followLink) => InkWell(
+          onTap: followLink,
+          child: labelWidget,
         ),
-      ),
-    );
+      );
+    }
+
+    return InkWell(onTap: onTap, child: labelWidget);
   }
 }

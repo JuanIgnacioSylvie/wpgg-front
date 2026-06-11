@@ -1716,6 +1716,12 @@ abstract class AppLocalizations {
   /// **'Sign up'**
   String get landingFooterRegister;
 
+  /// No description provided for @landingFooterCoinMarketCap.
+  ///
+  /// In en, this message translates to:
+  /// **'CoinMarketCap'**
+  String get landingFooterCoinMarketCap;
+
   /// No description provided for @landingFooterDisclaimer.
   ///
   /// In en, this message translates to:

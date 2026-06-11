@@ -920,6 +920,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get landingFooterRegister => 'Registrarse';
 
   @override
+  String get landingFooterCoinMarketCap => 'CoinMarketCap';
+
+  @override
   String get landingFooterDisclaimer =>
       'WPGG no está afiliado, asociado ni respaldado por Riot Games, Inc. League of Legends y Riot Games son marcas registradas de Riot Games, Inc.';
 
