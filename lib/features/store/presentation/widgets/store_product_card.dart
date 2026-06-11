@@ -99,7 +99,7 @@ class StoreProductCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: WpggPrimaryButton(
-                    onPressed: () => showStorePurchaseDialog(context, product),
+                    onPressed: () => showStorePurchaseDialog(product),
                     label: l10n.storeBuy,
                   ),
                 ),

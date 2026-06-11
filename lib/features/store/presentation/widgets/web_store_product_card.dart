@@ -125,8 +125,7 @@ class _WebStoreProductCardState extends State<WebStoreProductCard> {
                   SizedBox(
                     width: double.infinity,
                     child: WpggPrimaryButton(
-                      onPressed: () =>
-                          showStorePurchaseDialog(context, product),
+                      onPressed: () => showStorePurchaseDialog(product),
                       label: l10n.storeBuy,
                     ),
                   ),
