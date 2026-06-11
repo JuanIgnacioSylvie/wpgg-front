@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
@@ -9,6 +8,7 @@ import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
 enum WebMissionCardVariant { active, past, empty }
@@ -115,20 +115,10 @@ class _WebMissionCardState extends State<WebMissionCard> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        mission.isWelcome
-                            ? Symbols.redeem
-                            : difficultyIcon(mission.difficulty),
-                        color: color,
-                        size: 20,
-                      ),
+                    MissionLeadingIcon(
+                      mission: mission,
+                      size: 36,
+                      borderRadius: 8,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -337,7 +327,7 @@ class _EmptyCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Symbols.add_circle_outline,
+                Icons.add_circle_outline,
                 color: hovered ? WebColors.accent : WebColors.textMuted,
                 size: 32,
               ),

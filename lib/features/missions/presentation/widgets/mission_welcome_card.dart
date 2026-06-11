@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
@@ -113,7 +112,7 @@ class MissionWelcomeCard extends StatelessWidget {
               height: 96,
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Icon(
-                Symbols.redeem,
+                Icons.redeem,
                 size: 72,
                 color: _accent.withValues(alpha: 0.45),
               ),
@@ -145,7 +144,7 @@ class _WelcomeBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(
-            Symbols.redeem,
+            Icons.redeem,
             size: 14,
             color: WpggBrand.welcomeAccent,
           ),

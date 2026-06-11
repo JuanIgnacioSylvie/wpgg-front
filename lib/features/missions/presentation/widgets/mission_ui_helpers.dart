@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -37,11 +36,11 @@ String difficultyLabel(MissionDifficulty d, AppLocalizations l10n) {
 IconData difficultyIcon(MissionDifficulty d) {
   switch (d) {
     case MissionDifficulty.easy:
-      return Symbols.psychiatry;
+      return Icons.eco_outlined;
     case MissionDifficulty.medium:
-      return Symbols.swords;
+      return Icons.eco;
     case MissionDifficulty.hard:
-      return Symbols.local_fire_department;
+      return Icons.local_fire_department_outlined;
   }
 }
 

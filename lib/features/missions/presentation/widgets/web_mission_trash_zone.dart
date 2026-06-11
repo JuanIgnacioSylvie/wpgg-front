@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
@@ -51,7 +50,7 @@ class WebMissionTrashZone extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Symbols.delete,
+                  Icons.delete_outline,
                   color: hovering ? WebColors.accent : WebColors.textMuted,
                   size: 28,
                 ),

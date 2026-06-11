@@ -4,6 +4,7 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
 class MissionPickCard extends StatelessWidget {
@@ -22,7 +23,6 @@ class MissionPickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = difficultyColor(mission.difficulty);
     final l10n = context.l10n;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -34,14 +34,10 @@ class MissionPickCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(difficultyIcon(mission.difficulty), color: color),
+          MissionLeadingIcon(
+            mission: mission,
+            size: 48,
+            borderRadius: 12,
           ),
           const SizedBox(width: 12),
           Expanded(

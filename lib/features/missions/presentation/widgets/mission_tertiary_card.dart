@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
@@ -37,21 +36,7 @@ class MissionTertiaryCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          mission.isWelcome
-              ? Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: WpggBrand.welcomeAccent.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Symbols.redeem,
-                    color: WpggBrand.welcomeAccent,
-                    size: 20,
-                  ),
-                )
-              : MissionDifficultyIconBox(difficulty: mission.difficulty),
+          MissionLeadingIcon(mission: mission),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
