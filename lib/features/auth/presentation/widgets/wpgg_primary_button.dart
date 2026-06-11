@@ -198,6 +198,7 @@ class _WpggInteractiveBulgeButtonState extends State<_WpggInteractiveBulgeButton
         onEnter: widget.enabled ? (_) => setState(() => _hovered = true) : null,
         onExit: widget.enabled ? (_) => setState(() => _hovered = false) : null,
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: widget.enabled ? (_) => setState(() => _pressed = true) : null,
           onTapUp: widget.enabled ? (_) => setState(() => _pressed = false) : null,
           onTapCancel: widget.enabled ? () => setState(() => _pressed = false) : null,
