@@ -9,7 +9,6 @@ import '../../../features/profile/presentation/pages/profile_page.dart';
 import '../../../features/profile/presentation/pages/terms_page.dart';
 import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/notifications/presentation/bloc/notifications_bloc.dart';
-import '../../../features/notifications/presentation/bloc/notifications_event.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'web_animations.dart';
 import 'web_colors.dart';
