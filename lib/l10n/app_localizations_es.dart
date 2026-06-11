@@ -27,6 +27,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get languageSpanish => 'Español';
 
   @override
+  String get languageFrench => 'Francés';
+
+  @override
+  String get languagePortuguese => 'Portugués';
+
+  @override
   String get retry => 'Reintentar';
 
   @override
@@ -626,6 +632,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get financeFilterExpense => 'Gastos';
+
+  @override
+  String get financePriceHistory => 'Historial de precio (7 días)';
 
   @override
   String get financeNoChartData => 'Sin datos del gráfico';

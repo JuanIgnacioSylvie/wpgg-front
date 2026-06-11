@@ -1,0 +1,302 @@
+{
+  "@@locale": "fr",
+  "hello": "Bonjour !",
+  "profile": "Profil",
+  "logOut": "Se déconnecter",
+  "language": "Langue",
+  "languageEnglish": "Anglais",
+  "languageSpanish": "Espagnol",
+  "languageFrench": "Français",
+  "languagePortuguese": "Portugais",
+  "retry": "Réessayer",
+  "welcomeMissionBadge": "MISSION CADEAU",
+  "welcomeMissionSection": "Mission cadeau",
+  "inProgress": "En cours",
+  "missionDayResets": "Jour de mission {date} · réinitialisation à 00:00 {timezone}",
+  "@missionDayResets": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "timezone": {"type": "String"}
+    }
+  },
+  "dayEndsIn": "Le jour se termine dans : {time}",
+  "@dayEndsIn": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "noActiveMissions": "Aucune mission active pour le moment. Choisissez jusqu'à 3 pour aujourd'hui !",
+  "pickMissions": "Choisir des missions",
+  "passMissions": "Missions passées",
+  "completedMissionsPlaceholder": "Les missions terminées apparaîtront ici.",
+  "noMissionsForDay": "Aucune mission pour ce jour.",
+  "noMissionsForFilter": "Aucune mission ne correspond à ce filtre.",
+  "errorLoadingMissions": "Erreur lors du chargement des missions",
+  "missionsByDays": "Missions par jour",
+  "errorGeneric": "Erreur",
+  "filterAll": "Toutes",
+  "filterToDo": "À faire",
+  "filterInProgress": "En cours",
+  "filterCompleted": "Terminées",
+  "difficultyEasy": "Facile",
+  "difficultyMedium": "Moyenne",
+  "difficultyHard": "Difficile",
+  "statusCompleted": "Terminée",
+  "statusIncomplete": "Incomplète",
+  "statusInProgress": "En cours",
+  "statusToDo": "À faire",
+  "endsIn": "Se termine dans : {time}",
+  "@endsIn": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "pickMissionsTitle": "Choisir des missions",
+  "errorLoadingOffers": "Erreur lors du chargement des offres",
+  "selectedMissionsCount": "Sélectionnées {count}/{max} (max. {maxHard} difficile)",
+  "@selectedMissionsCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "max": {"type": "int"},
+      "maxHard": {"type": "int"}
+    }
+  },
+  "rerollMissionTitle": "Changer de mission ?",
+  "rerollMissionBody": "Cela coûtera {cost} WPGG de votre solde.",
+  "@rerollMissionBody": {
+    "placeholders": {
+      "cost": {"type": "int"}
+    }
+  },
+  "missionSpendBalanceHint": "Solde actuel : {balance} WPGG",
+  "@missionSpendBalanceHint": {
+    "placeholders": {
+      "balance": {"type": "int"}
+    }
+  },
+  "missionInsufficientBalance": "Vous n'avez pas assez de WPGG pour cette action",
+  "cancel": "Annuler",
+  "reroll": "Changer",
+  "cancelMissionTitle": "Supprimer la mission ?",
+  "cancelMissionBody": "Cela coûtera {cost} WPGG de votre solde.",
+  "@cancelMissionBody": {
+    "placeholders": {
+      "cost": {"type": "int"}
+    }
+  },
+  "deleteMission": "Supprimer",
+  "dropToDeleteMission": "Déposez ici pour supprimer",
+  "summonerLevel": "Niveau {level}",
+  "@summonerLevel": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "linkRiotPrompt": "Liez votre compte Riot pour voir vos statistiques.",
+  "linkRiotAfterLoginPrompt": "Nous n'avons pas pu lier votre compte LoL automatiquement. Complétez les détails de votre invocateur pour voir vos statistiques.",
+  "linkRiotButton": "Lier le compte Riot",
+  "completeRiotLinkButton": "Compléter la liaison manuelle",
+  "linkRiotSheetTitle": "Lier Riot",
+  "linkRiotSheetAction": "Lier",
+  "summonerNameLabel": "Nom d'invocateur",
+  "tagLabel": "Tag (#TAG sans #)",
+  "regionLabel": "Région (ex. LA2)",
+  "myProfile": "Mon profil",
+  "withdraw": "RETIRER",
+  "generalNotification": "Notification générale",
+  "helpSupport": "Aide et support",
+  "contactUs": "Nous contacter",
+  "privacyPolicy": "Politique de confidentialité",
+  "termsAndConditionsTitle": "Conditions générales",
+  "withdrawTitle": "Retirer des WPGG",
+  "withdrawMinHint": "Le retrait minimum est de {amount} WPGG",
+  "@withdrawMinHint": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "walletAddressLabel": "Adresse du portefeuille Polygon",
+  "walletAddressRequired": "L'adresse du portefeuille est requise",
+  "walletAddressInvalid": "Saisissez une adresse Polygon valide (0x...)",
+  "withdrawAmountLabel": "Montant (WPGG)",
+  "withdrawAmountInvalid": "Saisissez un montant valide",
+  "withdrawInsufficientBalance": "Solde insuffisant",
+  "withdrawSuccess": "Retrait soumis avec succès",
+  "withdrawError": "Échec du retrait. Veuillez réessayer.",
+  "pageUnavailableTitle": "Cette page n'est pas disponible",
+  "pageUnavailableBody": "Nous y travaillons. Revenez plus tard.",
+  "faqsMenuItem": "FAQ",
+  "faqsTitle": "Questions fréquentes",
+  "faqsIntro": "Tout ce que vous devez savoir sur WPGG — missions, récompenses, retraits et plus encore.",
+  "faqWhatIsWpggQ": "Qu'est-ce que WPGG ?",
+  "faqWhatIsWpggA": "WPGG est une plateforme de statistiques League of Legends qui vous récompense pour jouer. Complétez des missions quotidiennes, gagnez des jetons WPGG et échangez-les contre des cartes cadeaux Riot Points ou d'autres récompenses réelles.",
+  "faqHowMissionsWorkQ": "Comment fonctionnent les missions ?",
+  "faqHowMissionsWorkA": "Chaque jour, vous recevez un ensemble de missions : facile, moyenne et difficile. Les faciles sont simples — jouez une partie ou gagnez avec un champion précis. Les missions moyennes et difficiles exigent de meilleures performances : atteindre un certain KDA, obtenir X assists, des séries de victoires, etc. Complétez la mission, gagnez des jetons. C'est tout.",
+  "faqRerollQ": "Puis-je changer de mission ?",
+  "faqRerollA": "Oui. Si une mission ne vous convient pas ou si vous ne pouvez pas la terminer, vous disposez de changements quotidiens pour l'échanger contre une autre aléatoire du même niveau.",
+  "faqWithdrawQ": "Comment retirer des WPGG vers mon portefeuille ?",
+  "faqWithdrawA": "Vous devez accumuler un minimum de 1 000 WPGG pour retirer. Une fois ce seuil atteint, vous pouvez lancer un retrait depuis la section finance. Les jetons sont transférés vers votre portefeuille sur le réseau Polygon. Vous avez besoin d'un portefeuille compatible (comme MetaMask) et de couvrir les frais de transaction — sur Polygon, c'est pratiquement rien.",
+  "faqWhatCanIDoQ": "Que puis-je faire avec des WPGG ?",
+  "faqWhatCanIDoA": "Pour l'instant, vous pouvez les échanger dans la boutique intégrée contre des cartes cadeaux Riot Points. L'idée est qu'avec ce que vous gagnez en quelques semaines de jeu normal, vous pouvez acheter un skin, faire plaisir à votre partenaire ou prendre des bières entre amis. Ce n'est pas pour devenir riche — c'est une vraie récompense pour ce que vous faites déjà.",
+  "faqTokenPriceQ": "Combien vaut un WPGG ?",
+  "faqTokenPriceA": "Le jeton s'échange sur le marché, donc le prix varie. Mais l'application n'est pas conçue pour la spéculation — elle est faite pour être utilisée. La vraie valeur réside dans l'échange contre des produits concrets.",
+  "faqGetRichQ": "Est-ce que WPGG va me rendre riche ?",
+  "faqGetRichA": "Non. Et nous le disons clairement, car la transparence fait partie du projet. WPGG n'est ni un système d'investissement ni un jeu de spéculation. C'est un système de récompenses adossé à un pool de liquidité fixe sur QuickSwap (WPGG/USDC). Le pool est ce qu'il est — il ne grandit pas comme par magie, il n'y a aucune promesse de rendement. Ce que vous gagnez en jouant a une valeur réelle et échangeable, mais n'attendez pas de multiplier votre argent ici.",
+  "faqTransparencyQ": "Est-ce sûr ? Le projet est-il transparent ?",
+  "faqTransparencyA": "Oui. Le contrat du jeton WPGG est déployé sur Polygon Mainnet et est vérifiable publiquement sur PolygonScan. Le pool de liquidité est sur QuickSwap. Tout ce qui soutient le système est on-chain et n'importe qui peut l'auditer. Pas de boîte noire.",
+  "faqCryptoKnowledgeQ": "Dois-je connaître la crypto pour utiliser l'application ?",
+  "faqCryptoKnowledgeA": "Pour jouer des missions et gagner des WPGG, vous n'avez besoin de rien savoir sur la crypto. La complexité n'apparaît que lorsque vous voulez retirer vers votre portefeuille — et même là, le processus est guidé étape par étape dans l'application.",
+  "faqLoLAccountQ": "Quel compte LoL dois-je connecter ?",
+  "faqLoLAccountA": "L'application utilise Riot Sign On (le système officiel de Riot Games), vous vous connectez donc directement avec votre compte Riot. Vous n'avez pas besoin de nous donner votre mot de passe ou quoi que ce soit de similaire — c'est le même OAuth utilisé par des applications comme op.gg ou u.gg.",
+  "faqAvailabilityQ": "L'application est-elle disponible sur iOS et Android ?",
+  "faqAvailabilityA": "Elle est actuellement en développement actif. Plus d'informations sur la disponibilité bientôt.",
+  "storeTitle": "Boutique",
+  "storeSubtitle": "Échangez vos WPGG contre des cartes cadeaux Riot.",
+  "storeBuy": "Acheter",
+  "storePurchaseTitle": "Confirmer l'achat",
+  "storePurchaseBody": "Vous dépenserez {cost} WPGG pour {product}.",
+  "@storePurchaseBody": {
+    "placeholders": {
+      "cost": {"type": "int"},
+      "product": {"type": "String"}
+    }
+  },
+  "storeComingSoon": "Les achats seront bientôt disponibles.",
+  "storeOrderHistory": "Vos achats",
+  "storeNoOrders": "Vous n'avez encore rien acheté dans la boutique.",
+  "storePurchaseSuccessTitle": "Achat réussi !",
+  "storePurchaseSuccessBody": "Votre carte cadeau de {rp} RP est prête. Conservez la clé en lieu sûr.",
+  "@storePurchaseSuccessBody": {
+    "placeholders": {
+      "rp": {"type": "int"}
+    }
+  },
+  "storeYourKey": "Votre clé Riot",
+  "storeCopyKey": "Copier la clé",
+  "storeKeyCopied": "Clé copiée dans le presse-papiers",
+  "storeDone": "Terminé",
+  "storeOutOfStock": "Ce produit est en rupture de stock.",
+  "storePurchaseError": "Impossible de finaliser l'achat. Veuillez réessayer.",
+  "transactionProcessingAcceptMission": "Acceptation de la mission…",
+  "transactionProcessingRerollMission": "Changement de mission…",
+  "transactionProcessingCancelMission": "Suppression de la mission…",
+  "transactionProcessingPurchase": "Traitement de l'achat…",
+  "transactionSuccessAcceptMission": "Mission acceptée",
+  "transactionSuccessRerollMission": "Mission changée",
+  "transactionSuccessCancelMission": "Mission supprimée",
+  "transactionFailedGeneric": "L'action n'a pas pu être effectuée. Veuillez réessayer.",
+  "viewOnGeckoTerminal": "Voir sur GeckoTerminal",
+  "authLoginSwitchLine": "Vous n'avez pas de compte ?",
+  "authLoginSwitchLink": "Inscrivez-vous ici !",
+  "authRegisterSwitchLine": "Vous avez déjà un compte ?",
+  "authRegisterSwitchLink": "Connectez-vous ici !",
+  "authSwitchLinkPrefix": "Vous pouvez ",
+  "riotNotFoundTitle": "Compte introuvable.",
+  "riotNotFoundBody": "Nous n'avons pas trouvé de compte WPGG lié à cet identifiant Riot. Inscrivez-vous d'abord sur WPGG.",
+  "riotNotFoundRegister": "S'inscrire",
+  "riotAlreadyExistsTitle": "Vous avez déjà un compte.",
+  "riotAlreadyExistsBody": "Un compte WPGG est déjà lié à cet identifiant Riot. Connectez-vous avec Riot ou par e-mail.",
+  "riotAlreadyExistsSignInRiot": "Se connecter avec Riot",
+  "linkRiotBody": "Liez votre compte Riot Games pour terminer l'inscription.",
+  "authLabelEmail": "E-mail",
+  "authHintEmail": "Saisissez votre e-mail",
+  "authLabelPassword": "Mot de passe",
+  "authHintPassword": "Saisissez votre mot de passe",
+  "authLabelConfirmPassword": "Confirmer le mot de passe",
+  "authHintConfirmPassword": "Confirmez votre mot de passe",
+  "authRememberMe": "Se souvenir de moi",
+  "authForgotPassword": "Mot de passe oublié ?",
+  "authButtonLogin": "Se connecter",
+  "authButtonRegister": "S'inscrire",
+  "authRiotFooter": "ou continuer avec",
+  "authPasswordsMismatch": "Les mots de passe ne correspondent pas",
+  "authForgotPasswordBody": "Saisissez votre e-mail et nous vous enverrons un lien de réinitialisation.",
+  "authForgotPasswordSuccess": "Si un compte existe, nous avons envoyé un lien de réinitialisation.",
+  "authButtonSendResetLink": "Envoyer le lien",
+  "authBackToLogin": "Retour à la connexion",
+  "authResetPasswordTitle": "Nouveau mot de passe",
+  "authResetPasswordBody": "Choisissez un nouveau mot de passe pour votre compte.",
+  "authButtonResetPassword": "Réinitialiser le mot de passe",
+  "authResetPasswordSuccess": "Mot de passe mis à jour. Vous pouvez vous connecter maintenant.",
+  "authResetPasswordInvalidLink": "Lien invalide ou expiré. Demandez-en un nouveau depuis la connexion.",
+  "authVerifyEmailTitle": "Confirmez votre e-mail",
+  "authVerifyEmailBody": "Nous avons envoyé un lien à votre e-mail. Ouvrez-le pour activer votre compte.",
+  "authVerifyEmailResent": "Si le compte existe et n'est pas vérifié, nous avons renvoyé le lien.",
+  "authVerifyEmailSuccess": "E-mail confirmé. Bienvenue sur WPGG !",
+  "authVerifyEmailInvalidLink": "Lien invalide ou expiré. Demandez-en un nouveau depuis l'inscription.",
+  "authButtonResendVerification": "Renvoyer le lien",
+  "authTurnstileRequired": "Complétez la vérification de sécurité avant de continuer.",
+  "authVerifyEmailConfirming": "Confirmation de votre e-mail…",
+  "riotLoginCompleted": "Connexion Riot terminée",
+  "riotCallbackTitle": "Riot",
+  "riotGoToDashboard": "Aller au tableau de bord",
+  "riotGoToLogin": "Aller à la connexion",
+  "riotSessionTokensInUrl": "Connecté avec Riot (jetons dans l'URL).",
+  "riotSessionCookies": "Connecté avec Riot (cookies).",
+  "riotSessionUpdated": "Compte Riot authentifié ; session de l'application mise à jour.",
+  "riotSessionViaExchange": "Session WPGG via échange Riot.",
+  "riotIdentityError": "Le serveur n'a pas pu obtenir votre identité Riot. Réessayez de vous connecter.",
+  "riotIdentityErrorWithDesc": "Le serveur n'a pas pu obtenir votre identité Riot : {desc}",
+  "@riotIdentityErrorWithDesc": {
+    "placeholders": {
+      "desc": {"type": "String"}
+    }
+  },
+  "riotNoSessionAfterLogin": "Aucune session reçue après la connexion Riot.",
+  "financeTitle": "Finance",
+  "financeSubtitle": "Prix du jeton et activité de votre portefeuille",
+  "financeYourBalance": "Votre solde",
+  "balanceLabel": "Solde",
+  "financeFilterAll": "Tout",
+  "financeFilterAllTransactions": "Toutes les transactions",
+  "financeFilterIncome": "Revenus",
+  "financeFilterExpense": "Dépenses",
+  "financePriceHistory": "Historique des prix sur 7 jours",
+  "financeNoChartData": "Aucune donnée de graphique",
+  "financeNoTransactions": "Aucune transaction",
+  "tokenPriceUpdatedHint": "Prix en USD · mis à jour toutes les 60 s",
+  "navDashboard": "Tableau de bord",
+  "navNotifications": "Notifications",
+  "sidebarExpandMenu": "Développer le menu",
+  "sidebarCollapse": "Réduire",
+  "addMissionButton": "Ajouter",
+  "matchChampionFallback": "Champion {id}",
+  "@matchChampionFallback": {
+    "placeholders": {
+      "id": {"type": "int"}
+    }
+  },
+  "matchWin": "Victoire",
+  "matchLoss": "Défaite",
+  "timeAgoJustNow": "à l'instant",
+  "timeAgoMinutes": "il y a {count} min",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoHours": "il y a {count} h",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "timeAgoDays": "il y a {count} j",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "rankedWinrate": "Taux de victoire {percent}%",
+  "@rankedWinrate": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "queueRankedSolo": "Solo/Duo",
+  "queueRankedFlex": "Flex 5v5",
+  "queueRankedTft": "Classé TFT",
+  "queueArena": "Arène",
+  "queueAram": "ARAM",
+  "queueNormal": "Normal"
+}

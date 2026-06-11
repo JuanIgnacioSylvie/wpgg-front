@@ -10,10 +10,10 @@ import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
-import 'day_carousel.dart';
-import 'filter_pills.dart';
-import 'mission_pick_card.dart';
 import 'mission_spend_dialog.dart';
+import 'web_day_selector.dart';
+import 'web_filter_chips.dart';
+import 'web_mission_pick_card.dart';
 
 Future<void> showPickMissionsDialog(BuildContext context) {
   return showWebDialog<void>(
@@ -56,58 +56,54 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560, maxHeight: 720),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: WebColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: WebColors.border),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.5),
-                blurRadius: 32,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 12, 8),
-                child: Row(
-                  children: [
-                    Text(
-                      l10n.pickMissionsTitle,
-                      style: const TextStyle(
-                        fontFamily: AppFonts.lexendDeca,
-                        color: WebColors.textPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 560, maxHeight: 720),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: WebColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: WebColors.border),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 12, 8),
+              child: Row(
+                children: [
+                  Text(
+                    l10n.pickMissionsTitle,
+                    style: const TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: WebColors.textPrimary,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
                     ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(
-                        Icons.close,
-                        color: WebColors.textSecondary,
-                        size: 20,
-                      ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: WebColors.textSecondary,
+                      size: 20,
                     ),
-                  ],
-                ),
+                    tooltip: l10n.cancel,
+                  ),
+                ],
               ),
-              DayCarousel(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: WebDaySelector(
                 selectedDate: _selectedDate,
                 onDateSelected: (_) {},
                 lockToToday: true,
               ),
-              const SizedBox(height: 12),
-              FilterPills(
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: WebFilterChips(
                 labels: [
                   l10n.filterAll,
                   l10n.difficultyHard,
@@ -117,17 +113,18 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                 selectedIndex: _filterIndex,
                 onSelected: (i) => setState(() => _filterIndex = i),
               ),
-              Expanded(
-                child: BlocBuilder<MissionsBloc, MissionsState>(
-                  builder: (context, state) {
-                    return WebAnimatedSwitcher(
-                      child: _buildPickBody(context, state, l10n),
-                    );
-                  },
-                ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: BlocBuilder<MissionsBloc, MissionsState>(
+                builder: (context, state) {
+                  return WebAnimatedSwitcher(
+                    child: _buildPickBody(context, state, l10n),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -175,14 +172,18 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
       key: const ValueKey('pick-content'),
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Text(
             l10n.selectedMissionsCount(
               pick.selectedCount,
               pick.maxSelectable,
               pick.maxHard,
             ),
-            style: const TextStyle(color: WebColors.textMuted),
+            style: const TextStyle(
+              fontFamily: AppFonts.lexendDeca,
+              color: WebColors.textMuted,
+              fontSize: 13,
+            ),
           ),
         ),
         Expanded(
@@ -196,7 +197,7 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
               return WebAnimatedAppear(
                 key: ValueKey('pick-offer-$oid'),
                 staggerIndex: i,
-                child: MissionPickCard(
+                child: WebMissionPickCard(
                   mission: m,
                   accepted: accepted,
                   onAccept: () {

@@ -29,12 +29,13 @@ class TermsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isSpanish = Provider.of<LocaleProvider>(context).isSpanish;
-    final sections = TermsContent.sectionsForLocale(isSpanish);
+    final languageCode =
+        Provider.of<LocaleProvider>(context).languageCode;
+    final sections = TermsContent.sectionsForLanguageCode(languageCode);
 
     final body = LegalDocumentBody(
-      subtitle: TermsContent.subtitleForLocale(isSpanish),
-      lastUpdated: TermsContent.lastUpdatedForLocale(isSpanish),
+      subtitle: TermsContent.subtitleForLanguageCode(languageCode),
+      lastUpdated: TermsContent.lastUpdatedForLanguageCode(languageCode),
       sections: sections,
       useWebStyle: useWebPanelStyle,
       bottomPadding: embeddedInPanel ? 24 : 32,

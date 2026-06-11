@@ -367,7 +367,12 @@ Future<T?> showWebDialog<T>({
                   begin: WebMotion.scaleEnter,
                   end: 1,
                 ).animate(curved),
-                child: child,
+                // Material supplies DefaultTextStyle; without it, Text in
+                // general dialogs shows Flutter's yellow debug underline.
+                child: Material(
+                  color: Colors.transparent,
+                  child: child,
+                ),
               ),
             ),
           ),

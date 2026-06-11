@@ -108,6 +108,40 @@ class _ProfilePageState extends State<ProfilePage>
     };
   }
 
+  void _showLanguagePicker(
+    BuildContext context,
+    LocaleProvider localeProvider,
+  ) {
+    final accent = widget.useWebPanelStyle
+        ? WebColors.accent
+        : WpggBrand.primary;
+
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final code in LocaleProvider.supportedLanguageCodes)
+              ListTile(
+                title: Text(
+                  context.languageLabelForCode(code),
+                  style: const TextStyle(fontFamily: AppFonts.lexendDeca),
+                ),
+                trailing: localeProvider.languageCode == code
+                    ? Icon(Icons.check, color: accent)
+                    : null,
+                onTap: () {
+                  localeProvider.setLocale(Locale(code));
+                  Navigator.pop(sheetContext);
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -343,9 +377,9 @@ class _ProfilePageState extends State<ProfilePage>
                                 label: l10n.language,
                                 useWebStyle: useWeb,
                                 trailing: Text(
-                                  localeProvider.isSpanish
-                                      ? l10n.languageSpanish
-                                      : l10n.languageEnglish,
+                                  context.languageLabelForCode(
+                                    localeProvider.languageCode,
+                                  ),
                                   style: TextStyle(
                                     fontFamily: AppFonts.lexendDeca,
                                     color: useWeb
@@ -354,13 +388,10 @@ class _ProfilePageState extends State<ProfilePage>
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                onTap: () {
-                                  if (localeProvider.isSpanish) {
-                                    localeProvider.setEnglish();
-                                  } else {
-                                    localeProvider.setSpanish();
-                                  }
-                                },
+                                onTap: () => _showLanguagePicker(
+                                  context,
+                                  localeProvider,
+                                ),
                               ),
                             ],
                           ),

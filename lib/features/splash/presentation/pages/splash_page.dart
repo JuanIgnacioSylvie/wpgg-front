@@ -163,24 +163,26 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                       const SizedBox(height: 36),
                       WebAnimatedAppear(
                         staggerIndex: 1,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: SizedBox(
-                            width: _progressWidth,
-                            height: 4,
-                            child: ColoredBox(
-                              color: WebColors.border,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: AnimatedBuilder(
-                                  animation: _progressController,
-                                  builder: (_, __) => FractionallySizedBox(
-                                    widthFactor: _progressController.value,
+                        child: AnimatedBuilder(
+                          animation: _progressController,
+                          builder: (_, __) => ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: SizedBox(
+                              width: _progressWidth,
+                              height: 4,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  const ColoredBox(color: WebColors.border),
+                                  FractionallySizedBox(
+                                    widthFactor:
+                                        _progressController.value.clamp(0, 1),
+                                    alignment: Alignment.centerLeft,
                                     child: const ColoredBox(
                                       color: WebColors.accent,
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
                           ),

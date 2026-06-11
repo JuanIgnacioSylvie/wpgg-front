@@ -8,10 +8,15 @@ class LocaleProvider extends ChangeNotifier {
 
   static const _prefKey = 'app_locale';
 
+  static const supportedLanguageCodes = ['en', 'es', 'fr', 'pt'];
+
   Locale _locale = const Locale('en');
 
   Locale get locale => _locale;
 
+  String get languageCode => _locale.languageCode;
+
+  @Deprecated('Use languageCode == \'es\' instead')
   bool get isSpanish => _locale.languageCode == 'es';
 
   Future<void> setLocale(Locale locale) async {
@@ -26,14 +31,15 @@ class LocaleProvider extends ChangeNotifier {
 
   Future<void> setSpanish() => setLocale(const Locale('es'));
 
+  Future<void> setFrench() => setLocale(const Locale('fr'));
+
+  Future<void> setPortuguese() => setLocale(const Locale('pt'));
+
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString(_prefKey);
-    if (code == 'en') {
-      _locale = const Locale('en');
-      notifyListeners();
-    } else if (code == 'es') {
-      _locale = const Locale('es');
+    if (code != null && supportedLanguageCodes.contains(code)) {
+      _locale = Locale(code);
       notifyListeners();
     }
   }

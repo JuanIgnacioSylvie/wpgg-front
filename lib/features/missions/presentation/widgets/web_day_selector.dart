@@ -10,10 +10,12 @@ class WebDaySelector extends StatelessWidget {
     super.key,
     required this.selectedDate,
     required this.onDateSelected,
+    this.lockToToday = false,
   });
 
   final DateTime selectedDate;
   final ValueChanged<DateTime> onDateSelected;
+  final bool lockToToday;
 
   static String _capitalize(String value) {
     if (value.isEmpty) return value;
@@ -40,13 +42,16 @@ class WebDaySelector extends StatelessWidget {
           final isSelected = MissionDay.isSameMissionDay(d, selectedDate);
           final isToday = MissionDay.isSameMissionDay(d, today);
 
+          final canTap = !lockToToday || isToday;
+
           return _DayChip(
             month: _capitalize(DateFormat('MMM', locale).format(d)),
             day: DateFormat('d').format(d),
             weekday: _capitalize(DateFormat('EEE', locale).format(d)),
             isSelected: isSelected,
             isToday: isToday,
-            onTap: () => onDateSelected(d),
+            enabled: canTap,
+            onTap: canTap ? () => onDateSelected(d) : null,
           );
         },
       ),
@@ -61,7 +66,8 @@ class _DayChip extends StatefulWidget {
     required this.weekday,
     required this.isSelected,
     required this.isToday,
-    required this.onTap,
+    this.enabled = true,
+    this.onTap,
   });
 
   final String month;
@@ -69,7 +75,8 @@ class _DayChip extends StatefulWidget {
   final String weekday;
   final bool isSelected;
   final bool isToday;
-  final VoidCallback onTap;
+  final bool enabled;
+  final VoidCallback? onTap;
 
   @override
   State<_DayChip> createState() => _DayChipState();
@@ -82,14 +89,18 @@ class _DayChipState extends State<_DayChip> {
   Widget build(BuildContext context) {
     final borderColor = widget.isSelected
         ? WebColors.accent
-        : (_hovered ? WebColors.border : WebColors.borderSubtle);
+        : (!widget.enabled
+            ? WebColors.borderSubtle
+            : (_hovered ? WebColors.border : WebColors.borderSubtle));
     final bg = widget.isSelected
         ? WebColors.surfaceElevated
-        : (_hovered ? WebColors.surfaceElevated : WebColors.surface);
+        : (!widget.enabled
+            ? WebColors.surface
+            : (_hovered ? WebColors.surfaceElevated : WebColors.surface));
 
     return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
+      onEnter: widget.enabled ? (_) => setState(() => _hovered = true) : null,
+      onExit: widget.enabled ? (_) => setState(() => _hovered = false) : null,
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(

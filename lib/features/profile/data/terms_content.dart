@@ -1,4 +1,6 @@
 import '../domain/legal_section.dart';
+import 'terms_content_fr.dart';
+import 'terms_content_pt.dart';
 
 abstract final class TermsContent {
   static const String subtitleEs = 'Well Played Good Game';
@@ -282,12 +284,45 @@ abstract final class TermsContent {
     ),
   ];
 
+  static const String subtitleFr = 'Well Played Good Game';
+  static const String subtitlePt = 'Well Played Good Game';
+  static const String lastUpdatedFr = 'Dernière mise à jour : juin 2026';
+  static const String lastUpdatedPt = 'Última atualização: junho de 2026';
+
+  static const sectionsFr = TermsContentFr.sections;
+  static const sectionsPt = TermsContentPt.sections;
+
+  static List<LegalSection> sectionsForLanguageCode(String code) =>
+      switch (code) {
+        'es' => sectionsEs,
+        'fr' => sectionsFr,
+        'pt' => sectionsPt,
+        _ => sectionsEn,
+      };
+
+  static String subtitleForLanguageCode(String code) => switch (code) {
+        'es' => subtitleEs,
+        'fr' => subtitleFr,
+        'pt' => subtitlePt,
+        _ => subtitleEn,
+      };
+
+  static String lastUpdatedForLanguageCode(String code) => switch (code) {
+        'es' => lastUpdatedEs,
+        'fr' => lastUpdatedFr,
+        'pt' => lastUpdatedPt,
+        _ => lastUpdatedEn,
+      };
+
+  @Deprecated('Use sectionsForLanguageCode')
   static List<LegalSection> sectionsForLocale(bool isSpanish) =>
-      isSpanish ? sectionsEs : sectionsEn;
+      sectionsForLanguageCode(isSpanish ? 'es' : 'en');
 
+  @Deprecated('Use subtitleForLanguageCode')
   static String subtitleForLocale(bool isSpanish) =>
-      isSpanish ? subtitleEs : subtitleEn;
+      subtitleForLanguageCode(isSpanish ? 'es' : 'en');
 
+  @Deprecated('Use lastUpdatedForLanguageCode')
   static String lastUpdatedForLocale(bool isSpanish) =>
-      isSpanish ? lastUpdatedEs : lastUpdatedEn;
+      lastUpdatedForLanguageCode(isSpanish ? 'es' : 'en');
 }

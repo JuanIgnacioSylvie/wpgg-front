@@ -1,13 +1,16 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_section_header.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
+import '../../data/datasources/wallet_remote_datasource.dart';
 import '../bloc/wallet_bloc.dart';
 import '../widgets/wpgg_price_widget.dart';
 
@@ -94,6 +97,20 @@ class _WebFinancePageState extends State<WebFinancePage> {
               ),
               const SizedBox(height: 24),
               const WpggPriceWidget(),
+              const SizedBox(height: 24),
+              if (walletLoading)
+                const WebAnimatedSwitcher(
+                  child: _ChartSkeleton(key: ValueKey('chart-skeleton')),
+                )
+              else if (loaded != null)
+                WebAnimatedSwitcher(
+                  child: _WebMarketChart(
+                    key: ValueKey('chart-${loaded.chart.length}'),
+                    points: loaded.chart,
+                    emptyLabel: l10n.financeNoChartData,
+                    title: l10n.financePriceHistory,
+                  ),
+                ),
               const SizedBox(height: 32),
               if (walletLoading)
                 const WebAnimatedSwitcher(
@@ -337,6 +354,195 @@ class _WalletError extends StatelessWidget {
       child: Text(
         message,
         style: const TextStyle(color: WebColors.textSecondary),
+      ),
+    );
+  }
+}
+
+class _WebMarketChart extends StatelessWidget {
+  const _WebMarketChart({
+    super.key,
+    required this.points,
+    required this.emptyLabel,
+    required this.title,
+  });
+
+  final List<MarketChartPoint> points;
+  final String emptyLabel;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+      decoration: BoxDecoration(
+        color: WebColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: WebColors.borderSubtle),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontFamily: AppFonts.lexendDeca,
+              color: WebColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 180,
+            child: points.isEmpty
+                ? Center(
+                    child: Text(
+                      emptyLabel,
+                      style: const TextStyle(color: WebColors.textMuted),
+                    ),
+                  )
+                : _buildChart(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChart() {
+    final spots = <FlSpot>[
+      for (var i = 0; i < points.length; i++)
+        FlSpot(i.toDouble(), points[i].priceUsd),
+    ];
+    final minY = points.map((p) => p.priceUsd).reduce((a, b) => a < b ? a : b);
+    final maxY = points.map((p) => p.priceUsd).reduce((a, b) => a > b ? a : b);
+    final yPadding = (maxY - minY) * 0.1;
+
+    return LineChart(
+      LineChartData(
+        minY: minY - yPadding,
+        maxY: maxY + yPadding,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: (maxY - minY) / 4,
+          getDrawingHorizontalLine: (_) => const FlLine(
+            color: WebColors.borderSubtle,
+            strokeWidth: 1,
+          ),
+        ),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 52,
+              getTitlesWidget: (value, _) {
+                if (value >= maxY + yPadding || value <= minY - yPadding) {
+                  return const SizedBox.shrink();
+                }
+                return Text(
+                  '\$${value.toStringAsFixed(value >= 1 ? 2 : 4)}',
+                  style: const TextStyle(
+                    color: WebColors.textMuted,
+                    fontSize: 10,
+                  ),
+                );
+              },
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              interval: (points.length / 4).ceilToDouble().clamp(1, 7),
+              getTitlesWidget: (value, _) {
+                final i = value.round();
+                if (i < 0 || i >= points.length) {
+                  return const SizedBox.shrink();
+                }
+                final date = DateTime.tryParse(points[i].date);
+                if (date == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    DateFormat('d/M').format(date),
+                    style: const TextStyle(
+                      color: WebColors.textMuted,
+                      fontSize: 10,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          topTitles: const AxisTitles(),
+          rightTitles: const AxisTitles(),
+        ),
+        borderData: FlBorderData(show: false),
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (_) => WebColors.surfaceElevated,
+            getTooltipItems: (spots) {
+              return spots.map((spot) {
+                final i = spot.x.round();
+                final price = points[i.clamp(0, points.length - 1)].priceUsd;
+                return LineTooltipItem(
+                  '\$${price.toStringAsFixed(price >= 1 ? 4 : 6)}',
+                  const TextStyle(
+                    color: WebColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                );
+              }).toList();
+            },
+          ),
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: WebColors.accent,
+            barWidth: 2.5,
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: WebColors.accent.withValues(alpha: 0.12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChartSkeleton extends StatelessWidget {
+  const _ChartSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return WebShimmerScope(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: WebColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: WebColors.borderSubtle),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            WebSkeletonBox(width: 160, height: 14),
+            SizedBox(height: 24),
+            WebSkeletonBox(
+              width: double.infinity,
+              height: 180,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+          ],
+        ),
       ),
     );
   }
