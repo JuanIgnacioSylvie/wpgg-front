@@ -65,8 +65,7 @@ class _AppShellPageState extends State<AppShellPage> {
                     prev is ProfileSettingsLoaded &&
                         curr is ProfileSettingsLoaded
                     ? prev.profilePublic != curr.profilePublic
-                    : curr is ProfileSettingsLoaded ||
-                        curr is ProfileSettingsLoading,
+                    : curr is ProfileSettingsLoaded,
                 builder: (context, settingsState) {
                   final showLeaderboard = canAccessLeaderboard(settingsState);
 

@@ -19,12 +19,25 @@ class ProfileSettingsBloc
     LoadProfileSettings event,
     Emitter<ProfileSettingsState> emit,
   ) async {
-    emit(const ProfileSettingsLoading());
+    final previous = state;
+    final keepLoaded = previous is ProfileSettingsLoaded;
+    if (!keepLoaded) {
+      emit(const ProfileSettingsLoading());
+    }
     try {
       final settings = await _datasource.fetchSettings();
       emit(ProfileSettingsLoaded(profilePublic: settings.profilePublic));
     } catch (e) {
-      emit(ProfileSettingsError(e.toString()));
+      if (keepLoaded) {
+        emit(
+          ProfileSettingsLoaded(
+            profilePublic: previous.profilePublic,
+            errorMessage: e.toString(),
+          ),
+        );
+      } else {
+        emit(ProfileSettingsError(e.toString()));
+      }
     }
   }
 

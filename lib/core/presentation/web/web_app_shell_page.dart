@@ -283,8 +283,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                                 prev is ProfileSettingsLoaded &&
                                     curr is ProfileSettingsLoaded
                                 ? prev.profilePublic != curr.profilePublic
-                                : curr is ProfileSettingsLoaded ||
-                                    curr is ProfileSettingsLoading,
+                                : curr is ProfileSettingsLoaded,
                             builder: (context, settingsState) {
                               return WebSidebar(
                                 expanded: _sidebarExpanded,
