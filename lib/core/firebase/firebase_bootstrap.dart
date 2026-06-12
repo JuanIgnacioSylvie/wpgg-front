@@ -27,6 +27,8 @@ Future<void> bootstrapFirebase() async {
 /// Path to the FCM service worker at the site root (see web/firebase-messaging-sw.js).
 const String _fcmServiceWorkerPath = '/firebase-messaging-sw.js';
 
+Future<String?>? _fetchWebPushTokenInFlight;
+
 /// Returns the FCM registration token for web push, or null if unavailable.
 ///
 /// Requires compile-time defines:
@@ -34,11 +36,16 @@ const String _fcmServiceWorkerPath = '/firebase-messaging-sw.js';
 /// - [AppConstants.firebaseVapidKey] (Firebase Console → Cloud Messaging → Web Push certificates)
 ///
 /// Call only after the user grants notification permission (browser requirement).
-Future<String?> fetchWebPushToken() async {
+Future<String?> fetchWebPushToken() {
   if (!kIsWeb) {
-    return null;
+    return Future<String?>.value(null);
   }
+  return _fetchWebPushTokenInFlight ??= _fetchWebPushTokenImpl().whenComplete(() {
+    _fetchWebPushTokenInFlight = null;
+  });
+}
 
+Future<String?> _fetchWebPushTokenImpl() async {
   const apiKey = AppConstants.firebaseApiKey;
   if (apiKey.isEmpty) {
     throw StateError(
@@ -60,11 +67,6 @@ Future<String?> fetchWebPushToken() async {
   if (settings.authorizationStatus == AuthorizationStatus.denied) {
     return null;
   }
-
-  // Drop any stale push subscription so FIS token and browser keys stay paired.
-  try {
-    await messaging.deleteToken();
-  } catch (_) {}
 
   // FCM registrations occasionally returns 401 despite a valid Installations
   // token (firebase-js-sdk#5081). Retry with backoff before surfacing an error.
