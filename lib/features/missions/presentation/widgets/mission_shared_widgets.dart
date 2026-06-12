@@ -7,6 +7,7 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_category_icons.dart';
 import 'mission_ui_helpers.dart';
 
 class MissionDifficultyHeader extends StatelessWidget {
@@ -48,40 +49,8 @@ class MissionDifficultyHeader extends StatelessWidget {
   }
 }
 
-class MissionDifficultyIconBox extends StatelessWidget {
-  const MissionDifficultyIconBox({
-    super.key,
-    required this.difficulty,
-    this.size = 40,
-    this.borderRadius = 10,
-  });
-
-  final MissionDifficulty difficulty;
-  final double size;
-  final double borderRadius;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = difficultyColor(difficulty);
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: Icon(
-        difficultyIcon(difficulty),
-        color: color,
-        size: size * 0.5,
-      ),
-    );
-  }
-}
-
-/// Leading icon for mission cards: welcome badge, champion portrait, or difficulty.
-class MissionLeadingIcon extends StatelessWidget {
-  const MissionLeadingIcon({
+class MissionCategoryIconBox extends StatelessWidget {
+  const MissionCategoryIconBox({
     super.key,
     required this.mission,
     this.size = 40,
@@ -95,41 +64,57 @@ class MissionLeadingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = missionAccentColor(mission);
+    final category = mission.isWelcome
+        ? MissionCategory.welcome
+        : mission.category;
 
-    if (mission.isWelcome) {
-      return _accentBox(
-        accent: accent,
-        child: Icon(Icons.redeem, color: accent, size: size * 0.5),
-      );
-    }
-
-    final championId = mission.championId;
-    if (championId != null && championId > 0) {
-      final dd = context.watch<DDragonProvider>();
-      final url = dd.championSquareUrl('', championId: championId);
-      if (url.isNotEmpty) {
-        return _accentBox(
-          accent: accent,
-          clipChild: true,
-          child: CachedNetworkImage(
-            imageUrl: url,
-            width: size,
-            height: size,
-            fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Icon(
-              difficultyIcon(mission.difficulty),
-              color: accent,
-              size: size * 0.5,
+    if (mission.category == MissionCategory.otp) {
+      final championId = mission.championId;
+      if (championId != null && championId > 0) {
+        final dd = context.watch<DDragonProvider>();
+        final url = dd.championSquareUrl('', championId: championId);
+        if (url.isNotEmpty) {
+          return _accentBox(
+            accent: accent,
+            clipChild: true,
+            child: CachedNetworkImage(
+              imageUrl: url,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => _fallbackIcon(accent, category),
             ),
-          ),
-        );
+          );
+        }
       }
     }
 
-    return MissionDifficultyIconBox(
-      difficulty: mission.difficulty,
-      size: size,
-      borderRadius: borderRadius,
+    final asset = MissionCategoryIcons.assetPath(category);
+    if (asset != null) {
+      return _accentBox(
+        accent: accent,
+        clipChild: true,
+        child: Image.asset(
+          asset,
+          width: size,
+          height: size,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => _fallbackIcon(accent, category),
+        ),
+      );
+    }
+
+    return _accentBox(
+      accent: accent,
+      child: _fallbackIcon(accent, category),
+    );
+  }
+
+  Widget _fallbackIcon(Color accent, MissionCategory category) {
+    return Icon(
+      MissionCategoryIcons.materialIcon(category),
+      color: accent,
+      size: size * 0.5,
     );
   }
 
@@ -147,7 +132,35 @@ class MissionLeadingIcon extends StatelessWidget {
         borderRadius: radius,
       ),
       clipBehavior: clipChild ? Clip.antiAlias : Clip.none,
-      child: clipChild ? child : Center(child: child),
+      child: clipChild
+          ? Padding(
+              padding: const EdgeInsets.all(6),
+              child: child,
+            )
+          : Center(child: child),
+    );
+  }
+}
+
+/// Leading icon for mission cards: category badge or champion portrait (OTP).
+class MissionLeadingIcon extends StatelessWidget {
+  const MissionLeadingIcon({
+    super.key,
+    required this.mission,
+    this.size = 40,
+    this.borderRadius = 10,
+  });
+
+  final MissionCardEntity mission;
+  final double size;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return MissionCategoryIconBox(
+      mission: mission,
+      size: size,
+      borderRadius: borderRadius,
     );
   }
 }

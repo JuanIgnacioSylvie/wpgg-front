@@ -20,16 +20,12 @@ class MissionSecondaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(mission.difficulty);
-    final bg = difficultyCardBackground(mission.difficulty);
 
     return Container(
       width: width,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: missionCardDecoration(mission),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,8 +57,8 @@ class MissionSecondaryCard extends StatelessWidget {
                 coinSize: 24,
               ),
               const SizedBox(width: 8),
-              MissionDifficultyIconBox(
-                difficulty: mission.difficulty,
+              MissionCategoryIconBox(
+                mission: mission,
                 size: 36,
               ),
             ],

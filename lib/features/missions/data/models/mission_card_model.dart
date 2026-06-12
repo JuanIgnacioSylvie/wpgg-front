@@ -5,6 +5,7 @@ class MissionCardModel extends MissionCardEntity {
     required super.id,
     super.offerId,
     super.kind,
+    super.category,
     required super.difficulty,
     required super.titleEs,
     required super.titleEn,
@@ -22,6 +23,7 @@ class MissionCardModel extends MissionCardEntity {
       id: json['id'] as String,
       offerId: json['offerId'] as String?,
       kind: _kind(json['kind'] as String?),
+      category: _category(json['category'] as String?),
       difficulty: _difficulty(json['difficulty'] as String?),
       titleEs: json['titleEs'] as String? ?? '',
       titleEn: json['titleEn'] as String? ?? '',
@@ -42,6 +44,47 @@ class MissionCardModel extends MissionCardEntity {
       return MissionKind.welcome;
     }
     return MissionKind.standard;
+  }
+
+  static MissionCategory _category(String? raw) {
+    switch (raw?.toUpperCase()) {
+      case 'WELCOME':
+        return MissionCategory.welcome;
+      case 'FARMING':
+        return MissionCategory.farming;
+      case 'SUPPORT':
+        return MissionCategory.support;
+      case 'WINSTREAK':
+        return MissionCategory.winstreak;
+      case 'OTP':
+        return MissionCategory.otp;
+      case 'TOP':
+        return MissionCategory.top;
+      case 'JG':
+        return MissionCategory.jg;
+      case 'MID':
+        return MissionCategory.mid;
+      case 'BOTTOM':
+        return MissionCategory.bottom;
+      case 'TANK':
+        return MissionCategory.tank;
+      case 'HEALER':
+        return MissionCategory.healer;
+      case 'CLUTCH':
+        return MissionCategory.clutch;
+      case 'MULTIKILL':
+        return MissionCategory.multikill;
+      case 'GOLD':
+        return MissionCategory.gold;
+      case 'OBJECTIVES':
+        return MissionCategory.objectives;
+      case 'ASSASSIN':
+        return MissionCategory.assassin;
+      case 'WARDS':
+        return MissionCategory.wards;
+      default:
+        return MissionCategory.versatile;
+    }
   }
 
   static MissionDifficulty _difficulty(String? raw) {

@@ -23,17 +23,7 @@ class MissionTertiaryCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: WpggBrand.cardSurface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: missionCardDecoration(mission),
       child: Row(
         children: [
           MissionLeadingIcon(mission: mission),

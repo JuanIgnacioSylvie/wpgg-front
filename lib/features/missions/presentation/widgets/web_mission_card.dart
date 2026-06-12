@@ -80,15 +80,19 @@ class _WebMissionCardState extends State<WebMissionCard> {
             decoration: BoxDecoration(
               color: _hovered && interactive
                   ? WebColors.surfaceElevated
-                  : WebColors.surface,
+                  : (mission.isWelcome
+                      ? WpggBrand.welcomeAccentSoft.withValues(alpha: 0.35)
+                      : difficultyCardBackground(mission.difficulty)),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isPlaceholder
                     ? WebColors.border
-                    : (_hovered && interactive
-                        ? WebColors.border
-                        : WebColors.borderSubtle),
-                width: isPlaceholder ? 1.5 : 1,
+                    : (mission.isWelcome
+                        ? WpggBrand.welcomeAccent.withValues(alpha: 0.5)
+                        : color.withValues(alpha: _hovered && interactive ? 0.55 : 0.4)),
+                width: mission.isWelcome
+                    ? 2
+                    : difficultyBorderWidth(mission.difficulty),
                 strokeAlign: BorderSide.strokeAlignOutside,
               ),
               boxShadow: isDragFeedback
@@ -99,15 +103,23 @@ class _WebMissionCardState extends State<WebMissionCard> {
                         offset: const Offset(0, 8),
                       ),
                     ]
-                  : (_hovered && interactive
+                  : (mission.difficulty == MissionDifficulty.hard && !isPast
                       ? [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 16,
+                            color: color.withValues(alpha: 0.12),
+                            blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
                         ]
-                      : null),
+                      : (_hovered && interactive
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 16,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : null)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

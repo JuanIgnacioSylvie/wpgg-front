@@ -46,8 +46,62 @@ IconData difficultyIcon(MissionDifficulty d) {
 
 Color difficultyCardBackground(MissionDifficulty d) {
   return Color.alphaBlend(
-    difficultyColor(d).withValues(alpha: 0.1),
+    difficultyColor(d).withValues(alpha: _backgroundTintAlpha(d)),
     WpggBrand.missionSecondaryBg,
+  );
+}
+
+double _backgroundTintAlpha(MissionDifficulty d) {
+  switch (d) {
+    case MissionDifficulty.easy:
+      return 0.08;
+    case MissionDifficulty.medium:
+      return 0.12;
+    case MissionDifficulty.hard:
+      return 0.16;
+  }
+}
+
+double difficultyBorderWidth(MissionDifficulty d) {
+  switch (d) {
+    case MissionDifficulty.easy:
+      return 1.5;
+    case MissionDifficulty.medium:
+      return 2;
+    case MissionDifficulty.hard:
+      return 2.5;
+  }
+}
+
+BoxDecoration missionCardDecoration(MissionCardEntity mission) {
+  if (mission.isWelcome) {
+    return BoxDecoration(
+      color: WpggBrand.welcomeAccentSoft,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: WpggBrand.welcomeAccent.withValues(alpha: 0.5),
+        width: 2,
+      ),
+    );
+  }
+
+  final color = difficultyColor(mission.difficulty);
+  return BoxDecoration(
+    color: difficultyCardBackground(mission.difficulty),
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(
+      color: color.withValues(alpha: 0.45),
+      width: difficultyBorderWidth(mission.difficulty),
+    ),
+    boxShadow: mission.difficulty == MissionDifficulty.hard
+        ? [
+            BoxShadow(
+              color: color.withValues(alpha: 0.14),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ]
+        : null,
   );
 }
 

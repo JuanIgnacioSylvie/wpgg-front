@@ -27,15 +27,20 @@ class MissionPrimaryCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
+      decoration: missionCardDecoration(mission).copyWith(
         color: WpggBrand.cardSurface,
-        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
+          if (mission.difficulty == MissionDifficulty.hard)
+            BoxShadow(
+              color: color.withValues(alpha: 0.12),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
         ],
       ),
       child: Stack(

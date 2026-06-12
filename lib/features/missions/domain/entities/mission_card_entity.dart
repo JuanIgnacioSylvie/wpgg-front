@@ -6,11 +6,33 @@ enum MissionKind { standard, welcome }
 
 enum MissionStatus { offer, active, completed, expired }
 
+enum MissionCategory {
+  welcome,
+  versatile,
+  farming,
+  support,
+  winstreak,
+  otp,
+  top,
+  jg,
+  mid,
+  bottom,
+  tank,
+  healer,
+  clutch,
+  multikill,
+  gold,
+  objectives,
+  assassin,
+  wards,
+}
+
 class MissionCardEntity extends Equatable {
   const MissionCardEntity({
     required this.id,
     this.offerId,
     this.kind = MissionKind.standard,
+    this.category = MissionCategory.versatile,
     required this.difficulty,
     required this.titleEs,
     required this.titleEn,
@@ -26,6 +48,7 @@ class MissionCardEntity extends Equatable {
   final String id;
   final String? offerId;
   final MissionKind kind;
+  final MissionCategory category;
   final MissionDifficulty difficulty;
   final String titleEs;
   final String titleEn;
@@ -40,5 +63,5 @@ class MissionCardEntity extends Equatable {
   bool get isWelcome => kind == MissionKind.welcome;
 
   @override
-  List<Object?> get props => [id, status, progressPercent, kind];
+  List<Object?> get props => [id, status, progressPercent, kind, category];
 }
