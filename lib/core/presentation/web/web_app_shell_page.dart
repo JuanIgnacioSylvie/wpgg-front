@@ -16,6 +16,7 @@ import '../../../features/notifications/presentation/bloc/notifications_inbox_bl
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../firebase/firebase_bootstrap.dart';
 import '../../l10n/l10n_extension.dart';
+import 'web_document_title.dart';
 import 'web_dot_grid_background.dart';
 import 'web_notifications_panel.dart';
 import 'web_profile_dialog.dart';
@@ -84,6 +85,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     _notificationsOverlay = null;
     _notificationsAnim.dispose();
     setWebPushForegroundListener(null);
+    resetWebDocumentTitle();
     super.dispose();
   }
 
@@ -195,7 +197,22 @@ class _WebAppShellPageState extends State<WebAppShellPage>
       listeners: [
         BlocListener<AuthBloc, AuthState>(
           listenWhen: (_, curr) => curr is AuthUnauthenticated,
-          listener: (context, _) => context.go('/login'),
+          listener: (context, _) {
+            resetWebDocumentTitle();
+            context.go('/login');
+          },
+        ),
+        BlocListener<NotificationsInboxBloc, NotificationsInboxState>(
+          listenWhen: (prev, curr) =>
+              prev is NotificationsInboxLoaded &&
+                  curr is NotificationsInboxLoaded
+              ? prev.unreadCount != curr.unreadCount
+              : curr is NotificationsInboxLoaded,
+          listener: (context, state) {
+            final count =
+                state is NotificationsInboxLoaded ? state.unreadCount : 0;
+            updateWebDocumentTitle(unreadCount: count);
+          },
         ),
       ],
       child: WebShellScope(
