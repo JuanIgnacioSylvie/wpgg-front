@@ -16,6 +16,8 @@ class NotificationsInboxBloc
     on<RefreshNotificationsInbox>(_onRefresh);
     on<MarkNotificationRead>(_onMarkRead);
     on<MarkAllNotificationsRead>(_onMarkAllRead);
+    on<DeleteNotification>(_onDelete);
+    on<DeleteAllNotifications>(_onDeleteAll);
     if (kIsWeb) {
       _pollTimer = Timer.periodic(
         const Duration(seconds: 20),
@@ -117,6 +119,51 @@ class NotificationsInboxBloc
 
     try {
       await _remote.markAllInboxRead();
+    } catch (_) {
+      emit(current);
+    }
+  }
+
+  Future<void> _onDelete(
+    DeleteNotification event,
+    Emitter<NotificationsInboxState> emit,
+  ) async {
+    final current = state;
+    if (current is! NotificationsInboxLoaded) return;
+
+    final matches = current.items.where((n) => n.id == event.id);
+    if (matches.isEmpty) return;
+    final target = matches.first;
+
+    final updatedItems =
+        current.items.where((n) => n.id != event.id).toList();
+    emit(
+      current.copyWith(
+        items: updatedItems,
+        unreadCount: target.isUnread
+            ? (current.unreadCount - 1).clamp(0, 999)
+            : current.unreadCount,
+      ),
+    );
+
+    try {
+      await _remote.deleteInboxNotification(event.id);
+    } catch (_) {
+      emit(current);
+    }
+  }
+
+  Future<void> _onDeleteAll(
+    DeleteAllNotifications event,
+    Emitter<NotificationsInboxState> emit,
+  ) async {
+    final current = state;
+    if (current is! NotificationsInboxLoaded || current.items.isEmpty) return;
+
+    emit(current.copyWith(items: [], unreadCount: 0));
+
+    try {
+      await _remote.deleteAllInboxNotifications();
     } catch (_) {
       emit(current);
     }

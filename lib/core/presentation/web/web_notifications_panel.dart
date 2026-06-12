@@ -197,32 +197,56 @@ class _PanelHeader extends StatelessWidget {
           BlocBuilder<NotificationsInboxBloc, NotificationsInboxState>(
             buildWhen: (prev, curr) =>
                 prev is NotificationsInboxLoaded &&
-                curr is NotificationsInboxLoaded &&
-                prev.unreadCount != curr.unreadCount,
+                    curr is NotificationsInboxLoaded
+                ? prev.items.length != curr.items.length ||
+                    prev.unreadCount != curr.unreadCount
+                : curr is NotificationsInboxLoaded,
             builder: (context, state) {
-              if (state is! NotificationsInboxLoaded || state.unreadCount == 0) {
+              if (state is! NotificationsInboxLoaded || state.items.isEmpty) {
                 return const SizedBox.shrink();
               }
-              return TextButton(
-                onPressed: () {
-                  context
-                      .read<NotificationsInboxBloc>()
-                      .add(const MarkAllNotificationsRead());
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: WebColors.textSecondary,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  l10n.notificationsMarkAllRead,
-                  style: const TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+
+              final actionStyle = TextButton.styleFrom(
+                foregroundColor: WebColors.textSecondary,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              );
+              const actionTextStyle = TextStyle(
+                fontFamily: AppFonts.lexendDeca,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              );
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (state.unreadCount > 0)
+                    TextButton(
+                      onPressed: () {
+                        context.read<NotificationsInboxBloc>().add(
+                              const MarkAllNotificationsRead(),
+                            );
+                      },
+                      style: actionStyle,
+                      child: Text(
+                        l10n.notificationsMarkAllRead,
+                        style: actionTextStyle,
+                      ),
+                    ),
+                  TextButton(
+                    onPressed: () {
+                      context.read<NotificationsInboxBloc>().add(
+                            const DeleteAllNotifications(),
+                          );
+                    },
+                    style: actionStyle,
+                    child: Text(
+                      l10n.notificationsClearAll,
+                      style: actionTextStyle,
+                    ),
                   ),
-                ),
+                ],
               );
             },
           ),
@@ -297,10 +321,16 @@ class _NotificationList extends StatelessWidget {
         color: WebColors.borderSubtle,
       ),
       itemBuilder: (context, index) {
+        final notification = items[index];
         return _NotificationTile(
-          notification: items[index],
+          notification: notification,
           staggerIndex: index,
-          onTap: () => _onTap(context, items[index]),
+          onTap: () => _onTap(context, notification),
+          onDelete: () {
+            context.read<NotificationsInboxBloc>().add(
+                  DeleteNotification(notification.id),
+                );
+          },
         );
       },
     );
@@ -324,11 +354,13 @@ class _NotificationTile extends StatefulWidget {
     required this.notification,
     required this.staggerIndex,
     required this.onTap,
+    required this.onDelete,
   });
 
   final InboxNotification notification;
   final int staggerIndex;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   State<_NotificationTile> createState() => _NotificationTileState();
@@ -354,7 +386,7 @@ class _NotificationTileState extends State<_NotificationTile> {
         child: InkWell(
           onTap: widget.onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -407,6 +439,24 @@ class _NotificationTileState extends State<_NotificationTile> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: _hovered ? 1 : 0,
+                  duration: WebMotion.fast,
+                  child: IconButton(
+                    onPressed: widget.onDelete,
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: WebColors.textMuted,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 28,
+                      minHeight: 28,
+                    ),
+                    tooltip: l10n.notificationsDelete,
                   ),
                 ),
               ],

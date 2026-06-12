@@ -18,6 +18,10 @@ abstract class NotificationsRemoteDataSource {
   Future<void> markInboxRead(String id);
 
   Future<void> markAllInboxRead();
+
+  Future<void> deleteInboxNotification(String id);
+
+  Future<void> deleteAllInboxNotifications();
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -91,6 +95,24 @@ class NotificationsRemoteDataSourceImpl
   Future<void> markAllInboxRead() async {
     try {
       await _client.post<void>('/notifications/inbox/read-all');
+    } on DioException catch (e) {
+      _throwDioMessage(e);
+    }
+  }
+
+  @override
+  Future<void> deleteInboxNotification(String id) async {
+    try {
+      await _client.delete<void>('/notifications/inbox/$id');
+    } on DioException catch (e) {
+      _throwDioMessage(e);
+    }
+  }
+
+  @override
+  Future<void> deleteAllInboxNotifications() async {
+    try {
+      await _client.delete<void>('/notifications/inbox');
     } on DioException catch (e) {
       _throwDioMessage(e);
     }

@@ -660,6 +660,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationsMarkAllRead => 'Tout marquer comme lu';
 
   @override
+  String get notificationsDelete => 'Supprimer la notification';
+
+  @override
+  String get notificationsClearAll => 'Tout effacer';
+
+  @override
   String get sidebarExpandMenu => 'Développer le menu';
 
   @override

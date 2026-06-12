@@ -1272,6 +1272,18 @@ abstract class AppLocalizations {
   /// **'Mark all as read'**
   String get notificationsMarkAllRead;
 
+  /// No description provided for @notificationsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete notification'**
+  String get notificationsDelete;
+
+  /// No description provided for @notificationsClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get notificationsClearAll;
+
   /// No description provided for @sidebarExpandMenu.
   ///
   /// In en, this message translates to:

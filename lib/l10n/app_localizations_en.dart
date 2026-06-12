@@ -651,6 +651,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsMarkAllRead => 'Mark all as read';
 
   @override
+  String get notificationsDelete => 'Delete notification';
+
+  @override
+  String get notificationsClearAll => 'Clear all';
+
+  @override
   String get sidebarExpandMenu => 'Expand menu';
 
   @override

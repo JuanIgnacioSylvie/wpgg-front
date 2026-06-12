@@ -21,3 +21,13 @@ final class MarkNotificationRead extends NotificationsInboxEvent {
 final class MarkAllNotificationsRead extends NotificationsInboxEvent {
   const MarkAllNotificationsRead();
 }
+
+final class DeleteNotification extends NotificationsInboxEvent {
+  const DeleteNotification(this.id);
+
+  final String id;
+}
+
+final class DeleteAllNotifications extends NotificationsInboxEvent {
+  const DeleteAllNotifications();
+}

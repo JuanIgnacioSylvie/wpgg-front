@@ -259,6 +259,8 @@
   "navNotifications": "Notificações",
   "notificationsInboxEmpty": "Ainda não há notificações",
   "notificationsMarkAllRead": "Marcar todas como lidas",
+  "notificationsDelete": "Excluir notificação",
+  "notificationsClearAll": "Limpar todas",
   "sidebarExpandMenu": "Expandir menu",
   "sidebarCollapse": "Recolher",
   "addMissionButton": "Adicionar",

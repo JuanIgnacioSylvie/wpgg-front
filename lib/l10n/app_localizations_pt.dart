@@ -654,6 +654,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notificationsMarkAllRead => 'Marcar todas como lidas';
 
   @override
+  String get notificationsDelete => 'Excluir notificação';
+
+  @override
+  String get notificationsClearAll => 'Limpar todas';
+
+  @override
   String get sidebarExpandMenu => 'Expandir menu';
 
   @override
