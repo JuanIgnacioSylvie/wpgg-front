@@ -6,9 +6,11 @@ class WebShellScope extends InheritedWidget {
     super.key,
     required super.child,
     required this.onAddMission,
+    this.onOpenSettings,
   });
 
   final VoidCallback onAddMission;
+  final VoidCallback? onOpenSettings;
 
   static bool isActive(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<WebShellScope>() != null;
@@ -20,7 +22,14 @@ class WebShellScope extends InheritedWidget {
         ?.onAddMission;
   }
 
+  static VoidCallback? openSettingsHandler(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<WebShellScope>()
+        ?.onOpenSettings;
+  }
+
   @override
   bool updateShouldNotify(WebShellScope oldWidget) =>
-      onAddMission != oldWidget.onAddMission;
+      onAddMission != oldWidget.onAddMission ||
+      onOpenSettings != oldWidget.onOpenSettings;
 }

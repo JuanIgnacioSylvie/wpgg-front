@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
@@ -61,6 +62,15 @@ class ProfilePrivacyBlocked extends StatelessWidget {
             FilledButton(
               onPressed: onOpenSettings ??
                   () {
+                    if (useWebStyle) {
+                      final openSettings =
+                          WebShellScope.openSettingsHandler(context);
+                      if (openSettings != null) {
+                        if (context.canPop()) context.pop();
+                        openSettings();
+                        return;
+                      }
+                    }
                     if (context.canPop()) {
                       context.pop();
                     }

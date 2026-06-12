@@ -13,6 +13,8 @@ import '../../../features/riot/presentation/bloc/riot_state.dart';
 import '../../../features/notifications/presentation/bloc/notifications_bloc.dart';
 import '../../../features/notifications/presentation/bloc/notifications_inbox_bloc.dart';
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
+import '../../../features/profile/presentation/bloc/profile_settings_bloc.dart';
 import '../../firebase/firebase_bootstrap.dart';
 import '../../l10n/l10n_extension.dart';
 import 'web_document_title.dart';
@@ -112,6 +114,10 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     if (branchIndex == 0) {
       context.read<MissionsBloc>().add(const LoadMissionsHome());
     }
+    if (branchIndex == 3) {
+      context.read<LeaderboardBloc>().add(const LoadLeaderboard());
+      context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
+    }
   }
 
   Future<void> _openSettingsDialog() async {
@@ -120,6 +126,8 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     await showWebSettingsDialog(context);
     if (mounted) {
       setState(() => _settingsDialogOpen = false);
+      context.read<LeaderboardBloc>().add(const LoadLeaderboard());
+      context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
     }
   }
 
@@ -181,8 +189,6 @@ class _WebAppShellPageState extends State<WebAppShellPage>
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     final sidebarIndex = webSidebarIndexForLocation(location);
-    final sectionTitle =
-        webSectionTitleForLocation(context.l10n, location);
     final isDashboard = sidebarIndex == 0;
 
     return MultiBlocListener(
@@ -209,12 +215,17 @@ class _WebAppShellPageState extends State<WebAppShellPage>
       ],
       child: WebShellScope(
         onAddMission: _openPickMissions,
+        onOpenSettings: _openSettingsDialog,
         child: BlocBuilder<RiotBloc, RiotState>(
           builder: (context, riotState) {
             SummonerEntity? summoner;
             if (riotState is RiotLoaded) {
               summoner = riotState.summoner;
             }
+
+            final sectionTitle = isDashboard && summoner != null
+                ? summoner.gameName
+                : webSectionTitleForLocation(context.l10n, location);
 
             final ddragon = context.watch<DDragonProvider>();
 

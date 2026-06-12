@@ -21,7 +21,7 @@ import '../widgets/pick_missions_dialog.dart';
 import '../widgets/web_mission_card.dart';
 import '../widgets/web_mission_trash_zone.dart';
 import '../widgets/web_mission_welcome_card.dart';
-import '../../../profile/presentation/widgets/profile_balance_card.dart';
+import '../../../profile/presentation/widgets/live_profile_balance_card.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 
@@ -224,10 +224,8 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                 }
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 24),
-                                  child: ProfileBalanceCard(
+                                  child: LiveProfileBalanceCard(
                                     balanceWpgg: summary.balance,
-                                    balanceUsd: summary.balance *
-                                        summary.latestPriceUsd,
                                     useWebStyle: true,
                                   ),
                                 );

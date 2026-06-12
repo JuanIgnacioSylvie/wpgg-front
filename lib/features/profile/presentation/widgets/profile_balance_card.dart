@@ -10,17 +10,24 @@ class ProfileBalanceCard extends StatelessWidget {
     super.key,
     required this.balanceWpgg,
     required this.balanceUsd,
+    this.usdLabelOverride,
     this.useWebStyle = false,
   });
 
   final int balanceWpgg;
   final double balanceUsd;
+  final String? usdLabelOverride;
   final bool useWebStyle;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final usdLabel = '\$${balanceUsd.toStringAsFixed(2)}';
+    final usdLabel = usdLabelOverride ??
+        (balanceUsd >= 1
+            ? '\$${balanceUsd.toStringAsFixed(2)}'
+            : balanceUsd >= 0.01
+                ? '\$${balanceUsd.toStringAsFixed(4)}'
+                : '\$${balanceUsd.toStringAsFixed(6)}');
 
     if (useWebStyle) {
       return Container(

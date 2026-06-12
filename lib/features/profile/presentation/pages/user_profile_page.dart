@@ -17,7 +17,7 @@ import '../../../missions/presentation/widgets/mission_tertiary_card.dart';
 import '../../../missions/presentation/widgets/mission_welcome_card.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../bloc/user_profile_bloc.dart';
-import '../widgets/profile_balance_card.dart';
+import '../widgets/live_profile_balance_card.dart';
 import '../widgets/profile_privacy_blocked.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -137,9 +137,8 @@ class _UserProfileView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            ProfileBalanceCard(
+            LiveProfileBalanceCard(
               balanceWpgg: profile.balanceWpgg,
-              balanceUsd: profile.balanceUsd,
               useWebStyle: useWebStyle,
             ),
             const SizedBox(height: 24),

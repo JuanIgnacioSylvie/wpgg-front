@@ -22,7 +22,7 @@ import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_tertiary_card.dart';
 import '../widgets/mission_welcome_card.dart';
-import '../../../profile/presentation/widgets/profile_balance_card.dart';
+import '../../../profile/presentation/widgets/live_profile_balance_card.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 
@@ -192,10 +192,8 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(bottom: 100),
                     children: [
                     if (walletSummary != null) ...[
-                      ProfileBalanceCard(
+                      LiveProfileBalanceCard(
                         balanceWpgg: walletSummary.balance,
-                        balanceUsd: walletSummary.balance *
-                            walletSummary.latestPriceUsd,
                       ),
                       const SizedBox(height: 20),
                     ],

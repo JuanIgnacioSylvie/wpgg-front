@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/profile/presentation/bloc/profile_settings_bloc.dart';
+import '../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_event.dart';
@@ -58,6 +59,10 @@ class _AppShellPageState extends State<AppShellPage> {
                 }
                 if (index == 3) {
                   context.go('/leaderboard');
+                  context.read<LeaderboardBloc>().add(const LoadLeaderboard());
+                  context
+                      .read<ProfileSettingsBloc>()
+                      .add(const LoadProfileSettings());
                   return;
                 }
                 if (index == 4) {
