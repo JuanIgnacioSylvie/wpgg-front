@@ -104,5 +104,5 @@ void openTermsPage(
     );
     return;
   }
-  context.push('/profile/terms');
+  context.push('/settings/terms');
 }

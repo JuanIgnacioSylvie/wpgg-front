@@ -22,6 +22,9 @@ import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_tertiary_card.dart';
 import '../widgets/mission_welcome_card.dart';
+import '../../../profile/presentation/widgets/profile_balance_card.dart';
+import '../../../wallet/presentation/bloc/wallet_bloc.dart';
+import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<MissionsBloc>().add(const LoadMissionsHome());
+    context.read<WalletBloc>().add(const LoadWallet());
     WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
   }
 
@@ -126,7 +130,16 @@ class _HomePageState extends State<HomePage> {
 
           return WpggGradientScaffold(
             appBar: WpggAppBar(summoner: summoner, ddragon: ddragon),
-            body: BlocBuilder<MissionsBloc, MissionsState>(
+            body: BlocBuilder<WalletBloc, WalletState>(
+              builder: (context, walletState) {
+                WalletSummary? walletSummary;
+                if (walletState is WalletLoaded) {
+                  walletSummary = walletState.summary;
+                } else if (walletState is WalletWithdrawing) {
+                  walletSummary = walletState.summary;
+                }
+
+                return BlocBuilder<MissionsBloc, MissionsState>(
               builder: (context, state) {
                 if (state.homeStatus == MissionsLoadStatus.loading ||
                     state.homeStatus == MissionsLoadStatus.initial) {
@@ -178,6 +191,14 @@ class _HomePageState extends State<HomePage> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 100),
                     children: [
+                    if (walletSummary != null) ...[
+                      ProfileBalanceCard(
+                        balanceWpgg: walletSummary.balance,
+                        balanceUsd: walletSummary.balance *
+                            walletSummary.latestPriceUsd,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                       child: Column(
@@ -307,6 +328,8 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 );
+              },
+            );
               },
             ),
           );

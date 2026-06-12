@@ -166,7 +166,7 @@ void openFaqsPage(
     );
     return;
   }
-  context.push('/profile/faqs');
+  context.push('/settings/faqs');
 }
 
 class _FaqTile extends StatelessWidget {

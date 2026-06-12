@@ -21,6 +21,9 @@ import '../widgets/pick_missions_dialog.dart';
 import '../widgets/web_mission_card.dart';
 import '../widgets/web_mission_trash_zone.dart';
 import '../widgets/web_mission_welcome_card.dart';
+import '../../../profile/presentation/widgets/profile_balance_card.dart';
+import '../../../wallet/presentation/bloc/wallet_bloc.dart';
+import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 
 class WebDashboardPage extends StatefulWidget {
   const WebDashboardPage({super.key});
@@ -208,6 +211,28 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            BlocBuilder<WalletBloc, WalletState>(
+                              builder: (context, walletState) {
+                                WalletSummary? summary;
+                                if (walletState is WalletLoaded) {
+                                  summary = walletState.summary;
+                                } else if (walletState is WalletWithdrawing) {
+                                  summary = walletState.summary;
+                                }
+                                if (summary == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 24),
+                                  child: ProfileBalanceCard(
+                                    balanceWpgg: summary.balance,
+                                    balanceUsd: summary.balance *
+                                        summary.latestPriceUsd,
+                                    useWebStyle: true,
+                                  ),
+                                );
+                              },
+                            ),
                             WebSectionHeader(
                               title: l10n.inProgress,
                               count: _inProgressCount(home),

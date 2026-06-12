@@ -256,6 +256,21 @@
   "financeNoTransactions": "No transactions",
   "tokenPriceUpdatedHint": "Price in USD · updated every 60s",
   "navDashboard": "Dashboard",
+  "settingsTitle": "Settings",
+  "leaderboardTitle": "Leaderboard",
+  "leaderboardEmpty": "No public profiles on the leaderboard yet.",
+  "balanceUsdEquivalent": "≈ {amount} USD",
+  "@balanceUsdEquivalent": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "profilePublicLabel": "Public profile",
+  "profilePublicHint": "Private by default. You need a public profile to visit other players.",
+  "profilePrivateViewerTitle": "Your profile is private",
+  "profilePrivateViewerBody": "To visit other players' profiles, make your profile public in Settings.",
+  "profileOpenSettings": "Go to Settings",
+  "profileNotPublic": "This profile is not public.",
   "navNotifications": "Notifications",
   "notificationsInboxEmpty": "No notifications yet",
   "notificationsMarkAllRead": "Mark all as read",

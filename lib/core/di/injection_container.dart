@@ -45,6 +45,10 @@ import '../../features/notifications/presentation/bloc/notifications_bloc.dart';
 import '../../features/notifications/presentation/bloc/notifications_inbox_bloc.dart';
 import '../../features/wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
+import '../../features/profile/data/datasources/profile_remote_datasource.dart';
+import '../../features/profile/presentation/bloc/profile_settings_bloc.dart';
+import '../../features/profile/presentation/bloc/user_profile_bloc.dart';
+import '../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -160,5 +164,18 @@ Future<void> initDependencies() async {
   );
   sl.registerLazySingleton(
     () => NotificationsInboxBloc(sl<NotificationsRemoteDataSource>()),
+  );
+
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(sl<ApiClient>()),
+  );
+  sl.registerLazySingleton(
+    () => ProfileSettingsBloc(sl<ProfileRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(
+    () => UserProfileBloc(sl<ProfileRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(
+    () => LeaderboardBloc(sl<ProfileRemoteDataSource>()),
   );
 }

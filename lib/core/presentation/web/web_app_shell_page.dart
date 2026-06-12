@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../../features/auth/presentation/bloc/auth_event.dart';
 import '../../../features/auth/presentation/bloc/auth_state.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/missions/presentation/bloc/missions_bloc.dart';
@@ -19,7 +18,7 @@ import '../../l10n/l10n_extension.dart';
 import 'web_document_title.dart';
 import 'web_dot_grid_background.dart';
 import 'web_notifications_panel.dart';
-import 'web_profile_dialog.dart';
+import 'web_settings_dialog.dart';
 import 'web_shell_scope.dart';
 import 'web_shell_transition.dart';
 import 'web_sidebar.dart';
@@ -38,7 +37,7 @@ class WebAppShellPage extends StatefulWidget {
 class _WebAppShellPageState extends State<WebAppShellPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   var _sidebarExpanded = false;
-  var _profileDialogOpen = false;
+  var _settingsDialogOpen = false;
   var _notificationsPanelOpen = false;
 
   final _notificationsBellKey = GlobalKey();
@@ -69,9 +68,9 @@ class _WebAppShellPageState extends State<WebAppShellPage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final location = GoRouterState.of(context).uri.path;
-      if (location.startsWith('/profile')) {
-        _openProfileDialog();
-        if (widget.navigationShell.currentIndex == 4) {
+      if (location.startsWith('/settings')) {
+        _openSettingsDialog();
+        if (widget.navigationShell.currentIndex == 5) {
           widget.navigationShell.goBranch(0, initialLocation: true);
         }
       }
@@ -105,7 +104,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
   }
 
   void _onSidebarTap(int branchIndex) {
-    setState(() => _profileDialogOpen = false);
+    setState(() => _settingsDialogOpen = false);
     widget.navigationShell.goBranch(
       branchIndex,
       initialLocation: branchIndex == widget.navigationShell.currentIndex,
@@ -115,20 +114,13 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     }
   }
 
-  Future<void> _openProfileDialog() async {
-    if (_profileDialogOpen) return;
-    setState(() => _profileDialogOpen = true);
-    await showWebProfileDialog(context);
+  Future<void> _openSettingsDialog() async {
+    if (_settingsDialogOpen) return;
+    setState(() => _settingsDialogOpen = true);
+    await showWebSettingsDialog(context);
     if (mounted) {
-      setState(() => _profileDialogOpen = false);
+      setState(() => _settingsDialogOpen = false);
     }
-  }
-
-  Future<void> _logout() async {
-    _closeNotificationsPanel();
-    await context.read<NotificationsBloc>().unregisterPushToken();
-    if (!mounted) return;
-    context.read<AuthBloc>().add(const LogoutRequested());
   }
 
   void _toggleNotificationsPanel() {
@@ -136,7 +128,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
       _closeNotificationsPanel();
       return;
     }
-    if (_profileDialogOpen) {
+    if (_settingsDialogOpen) {
       Navigator.of(context, rootNavigator: true).maybePop();
     }
     context.read<NotificationsInboxBloc>().add(
@@ -253,12 +245,12 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                             ),
                             currentIndex: sidebarIndex,
                             onTap: _onSidebarTap,
-                            onProfileTap: _openProfileDialog,
-                            profileSelected: _profileDialogOpen,
+                            onSettingsTap: _openSettingsDialog,
+                            settingsSelected: _settingsDialogOpen,
+                            onHeaderTap: () => _onSidebarTap(0),
                             summoner: summoner,
                             ddragon: ddragon,
                             balance: _walletBalance(walletState),
-                            onLogout: _logout,
                             onNotificationsTap: _toggleNotificationsPanel,
                             notificationsBellKey: _notificationsBellKey,
                             unreadCount: unreadCount,

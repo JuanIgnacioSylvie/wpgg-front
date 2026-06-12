@@ -1254,6 +1254,66 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get navDashboard;
 
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get leaderboardTitle;
+
+  /// No description provided for @leaderboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No public profiles on the leaderboard yet.'**
+  String get leaderboardEmpty;
+
+  /// No description provided for @balanceUsdEquivalent.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {amount} USD'**
+  String balanceUsdEquivalent(String amount);
+
+  /// No description provided for @profilePublicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public profile'**
+  String get profilePublicLabel;
+
+  /// No description provided for @profilePublicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Private by default. You need a public profile to visit other players.'**
+  String get profilePublicHint;
+
+  /// No description provided for @profilePrivateViewerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is private'**
+  String get profilePrivateViewerTitle;
+
+  /// No description provided for @profilePrivateViewerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To visit other players\' profiles, make your profile public in Settings.'**
+  String get profilePrivateViewerBody;
+
+  /// No description provided for @profileOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Settings'**
+  String get profileOpenSettings;
+
+  /// No description provided for @profileNotPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile is not public.'**
+  String get profileNotPublic;
+
   /// No description provided for @navNotifications.
   ///
   /// In en, this message translates to:

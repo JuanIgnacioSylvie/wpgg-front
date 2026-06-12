@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
+import '../../features/profile/presentation/bloc/profile_settings_bloc.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/riot/presentation/bloc/riot_event.dart';
@@ -26,6 +27,7 @@ class _AppShellPageState extends State<AppShellPage> {
     context.read<RiotBloc>().add(const LoadDashboard());
     context.read<DDragonProvider>().ensureLoaded();
     context.read<WalletBloc>().add(const LoadWallet());
+    context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
   }
 
   @override
@@ -55,11 +57,15 @@ class _AppShellPageState extends State<AppShellPage> {
                   return;
                 }
                 if (index == 3) {
-                  context.go('/finance');
+                  context.go('/leaderboard');
                   return;
                 }
                 if (index == 4) {
-                  context.go('/profile');
+                  context.go('/finance');
+                  return;
+                }
+                if (index == 5) {
+                  context.go('/settings');
                   return;
                 }
               },

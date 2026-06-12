@@ -22,7 +22,11 @@ import '../../features/missions/presentation/pages/missions_by_day_page.dart';
 import '../../features/missions/presentation/pages/web_missions_by_day_page.dart';
 import '../../features/missions/presentation/pages/pick_missions_page.dart';
 import '../../features/profile/presentation/pages/faqs_page.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/settings_page.dart';
+import '../../features/profile/presentation/pages/user_profile_page.dart';
+import '../../features/profile/presentation/bloc/profile_settings_bloc.dart';
+import '../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
+import '../../features/leaderboard/presentation/pages/leaderboard_page.dart';
 import '../../features/profile/presentation/pages/terms_page.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/store/presentation/bloc/store_bloc.dart';
@@ -49,21 +53,7 @@ Widget _authFlowRoute(Widget child) {
   );
 }
 
-int shellBranchIndexForNav(int navIndex) {
-  if (navIndex <= 1) {
-    return navIndex;
-  }
-  if (navIndex == 2) {
-    return 2;
-  }
-  if (navIndex == 3) {
-    return 3;
-  }
-  if (navIndex == 4) {
-    return 4;
-  }
-  return 0;
-}
+int shellBranchIndexForNav(int navIndex) => navIndex;
 
 final GoRouter appRouter = GoRouter(
   initialLocation: kIsWeb ? '/' : '/splash',
@@ -151,17 +141,28 @@ final GoRouter appRouter = GoRouter(
       builder: (_, __) => const TermsPage(standaloneWeb: true),
     ),
     GoRoute(
-      path: '/profile/faqs',
+      path: '/settings/faqs',
       builder: (_, __) => BlocProvider.value(
         value: sl<RiotBloc>(),
         child: const FaqsPage(),
       ),
     ),
     GoRoute(
-      path: '/profile/terms',
+      path: '/settings/terms',
       builder: (_, __) => BlocProvider.value(
         value: sl<RiotBloc>(),
         child: const TermsPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/users/:userId',
+      builder: (_, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: sl<RiotBloc>()),
+        ],
+        child: UserProfilePage(
+          userId: state.pathParameters['userId']!,
+        ),
       ),
     ),
     StatefulShellRoute.indexedStack(
@@ -175,6 +176,8 @@ final GoRouter appRouter = GoRouter(
             BlocProvider.value(value: sl<StoreBloc>()),
             BlocProvider.value(value: sl<NotificationsBloc>()),
             BlocProvider.value(value: sl<NotificationsInboxBloc>()),
+            BlocProvider.value(value: sl<ProfileSettingsBloc>()),
+            BlocProvider.value(value: sl<LeaderboardBloc>()),
           ],
           child: WpggTransactionFeedbackHost(
             child: kIsWeb
@@ -217,6 +220,16 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: '/leaderboard',
+              builder: (_, __) => kIsWeb
+                  ? const LeaderboardPage(useWebStyle: true)
+                  : const LeaderboardPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: '/finance',
               builder: (_, __) => kIsWeb
                   ? const WebFinancePage()
@@ -227,10 +240,10 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/profile',
+              path: '/settings',
               builder: (_, __) => kIsWeb
                   ? const SizedBox.shrink()
-                  : const ProfilePage(),
+                  : const SettingsPage(),
             ),
           ],
         ),

@@ -22,25 +22,27 @@ class WpggBottomNav extends StatelessWidget {
   static const _navInactive = Color(0xFF6B7280);
 
   static const _items = [
-    _NavIconPair(
+    _NavItemData(
+      navIndex: 0,
       outline: 'assets/icons/home.svg',
       filled: 'assets/icons/home_filled.svg',
     ),
-    _NavIconPair(
+    _NavItemData(
+      navIndex: 1,
       outline: 'assets/icons/calendar.svg',
       filled: 'assets/icons/calendar_filled.svg',
     ),
-    _NavIconPair(
-      outline: 'assets/icons/chart_bar.svg',
-      filled: 'assets/icons/chart_bar_filled.svg',
+    _NavItemData(
+      navIndex: 3,
+      materialOutline: Icons.leaderboard_outlined,
+      materialFilled: Icons.leaderboard,
     ),
-    _NavIconPair(
-      outline: 'assets/icons/profile.svg',
-      filled: 'assets/icons/profile_filled.svg',
+    _NavItemData(
+      navIndex: 5,
+      materialOutline: Icons.settings_outlined,
+      materialFilled: Icons.settings,
     ),
   ];
-
-  static const _navIndices = [0, 1, 3, 4];
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +79,9 @@ class WpggBottomNav extends StatelessWidget {
                       for (var i = 0; i < _items.length; i++) ...[
                         Expanded(
                           child: _NavItem(
-                            icon: _items[i],
-                            selected: currentIndex == _navIndices[i],
-                            onTap: () => onTap(_navIndices[i]),
+                            item: _items[i],
+                            selected: currentIndex == _items[i].navIndex,
+                            onTap: () => onTap(_items[i].navIndex),
                           ),
                         ),
                         if (i == 1) const SizedBox(width: _fabSize),
@@ -130,21 +132,30 @@ class WpggBottomNav extends StatelessWidget {
   }
 }
 
-class _NavIconPair {
-  const _NavIconPair({required this.outline, required this.filled});
+class _NavItemData {
+  const _NavItemData({
+    required this.navIndex,
+    this.outline,
+    this.filled,
+    this.materialOutline,
+    this.materialFilled,
+  });
 
-  final String outline;
-  final String filled;
+  final int navIndex;
+  final String? outline;
+  final String? filled;
+  final IconData? materialOutline;
+  final IconData? materialFilled;
 }
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.icon,
+    required this.item,
     required this.selected,
     required this.onTap,
   });
 
-  final _NavIconPair icon;
+  final _NavItemData item;
   final bool selected;
   final VoidCallback onTap;
 
@@ -152,7 +163,22 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color =
         selected ? WpggBottomNav._navRed : WpggBottomNav._navInactive;
-    final assetPath = selected ? icon.filled : icon.outline;
+
+    Widget iconWidget;
+    if (item.outline != null) {
+      iconWidget = SvgPicture.asset(
+        selected ? item.filled! : item.outline!,
+        width: 28,
+        height: 28,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+    } else {
+      iconWidget = Icon(
+        selected ? item.materialFilled : item.materialOutline,
+        size: 28,
+        color: color,
+      );
+    }
 
     return Material(
       color: Colors.transparent,
@@ -160,14 +186,7 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         child: SizedBox(
           height: WpggBottomNav._barHeight,
-          child: Center(
-            child: SvgPicture.asset(
-              assetPath,
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-            ),
-          ),
+          child: Center(child: iconWidget),
         ),
       ),
     );
@@ -181,11 +200,14 @@ int wpggNavIndexForLocation(String location) {
   if (location.startsWith('/store')) {
     return 2;
   }
-  if (location.startsWith('/finance')) {
+  if (location.startsWith('/leaderboard')) {
     return 3;
   }
-  if (location.startsWith('/profile')) {
+  if (location.startsWith('/finance')) {
     return 4;
+  }
+  if (location.startsWith('/settings')) {
+    return 5;
   }
   return 0;
 }

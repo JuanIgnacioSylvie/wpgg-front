@@ -256,6 +256,21 @@
   "financeNoTransactions": "Aucune transaction",
   "tokenPriceUpdatedHint": "Prix en USD · mis à jour toutes les 60 s",
   "navDashboard": "Tableau de bord",
+  "settingsTitle": "Paramètres",
+  "leaderboardTitle": "Classement",
+  "leaderboardEmpty": "Aucun profil public au classement pour le moment.",
+  "balanceUsdEquivalent": "≈ {amount} USD",
+  "@balanceUsdEquivalent": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "profilePublicLabel": "Profil public",
+  "profilePublicHint": "Privé par défaut. Un profil public est requis pour visiter d'autres joueurs.",
+  "profilePrivateViewerTitle": "Votre profil est privé",
+  "profilePrivateViewerBody": "Pour visiter les profils d'autres joueurs, rendez votre profil public dans les Paramètres.",
+  "profileOpenSettings": "Aller aux Paramètres",
+  "profileNotPublic": "Ce profil n'est pas public.",
   "navNotifications": "Notifications",
   "notificationsInboxEmpty": "Aucune notification pour le moment",
   "notificationsMarkAllRead": "Tout marquer comme lu",

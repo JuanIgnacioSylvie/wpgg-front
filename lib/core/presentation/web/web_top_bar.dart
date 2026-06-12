@@ -187,8 +187,11 @@ String webSectionTitleForLocation(AppLocalizations l10n, String location) {
   if (location.startsWith('/store')) {
     return l10n.storeTitle;
   }
+  if (location.startsWith('/leaderboard')) {
+    return l10n.leaderboardTitle;
+  }
   if (location.startsWith('/finance')) {
     return l10n.financeTitle;
   }
-  return l10n.navDashboard;
+  return l10n.profile;
 }

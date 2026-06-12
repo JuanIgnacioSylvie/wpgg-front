@@ -651,6 +651,41 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navDashboard => 'Tableau de bord';
 
   @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get leaderboardTitle => 'Classement';
+
+  @override
+  String get leaderboardEmpty =>
+      'Aucun profil public au classement pour le moment.';
+
+  @override
+  String balanceUsdEquivalent(String amount) {
+    return '≈ $amount USD';
+  }
+
+  @override
+  String get profilePublicLabel => 'Profil public';
+
+  @override
+  String get profilePublicHint =>
+      'Privé par défaut. Un profil public est requis pour visiter d\'autres joueurs.';
+
+  @override
+  String get profilePrivateViewerTitle => 'Votre profil est privé';
+
+  @override
+  String get profilePrivateViewerBody =>
+      'Pour visiter les profils d\'autres joueurs, rendez votre profil public dans les Paramètres.';
+
+  @override
+  String get profileOpenSettings => 'Aller aux Paramètres';
+
+  @override
+  String get profileNotPublic => 'Ce profil n\'est pas public.';
+
+  @override
   String get navNotifications => 'Notifications';
 
   @override

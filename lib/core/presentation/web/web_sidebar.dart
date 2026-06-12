@@ -19,12 +19,12 @@ class WebSidebar extends StatelessWidget {
     required this.onToggleExpanded,
     required this.currentIndex,
     required this.onTap,
-    required this.onProfileTap,
-    this.profileSelected = false,
+    required this.onSettingsTap,
+    this.settingsSelected = false,
+    this.onHeaderTap,
     this.summoner,
     this.ddragon,
     this.balance,
-    required this.onLogout,
     this.onNotificationsTap,
     this.notificationsBellKey,
     this.unreadCount = 0,
@@ -35,24 +35,24 @@ class WebSidebar extends StatelessWidget {
   final VoidCallback onToggleExpanded;
   final int currentIndex;
   final ValueChanged<int> onTap;
-  final VoidCallback onProfileTap;
-  final bool profileSelected;
+  final VoidCallback onSettingsTap;
+  final bool settingsSelected;
+  final VoidCallback? onHeaderTap;
   final SummonerEntity? summoner;
   final DDragonProvider? ddragon;
   final int? balance;
-  final VoidCallback onLogout;
   final VoidCallback? onNotificationsTap;
   final GlobalKey? notificationsBellKey;
   final int unreadCount;
   final bool notificationsPanelOpen;
 
-  static const _branchIndices = [0, 1, 2, 3];
+  static const _branchIndices = [0, 1, 2, 3, 4];
 
   static List<_NavItem> _items(AppLocalizations l10n) => [
         _NavItem(
           outline: 'assets/icons/home.svg',
           filled: 'assets/icons/home_filled.svg',
-          label: l10n.navDashboard,
+          label: l10n.profile,
         ),
         _NavItem(
           outline: 'assets/icons/calendar.svg',
@@ -65,23 +65,28 @@ class WebSidebar extends StatelessWidget {
           label: l10n.storeTitle,
         ),
         _NavItem(
+          icon: Icons.leaderboard_outlined,
+          selectedIcon: Icons.leaderboard,
+          label: l10n.leaderboardTitle,
+        ),
+        _NavItem(
           outline: 'assets/icons/chart_bar.svg',
           filled: 'assets/icons/chart_bar_filled.svg',
           label: l10n.financeTitle,
         ),
       ];
 
-  static _NavItem _profileItem(AppLocalizations l10n) => _NavItem(
-        outline: 'assets/icons/profile.svg',
-        filled: 'assets/icons/profile_filled.svg',
-        label: l10n.profile,
+  static _NavItem _settingsItem(AppLocalizations l10n) => _NavItem(
+        icon: Icons.settings_outlined,
+        selectedIcon: Icons.settings,
+        label: l10n.settingsTitle,
       );
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final items = _items(l10n);
-    final profileItem = _profileItem(l10n);
+    final settingsItem = _settingsItem(l10n);
     return AnimatedContainer(
       duration: WebMotion.resolve(context, WebMotion.normal),
       curve: WebMotion.curve,
@@ -106,27 +111,28 @@ class WebSidebar extends StatelessWidget {
                 expanded: expanded,
                 summoner: summoner,
                 ddragon: ddragon,
-                onTap: onProfileTap,
+                onTap: onHeaderTap ?? onSettingsTap,
               ),
             ),
           ),
           const SizedBox(height: 8),
           _SidebarNavSection(
             expanded: expanded,
-            selectedRowIndex: profileSelected
-                ? 4
+            selectedRowIndex: settingsSelected
+                ? 5
                 : switch (currentIndex) {
                     1 => 1,
                     2 => 2,
                     3 => 3,
+                    4 => 4,
                     _ => 0,
                   },
             items: items,
-            profileItem: profileItem,
+            settingsItem: settingsItem,
             branchIndices: _branchIndices,
-            profileSelected: profileSelected,
+            settingsSelected: settingsSelected,
             onBranchTap: onTap,
-            onProfileTap: onProfileTap,
+            onSettingsTap: onSettingsTap,
           ),
           const Spacer(),
           AnimatedSize(
@@ -142,13 +148,6 @@ class WebSidebar extends StatelessWidget {
                         child: _SidebarBalance(balance: balance),
                       ),
                       const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: _SidebarLogoutButton(
-                          label: context.l10n.logOut,
-                          onTap: onLogout,
-                        ),
-                      ),
                       const SizedBox(height: 12),
                     ],
                   )
@@ -291,11 +290,11 @@ class _SidebarNavSection extends StatelessWidget {
     required this.expanded,
     required this.selectedRowIndex,
     required this.items,
-    required this.profileItem,
+    required this.settingsItem,
     required this.branchIndices,
-    required this.profileSelected,
+    required this.settingsSelected,
     required this.onBranchTap,
-    required this.onProfileTap,
+    required this.onSettingsTap,
   });
 
   static const _rowStride = 44.0;
@@ -303,11 +302,11 @@ class _SidebarNavSection extends StatelessWidget {
   final bool expanded;
   final int selectedRowIndex;
   final List<_NavItem> items;
-  final _NavItem profileItem;
+  final _NavItem settingsItem;
   final List<int> branchIndices;
-  final bool profileSelected;
+  final bool settingsSelected;
   final ValueChanged<int> onBranchTap;
-  final VoidCallback onProfileTap;
+  final VoidCallback onSettingsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -336,15 +335,15 @@ class _SidebarNavSection extends StatelessWidget {
                 _SidebarNavRow(
                   item: items[i],
                   expanded: expanded,
-                  selected: !profileSelected &&
+                  selected: !settingsSelected &&
                       selectedRowIndex == i,
                   onTap: () => onBranchTap(branchIndices[i]),
                 ),
               _SidebarNavRow(
-                item: profileItem,
+                item: settingsItem,
                 expanded: expanded,
-                selected: profileSelected,
-                onTap: onProfileTap,
+                selected: settingsSelected,
+                onTap: onSettingsTap,
               ),
             ],
           ),
@@ -725,8 +724,11 @@ int webSidebarIndexForLocation(String location) {
   if (location.startsWith('/store')) {
     return 2;
   }
-  if (location.startsWith('/finance')) {
+  if (location.startsWith('/leaderboard')) {
     return 3;
+  }
+  if (location.startsWith('/finance')) {
+    return 4;
   }
   return 0;
 }

@@ -56,7 +56,7 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
                   padding: const EdgeInsets.only(left: 12),
                   child: Center(
                     child: GestureDetector(
-                      onTap: () => context.go('/profile?from=appbar'),
+                      onTap: () => context.go('/settings?from=appbar'),
                       child: WpggProfileAvatar(
                         summoner: summoner!,
                         ddragon: ddragon,

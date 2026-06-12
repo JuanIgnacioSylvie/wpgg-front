@@ -649,6 +649,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navDashboard => 'Panel';
 
   @override
+  String get settingsTitle => 'Ajustes';
+
+  @override
+  String get leaderboardTitle => 'Ranking';
+
+  @override
+  String get leaderboardEmpty => 'Aún no hay perfiles públicos en el ranking.';
+
+  @override
+  String balanceUsdEquivalent(String amount) {
+    return '≈ $amount USD';
+  }
+
+  @override
+  String get profilePublicLabel => 'Perfil público';
+
+  @override
+  String get profilePublicHint =>
+      'Privado por defecto. Necesitás un perfil público para visitar otros jugadores.';
+
+  @override
+  String get profilePrivateViewerTitle => 'Tu perfil es privado';
+
+  @override
+  String get profilePrivateViewerBody =>
+      'Para visitar perfiles de otros jugadores, hacé tu perfil público en Ajustes.';
+
+  @override
+  String get profileOpenSettings => 'Ir a Ajustes';
+
+  @override
+  String get profileNotPublic => 'Este perfil no es público.';
+
+  @override
   String get navNotifications => 'Notificaciones';
 
   @override
