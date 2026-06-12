@@ -30,25 +30,35 @@ class ProfileBalanceCard extends StatelessWidget {
                 : '\$${balanceUsd.toStringAsFixed(6)}');
 
     if (useWebStyle) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: WebColors.surfaceElevated,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: WebColors.borderSubtle),
-        ),
-        child: Row(
-          children: [
-            Image.asset(
-              'assets/images/wpgg-coin_24x24.png',
-              width: 28,
-              height: 28,
-              filterQuality: FilterQuality.high,
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: WebColors.surfaceElevated,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: WebColors.borderSubtle),
+            boxShadow: [
+              BoxShadow(
+                color: WebColors.accent.withValues(alpha: 0.08),
+                blurRadius: 14,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/wpgg-coin_24x24.png',
+                width: 28,
+                height: 28,
+                filterQuality: FilterQuality.high,
+              ),
+              const SizedBox(width: 14),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     l10n.balanceLabel,
@@ -77,8 +87,8 @@ class ProfileBalanceCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
