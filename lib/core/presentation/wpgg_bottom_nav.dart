@@ -34,8 +34,8 @@ class WpggBottomNav extends StatelessWidget {
     ),
     _NavItemData(
       navIndex: 3,
-      materialOutline: Icons.leaderboard_outlined,
-      materialFilled: Icons.leaderboard,
+      materialOutline: Icons.emoji_events_outlined,
+      materialFilled: Icons.emoji_events,
     ),
     _NavItemData(
       navIndex: 5,

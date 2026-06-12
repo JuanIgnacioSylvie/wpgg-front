@@ -65,8 +65,8 @@ class WebSidebar extends StatelessWidget {
           label: l10n.storeTitle,
         ),
         _NavItem(
-          icon: Icons.leaderboard_outlined,
-          selectedIcon: Icons.leaderboard,
+          icon: Icons.emoji_events_outlined,
+          selectedIcon: Icons.emoji_events,
           label: l10n.leaderboardTitle,
         ),
         _NavItem(

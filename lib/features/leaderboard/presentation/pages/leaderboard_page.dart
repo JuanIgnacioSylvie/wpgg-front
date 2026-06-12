@@ -65,7 +65,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     }
 
     if (widget.useWebStyle) {
-      showWebUserProfileDialog(context, userId: entry.userId);
+      showWebUserProfileDialog(
+        context,
+        userId: entry.userId,
+        onOpenSettings: WebShellScope.openSettingsHandler(context),
+      );
       return;
     }
     context.push('/users/${entry.userId}');

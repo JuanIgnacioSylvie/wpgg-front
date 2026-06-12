@@ -172,7 +172,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(
     () => ProfileSettingsBloc(sl<ProfileRemoteDataSource>()),
   );
-  sl.registerLazySingleton(
+  sl.registerFactory(
     () => UserProfileBloc(sl<ProfileRemoteDataSource>()),
   );
   sl.registerLazySingleton(
