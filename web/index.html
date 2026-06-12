@@ -85,8 +85,7 @@
     })();
   </script>
   <script>
-    // FCM needs its own SW scope — separate from flutter_service_worker.js (scope /).
-    // See firebase_messaging example: scope /firebase-cloud-messaging-push-scope
+    // Scope aislado: flutter_service_worker.js ya usa scope '/'.
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/firebase-messaging-sw.js', {
         scope: '/firebase-cloud-messaging-push-scope',
