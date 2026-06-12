@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';

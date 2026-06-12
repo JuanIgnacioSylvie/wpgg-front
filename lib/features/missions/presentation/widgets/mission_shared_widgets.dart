@@ -65,56 +65,46 @@ class MissionCategoryIconBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = missionAccentColor(mission);
     final category = mission.isWelcome
-        ? MissionCategory.welcome
+        ? MissionCategory.autofill
         : mission.category;
 
-    if (mission.category == MissionCategory.otp) {
-      final championId = mission.championId;
-      if (championId != null && championId > 0) {
-        final dd = context.watch<DDragonProvider>();
-        final url = dd.championSquareUrl('', championId: championId);
-        if (url.isNotEmpty) {
-          return _accentBox(
-            accent: accent,
-            clipChild: true,
-            child: CachedNetworkImage(
-              imageUrl: url,
-              width: size,
-              height: size,
-              fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => _fallbackIcon(accent, category),
-            ),
-          );
-        }
+    final championId = mission.championId;
+    if (championId != null && championId > 0) {
+      final dd = context.watch<DDragonProvider>();
+      final url = dd.championSquareUrl('', championId: championId);
+      if (url.isNotEmpty) {
+        return _accentBox(
+          accent: accent,
+          clipChild: true,
+          child: CachedNetworkImage(
+            imageUrl: url,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            errorWidget: (_, __, ___) => _roleIcon(accent, category),
+          ),
+        );
       }
-    }
-
-    final asset = MissionCategoryIcons.assetPath(category);
-    if (asset != null) {
-      return _accentBox(
-        accent: accent,
-        clipChild: true,
-        child: Image.asset(
-          asset,
-          width: size,
-          height: size,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => _fallbackIcon(accent, category),
-        ),
-      );
     }
 
     return _accentBox(
       accent: accent,
-      child: _fallbackIcon(accent, category),
+      clipChild: true,
+      child: _roleIcon(accent, category),
     );
   }
 
-  Widget _fallbackIcon(Color accent, MissionCategory category) {
-    return Icon(
-      MissionCategoryIcons.materialIcon(category),
-      color: accent,
-      size: size * 0.5,
+  Widget _roleIcon(Color accent, MissionCategory category) {
+    return Image.asset(
+      MissionCategoryIcons.assetPath(category),
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => Icon(
+        Icons.sports_esports_outlined,
+        color: accent,
+        size: size * 0.45,
+      ),
     );
   }
 
@@ -128,7 +118,7 @@ class MissionCategoryIconBox extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.12),
+        color: accent.withValues(alpha: 0.06),
         borderRadius: radius,
       ),
       clipBehavior: clipChild ? Clip.antiAlias : Clip.none,

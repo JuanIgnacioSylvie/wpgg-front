@@ -54,23 +54,16 @@ Color difficultyCardBackground(MissionDifficulty d) {
 double _backgroundTintAlpha(MissionDifficulty d) {
   switch (d) {
     case MissionDifficulty.easy:
-      return 0.08;
+      return 0.05;
     case MissionDifficulty.medium:
-      return 0.12;
+      return 0.06;
     case MissionDifficulty.hard:
-      return 0.16;
+      return 0.07;
   }
 }
 
 double difficultyBorderWidth(MissionDifficulty d) {
-  switch (d) {
-    case MissionDifficulty.easy:
-      return 1.5;
-    case MissionDifficulty.medium:
-      return 2;
-    case MissionDifficulty.hard:
-      return 2.5;
-  }
+  return 1;
 }
 
 BoxDecoration missionCardDecoration(MissionCardEntity mission) {
@@ -90,18 +83,9 @@ BoxDecoration missionCardDecoration(MissionCardEntity mission) {
     color: difficultyCardBackground(mission.difficulty),
     borderRadius: BorderRadius.circular(20),
     border: Border.all(
-      color: color.withValues(alpha: 0.45),
+      color: color.withValues(alpha: 0.2),
       width: difficultyBorderWidth(mission.difficulty),
     ),
-    boxShadow: mission.difficulty == MissionDifficulty.hard
-        ? [
-            BoxShadow(
-              color: color.withValues(alpha: 0.14),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ]
-        : null,
   );
 }
 

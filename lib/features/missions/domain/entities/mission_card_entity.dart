@@ -6,25 +6,14 @@ enum MissionKind { standard, welcome }
 
 enum MissionStatus { offer, active, completed, expired }
 
+/// LoL lane / fill role shown on mission cards.
 enum MissionCategory {
-  welcome,
-  versatile,
-  farming,
-  support,
-  winstreak,
-  otp,
   top,
-  jg,
+  jungle,
   mid,
   bottom,
-  tank,
-  healer,
-  clutch,
-  multikill,
-  gold,
-  objectives,
-  assassin,
-  wards,
+  support,
+  autofill,
 }
 
 class MissionCardEntity extends Equatable {
@@ -32,7 +21,7 @@ class MissionCardEntity extends Equatable {
     required this.id,
     this.offerId,
     this.kind = MissionKind.standard,
-    this.category = MissionCategory.versatile,
+    this.category = MissionCategory.autofill,
     required this.difficulty,
     required this.titleEs,
     required this.titleEn,
