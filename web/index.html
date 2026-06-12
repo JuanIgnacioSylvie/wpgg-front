@@ -84,6 +84,12 @@
       } catch (e) {}
     })();
   </script>
+  <script>
+    // Register FCM service worker before Flutter so getToken() does not race.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(function () {});
+    }
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

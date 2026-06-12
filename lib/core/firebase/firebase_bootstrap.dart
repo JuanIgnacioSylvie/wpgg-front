@@ -61,21 +61,28 @@ Future<String?> fetchWebPushToken() async {
     return null;
   }
 
+  // Drop any stale push subscription so FIS token and browser keys stay paired.
+  try {
+    await messaging.deleteToken();
+  } catch (_) {}
+
   // FCM registrations occasionally returns 401 despite a valid Installations
   // token (firebase-js-sdk#5081). Retry with backoff before surfacing an error.
   const maxAttempts = 5;
   for (var attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       if (attempt > 1) {
-        // Drop stale push subscription / FIS pairing before retrying.
-        await messaging.deleteToken();
+        try {
+          await messaging.deleteToken();
+        } catch (_) {}
       }
       return await messaging.getToken(
         vapidKey: vapidKey,
         serviceWorkerScriptPath: _fcmServiceWorkerPath,
       );
     } on FirebaseException catch (e) {
-      final isSubscribeFailed = e.code == 'messaging/token-subscribe-failed';
+      // flutterfire strips the "messaging/" prefix → code is token-subscribe-failed.
+      final isSubscribeFailed = e.code == 'token-subscribe-failed';
       if (isSubscribeFailed && attempt < maxAttempts) {
         await Future<void>.delayed(Duration(seconds: 2 * attempt));
         continue;
