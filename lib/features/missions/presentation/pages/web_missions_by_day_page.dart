@@ -29,13 +29,13 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
   var _initialLoadRequested = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadWhenVisible();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadWhenVisible());
   }
 
   void _loadWhenVisible() {
-    if (_initialLoadRequested) return;
+    if (!mounted || _initialLoadRequested) return;
     final route = ModalRoute.of(context);
     if (route == null || !route.isCurrent) return;
     _initialLoadRequested = true;
@@ -95,14 +95,9 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
         final missions = state.byDay != null
             ? _filterMissions(state.byDay!.missions)
             : <MissionCardEntity>[];
+        final showInitialSkeleton = isLoading && state.byDay == null;
 
-        if (isLoading && state.byDay == null) {
-          return const WebAnimatedSwitcher(
-            child: _WebMissionsByDaySkeleton(key: ValueKey('by-day-skeleton')),
-          );
-        }
-
-        if (state.byDayStatus == MissionsLoadStatus.error) {
+        if (state.byDayStatus == MissionsLoadStatus.error && state.byDay == null) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -164,21 +159,25 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
                 const SizedBox(height: 28),
                 WebSectionHeader(
                   title: _filterTitle(l10n),
-                  count: missions.length,
+                  count: showInitialSkeleton ? null : missions.length,
                 ),
                 const SizedBox(height: 20),
                 WebAnimatedSwitcher(
-                  child: _MissionsByDayGrid(
-                    key: ValueKey(
-                      '${MissionDay.toApiDate(_selectedDate)}-$_filterIndex-$isLoading-${missions.length}',
-                    ),
-                    isLoading: isLoading,
-                    missions: missions,
-                    filterIndex: _filterIndex,
-                    emptyAllLabel: l10n.noMissionsForDay,
-                    emptyFilterLabel: l10n.noMissionsForFilter,
-                    isPastMission: _isPastMission,
-                  ),
+                  child: showInitialSkeleton
+                      ? const _WebMissionsByDayGridSkeleton(
+                          key: ValueKey('by-day-skeleton'),
+                        )
+                      : _MissionsByDayGrid(
+                          key: ValueKey(
+                            '${MissionDay.toApiDate(_selectedDate)}-$_filterIndex-$isLoading-${missions.length}',
+                          ),
+                          isLoading: isLoading,
+                          missions: missions,
+                          filterIndex: _filterIndex,
+                          emptyAllLabel: l10n.noMissionsForDay,
+                          emptyFilterLabel: l10n.noMissionsForFilter,
+                          isPastMission: _isPastMission,
+                        ),
                 ),
               ],
             ),
@@ -273,46 +272,19 @@ class _MissionsByDayGrid extends StatelessWidget {
   }
 }
 
-class _WebMissionsByDaySkeleton extends StatelessWidget {
-  const _WebMissionsByDaySkeleton({super.key});
+class _WebMissionsByDayGridSkeleton extends StatelessWidget {
+  const _WebMissionsByDayGridSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(32, 32, 32, 120),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const WebSkeletonBox(width: 200, height: 20),
-          const SizedBox(height: 8),
-          const WebSkeletonBox(width: 140, height: 14),
-          const SizedBox(height: 24),
-          SizedBox(
-            height: 76,
-            child: Row(
-              children: List.generate(
-                5,
-                (i) => Padding(
-                  padding: EdgeInsets.only(right: i == 4 ? 0 : 10),
-                  child: const WebSkeletonBox(width: 72, height: 76),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const WebSkeletonBox(width: 320, height: 36),
-          const SizedBox(height: 28),
-          const WebSkeletonBox(width: 120, height: 18),
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            children: List.generate(
-              4,
-              (_) => const WebSkeletonBox(width: 280, height: 160),
-            ),
-          ),
-        ],
+    return WebShimmerScope(
+      child: Wrap(
+        spacing: 20,
+        runSpacing: 20,
+        children: List.generate(
+          4,
+          (_) => const WebMissionCardSkeleton(),
+        ),
       ),
     );
   }
