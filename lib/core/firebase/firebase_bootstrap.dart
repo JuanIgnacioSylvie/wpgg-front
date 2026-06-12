@@ -1,6 +1,9 @@
+import 'dart:js_interop';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:web/web.dart' as web;
 
 import '../../firebase_options.dart';
 import '../constants/app_constants.dart';
@@ -24,9 +27,6 @@ Future<void> bootstrapFirebase() async {
   );
 }
 
-/// Path to the FCM service worker at the site root (see web/firebase-messaging-sw.js).
-const String _fcmServiceWorkerPath = '/firebase-messaging-sw.js';
-
 Future<String?>? _fetchWebPushTokenInFlight;
 
 /// Returns the FCM registration token for web push, or null if unavailable.
@@ -34,6 +34,9 @@ Future<String?>? _fetchWebPushTokenInFlight;
 /// Requires compile-time defines:
 /// - [AppConstants.firebaseApiKey] (`WPGG_FIREBASE_API_KEY`)
 /// - [AppConstants.firebaseVapidKey] (Firebase Console → Cloud Messaging → Web Push certificates)
+///
+/// The FCM service worker is registered in [web/index.html] under scope
+/// `/firebase-cloud-messaging-push-scope` (FlutterFire convention).
 ///
 /// Call only after the user grants notification permission (browser requirement).
 Future<String?> fetchWebPushToken() {
@@ -68,41 +71,24 @@ Future<String?> _fetchWebPushTokenImpl() async {
     return null;
   }
 
-  // FCM registrations occasionally returns 401 despite a valid Installations
-  // token (firebase-js-sdk#5081). Retry with backoff before surfacing an error.
-  const maxAttempts = 5;
-  for (var attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      if (attempt > 1) {
-        try {
-          await messaging.deleteToken();
-        } catch (_) {}
-      }
-      return await messaging.getToken(
-        vapidKey: vapidKey,
-        serviceWorkerScriptPath: _fcmServiceWorkerPath,
+  // Wait for the FCM SW registered in index.html (not flutter_service_worker.js).
+  await web.window.navigator.serviceWorker.ready.toDart;
+
+  try {
+    // vapidKey only — SW path/scope is handled by index.html registration.
+    return await messaging.getToken(vapidKey: vapidKey);
+  } on FirebaseException catch (e) {
+    if (e.code == 'token-subscribe-failed') {
+      throw StateError(
+        'FCM token registration failed. Clear site data for wpgg.lol '
+        '(Application → Service Workers → Unregister all, then Clear site data) '
+        'and try again. If it persists, check DevTools → Application → '
+        'Service Workers: firebase-messaging-sw.js must appear alongside '
+        'flutter_service_worker.js.',
       );
-    } on FirebaseException catch (e) {
-      // flutterfire strips the "messaging/" prefix → code is token-subscribe-failed.
-      final isSubscribeFailed = e.code == 'token-subscribe-failed';
-      if (isSubscribeFailed && attempt < maxAttempts) {
-        await Future<void>.delayed(Duration(seconds: 2 * attempt));
-        continue;
-      }
-      if (isSubscribeFailed) {
-        throw StateError(
-          'FCM registration failed after $maxAttempts attempts. '
-          'Installations works but registrations returns 401. '
-          'In Google Cloud → Credentials → Browser key → API restrictions, '
-          'ensure **FCM Registration API** (fcmregistrations.googleapis.com) '
-          'is in the list — it is separate from Firebase Cloud Messaging API. '
-          'Also enable: https://console.cloud.google.com/apis/library/fcmregistrations.googleapis.com?project=wpgg-7e831',
-        );
-      }
-      rethrow;
     }
+    rethrow;
   }
-  return null;
 }
 
 /// Removes the current FCM token from this browser/device.

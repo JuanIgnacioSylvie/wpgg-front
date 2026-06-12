@@ -85,9 +85,12 @@
     })();
   </script>
   <script>
-    // Register FCM service worker before Flutter so getToken() does not race.
+    // FCM needs its own SW scope — separate from flutter_service_worker.js (scope /).
+    // See firebase_messaging example: scope /firebase-cloud-messaging-push-scope
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(function () {});
+      navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+        scope: '/firebase-cloud-messaging-push-scope',
+      });
     }
   </script>
 </head>
