@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/datasources/notifications_remote_datasource.dart';
@@ -13,9 +16,22 @@ class NotificationsInboxBloc
     on<RefreshNotificationsInbox>(_onRefresh);
     on<MarkNotificationRead>(_onMarkRead);
     on<MarkAllNotificationsRead>(_onMarkAllRead);
+    if (kIsWeb) {
+      _pollTimer = Timer.periodic(
+        const Duration(seconds: 20),
+        (_) => add(const RefreshNotificationsInbox()),
+      );
+    }
   }
 
   final NotificationsRemoteDataSource _remote;
+  Timer? _pollTimer;
+
+  @override
+  Future<void> close() {
+    _pollTimer?.cancel();
+    return super.close();
+  }
 
   Future<void> _onLoad(
     LoadNotificationsInbox event,

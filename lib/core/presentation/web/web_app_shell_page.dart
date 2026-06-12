@@ -35,7 +35,7 @@ class WebAppShellPage extends StatefulWidget {
 }
 
 class _WebAppShellPageState extends State<WebAppShellPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   var _sidebarExpanded = false;
   var _profileDialogOpen = false;
   var _notificationsPanelOpen = false;
@@ -47,6 +47,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _notificationsAnim = AnimationController(
       vsync: this,
       duration: WebMotion.normal,
@@ -56,6 +57,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     context.read<MissionsBloc>().add(const LoadMissionsHome());
     context.read<WalletBloc>().add(const LoadWallet());
     context.read<NotificationsInboxBloc>().add(const LoadNotificationsInbox());
+    context.read<NotificationsBloc>().add(const ResumeWebPushRegistration());
 
     setWebPushForegroundListener(() {
       if (!mounted) return;
@@ -77,11 +79,23 @@ class _WebAppShellPageState extends State<WebAppShellPage>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _notificationsOverlay?.remove();
     _notificationsOverlay = null;
     _notificationsAnim.dispose();
     setWebPushForegroundListener(null);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !mounted) {
+      return;
+    }
+    context.read<NotificationsInboxBloc>().add(
+          const RefreshNotificationsInbox(),
+        );
+    context.read<NotificationsBloc>().add(const ResumeWebPushRegistration());
   }
 
   void _openPickMissions() {

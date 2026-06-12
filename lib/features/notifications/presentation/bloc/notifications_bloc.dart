@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/firebase/firebase_bootstrap.dart';
@@ -16,6 +16,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     on<LoadNotificationPreference>(_onLoad);
     on<ToggleNotifications>(_onToggle);
     on<UnregisterPushOnLogout>(_onLogoutUnregister);
+    on<ResumeWebPushRegistration>(_onResumePush);
   }
 
   final NotificationsRemoteDataSource _remote;
@@ -73,6 +74,29 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           errorMessage: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<void> _onResumePush(
+    ResumeWebPushRegistration event,
+    Emitter<NotificationsState> emit,
+  ) async {
+    if (!kIsWeb || !_local.enabled) {
+      return;
+    }
+
+    try {
+      var token = _local.token;
+      token ??= await fetchWebPushToken();
+      if (token == null || token.isEmpty) {
+        return;
+      }
+
+      await _remote.registerDevice(token: token, platform: 'web');
+      await _local.setToken(token);
+      debugPrint('FCM device re-registered with API');
+    } catch (e) {
+      debugPrint('FCM resume registration failed: $e');
     }
   }
 

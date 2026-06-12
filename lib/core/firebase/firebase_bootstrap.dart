@@ -121,6 +121,7 @@ Future<void> bootstrapFirebase() async {
   );
 
   setupWebPushForegroundHandler();
+  setupWebPushServiceWorkerMessageBridge();
 }
 
 void Function()? _webPushForegroundListener;
@@ -143,6 +144,20 @@ void setupWebPushForegroundHandler() {
     _showBrowserNotification(message);
     _webPushForegroundListener?.call();
   });
+}
+
+/// Background pushes are handled in [firebase-messaging-sw.js]; the SW notifies
+/// open tabs via postMessage so the in-app inbox can refresh.
+void setupWebPushServiceWorkerMessageBridge() {
+  if (!kIsWeb) {
+    return;
+  }
+
+  web.window.navigator.serviceWorker.onmessage =
+      ((web.MessageEvent event) {
+        debugPrint('FCM service worker message → refresh inbox');
+        _webPushForegroundListener?.call();
+      }).toJS;
 }
 
 void _showBrowserNotification(RemoteMessage message) {

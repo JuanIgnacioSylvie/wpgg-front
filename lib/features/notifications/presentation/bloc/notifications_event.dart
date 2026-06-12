@@ -17,3 +17,8 @@ final class ToggleNotifications extends NotificationsEvent {
 final class UnregisterPushOnLogout extends NotificationsEvent {
   const UnregisterPushOnLogout();
 }
+
+/// Re-syncs the FCM token with the API after login or page reload (web only).
+final class ResumeWebPushRegistration extends NotificationsEvent {
+  const ResumeWebPushRegistration();
+}

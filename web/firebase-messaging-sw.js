@@ -15,5 +15,31 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/icons/Icon-192.png',
     data: payload.data ?? {},
   };
+
+  self.clients
+    .matchAll({ type: 'window', includeUncontrolled: true })
+    .then((clients) => {
+      for (const client of clients) {
+        client.postMessage({ type: 'wpgg-fcm-message', payload });
+      }
+    });
+
   return self.registration.showNotification(title, options);
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const route = event.notification.data?.route || '/home';
+  const target = `https://wpgg.lol${route.startsWith('/') ? route : `/${route}`}`;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ('focus' in client) {
+          return client.focus();
+        }
+      }
+      return self.clients.openWindow(target);
+    }),
+  );
 });

@@ -32,12 +32,10 @@ class WebNotificationsPanelLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final media = MediaQuery.sizeOf(context);
     final panelLeft = anchorRect.right + 10;
-    final panelHeight = math.min(
-      _panelMaxHeight,
-      media.height - anchorRect.top - 16,
-    );
+    // Bell sits at the bottom of the sidebar — grow the panel upward from it.
+    final spaceAboveBell = anchorRect.bottom - 16;
+    final panelHeight = math.min(_panelMaxHeight, spaceAboveBell);
     final panelTop = math.max(16.0, anchorRect.bottom - panelHeight);
 
     final curved = CurvedAnimation(parent: animation, curve: WebMotion.curve);
@@ -78,7 +76,11 @@ class WebNotificationsPanelLayer extends StatelessWidget {
                   color: Colors.transparent,
                   child: BlocProvider.value(
                     value: bloc,
-                    child: _WebNotificationsPanel(onClose: onClose),
+                    child: SizedBox(
+                      height: panelHeight,
+                      width: _panelWidth,
+                      child: _WebNotificationsPanel(onClose: onClose),
+                    ),
                   ),
                 ),
               ),
