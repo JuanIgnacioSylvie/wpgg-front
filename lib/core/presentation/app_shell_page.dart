@@ -60,59 +60,42 @@ class _AppShellPageState extends State<AppShellPage> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: BlocBuilder<ProfileSettingsBloc, ProfileSettingsState>(
-                buildWhen: (prev, curr) =>
-                    prev is ProfileSettingsLoaded &&
-                        curr is ProfileSettingsLoaded
-                    ? prev.profilePublic != curr.profilePublic
-                    : curr is ProfileSettingsLoaded,
-                builder: (context, settingsState) {
-                  final showLeaderboard = canAccessLeaderboard(settingsState);
-
-                  return WpggBottomNav(
-                    currentIndex: navIndex,
-                    showLeaderboard: showLeaderboard,
-                    onTap: (index) {
-                      if (index == 0) {
-                        context.go('/home');
-                        context
-                            .read<MissionsBloc>()
-                            .add(const LoadMissionsHome());
-                        return;
-                      }
-                      if (index == 1) {
-                        context.go('/missions/by-day');
-                        return;
-                      }
-                      if (index == 3) {
-                        final settings =
-                            context.read<ProfileSettingsBloc>().state;
-                        if (!canAccessLeaderboard(settings)) {
-                          showProfilePrivacyDialog(
-                            context,
-                            body: context.l10n.leaderboardPrivateBody,
-                            onOpenSettings: () => context.go('/settings'),
-                          );
-                          return;
-                        }
-                        context.go('/leaderboard');
-                        context
-                            .read<LeaderboardBloc>()
-                            .add(const LoadLeaderboard());
-                        return;
-                      }
-                      if (index == 4) {
-                        context.go('/finance');
-                        return;
-                      }
-                      if (index == 5) {
-                        context.go('/settings');
-                        return;
-                      }
-                    },
-                    onFabTap: () => context.go('/store'),
-                  );
+              child: WpggBottomNav(
+                currentIndex: navIndex,
+                onTap: (index) {
+                  if (index == 0) {
+                    context.go('/home');
+                    context.read<MissionsBloc>().add(const LoadMissionsHome());
+                    return;
+                  }
+                  if (index == 1) {
+                    context.go('/missions/by-day');
+                    return;
+                  }
+                  if (index == 3) {
+                    final settings = context.read<ProfileSettingsBloc>().state;
+                    if (!canAccessLeaderboard(settings)) {
+                      showProfilePrivacyDialog(
+                        context,
+                        body: context.l10n.leaderboardPrivateBody,
+                        onOpenSettings: () => context.go('/settings'),
+                      );
+                      return;
+                    }
+                    context.go('/leaderboard');
+                    context.read<LeaderboardBloc>().add(const LoadLeaderboard());
+                    return;
+                  }
+                  if (index == 4) {
+                    context.go('/finance');
+                    return;
+                  }
+                  if (index == 5) {
+                    context.go('/settings');
+                    return;
+                  }
                 },
+                onFabTap: () => context.go('/store'),
               ),
             ),
           ],

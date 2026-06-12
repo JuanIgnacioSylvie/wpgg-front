@@ -277,36 +277,23 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                               ? inboxState.unreadCount
                               : 0;
 
-                          return BlocBuilder<ProfileSettingsBloc,
-                              ProfileSettingsState>(
-                            buildWhen: (prev, curr) =>
-                                prev is ProfileSettingsLoaded &&
-                                    curr is ProfileSettingsLoaded
-                                ? prev.profilePublic != curr.profilePublic
-                                : curr is ProfileSettingsLoaded,
-                            builder: (context, settingsState) {
-                              return WebSidebar(
-                                expanded: _sidebarExpanded,
-                                onToggleExpanded: () => setState(
-                                  () => _sidebarExpanded = !_sidebarExpanded,
-                                ),
-                                currentIndex: sidebarIndex,
-                                onTap: _onSidebarTap,
-                                onSettingsTap: _openSettingsDialog,
-                                settingsSelected: _settingsDialogOpen,
-                                onHeaderTap: () => _onSidebarTap(0),
-                                summoner: summoner,
-                                ddragon: ddragon,
-                                balance: _walletBalance(walletState),
-                                onNotificationsTap: _toggleNotificationsPanel,
-                                notificationsBellKey: _notificationsBellKey,
-                                unreadCount: unreadCount,
-                                notificationsPanelOpen:
-                                    _notificationsPanelOpen,
-                                showLeaderboard:
-                                    canAccessLeaderboard(settingsState),
-                              );
-                            },
+                          return WebSidebar(
+                            expanded: _sidebarExpanded,
+                            onToggleExpanded: () => setState(
+                              () => _sidebarExpanded = !_sidebarExpanded,
+                            ),
+                            currentIndex: sidebarIndex,
+                            onTap: _onSidebarTap,
+                            onSettingsTap: _openSettingsDialog,
+                            settingsSelected: _settingsDialogOpen,
+                            onHeaderTap: () => _onSidebarTap(0),
+                            summoner: summoner,
+                            ddragon: ddragon,
+                            balance: _walletBalance(walletState),
+                            onNotificationsTap: _toggleNotificationsPanel,
+                            notificationsBellKey: _notificationsBellKey,
+                            unreadCount: unreadCount,
+                            notificationsPanelOpen: _notificationsPanelOpen,
                           );
                         },
                       );

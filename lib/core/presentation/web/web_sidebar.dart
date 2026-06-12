@@ -29,7 +29,6 @@ class WebSidebar extends StatelessWidget {
     this.notificationsBellKey,
     this.unreadCount = 0,
     this.notificationsPanelOpen = false,
-    this.showLeaderboard = true,
   });
 
   final bool expanded;
@@ -46,16 +45,10 @@ class WebSidebar extends StatelessWidget {
   final GlobalKey? notificationsBellKey;
   final int unreadCount;
   final bool notificationsPanelOpen;
-  final bool showLeaderboard;
 
-  static List<int> _branchIndices({required bool showLeaderboard}) =>
-      showLeaderboard ? [0, 1, 2, 3, 4] : [0, 1, 2, 4];
+  static const _branchIndices = [0, 1, 2, 3, 4];
 
-  static List<_NavItem> _items(
-    AppLocalizations l10n, {
-    required bool showLeaderboard,
-  }) =>
-      [
+  static List<_NavItem> _items(AppLocalizations l10n) => [
         _NavItem(
           outline: 'assets/icons/home.svg',
           filled: 'assets/icons/home_filled.svg',
@@ -71,43 +64,17 @@ class WebSidebar extends StatelessWidget {
           selectedIcon: Icons.storefront,
           label: l10n.storeTitle,
         ),
-        if (showLeaderboard)
-          _NavItem(
-            icon: Icons.emoji_events_outlined,
-            selectedIcon: Icons.emoji_events,
-            label: l10n.leaderboardTitle,
-          ),
+        _NavItem(
+          icon: Icons.emoji_events_outlined,
+          selectedIcon: Icons.emoji_events,
+          label: l10n.leaderboardTitle,
+        ),
         _NavItem(
           outline: 'assets/icons/chart_bar.svg',
           filled: 'assets/icons/chart_bar_filled.svg',
           label: l10n.financeTitle,
         ),
       ];
-
-  static int _selectedRowIndex({
-    required int currentIndex,
-    required bool settingsSelected,
-    required bool showLeaderboard,
-  }) {
-    if (settingsSelected) {
-      return showLeaderboard ? 5 : 4;
-    }
-    if (showLeaderboard) {
-      return switch (currentIndex) {
-        1 => 1,
-        2 => 2,
-        3 => 3,
-        4 => 4,
-        _ => 0,
-      };
-    }
-    return switch (currentIndex) {
-      1 => 1,
-      2 => 2,
-      4 => 3,
-      _ => 0,
-    };
-  }
 
   static _NavItem _settingsItem(AppLocalizations l10n) => _NavItem(
         icon: Icons.settings_outlined,
@@ -118,9 +85,8 @@ class WebSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final items = _items(l10n, showLeaderboard: showLeaderboard);
+    final items = _items(l10n);
     final settingsItem = _settingsItem(l10n);
-    final branchIndices = _branchIndices(showLeaderboard: showLeaderboard);
     return AnimatedContainer(
       duration: WebMotion.resolve(context, WebMotion.normal),
       curve: WebMotion.curve,
@@ -152,14 +118,18 @@ class WebSidebar extends StatelessWidget {
           const SizedBox(height: 8),
           _SidebarNavSection(
             expanded: expanded,
-            selectedRowIndex: _selectedRowIndex(
-              currentIndex: currentIndex,
-              settingsSelected: settingsSelected,
-              showLeaderboard: showLeaderboard,
-            ),
+            selectedRowIndex: settingsSelected
+                ? 5
+                : switch (currentIndex) {
+                    1 => 1,
+                    2 => 2,
+                    3 => 3,
+                    4 => 4,
+                    _ => 0,
+                  },
             items: items,
             settingsItem: settingsItem,
-            branchIndices: branchIndices,
+            branchIndices: _branchIndices,
             settingsSelected: settingsSelected,
             onBranchTap: onTap,
             onSettingsTap: onSettingsTap,
