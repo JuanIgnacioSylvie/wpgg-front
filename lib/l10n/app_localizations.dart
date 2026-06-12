@@ -1302,6 +1302,12 @@ abstract class AppLocalizations {
   /// **'To visit other players\' profiles, make your profile public in Settings.'**
   String get profilePrivateViewerBody;
 
+  /// No description provided for @leaderboardPrivateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To access the leaderboard and visit other players, make your profile public in Settings.'**
+  String get leaderboardPrivateBody;
+
   /// No description provided for @profileOpenSettings.
   ///
   /// In en, this message translates to:

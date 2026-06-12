@@ -12,10 +12,12 @@ class ProfilePrivacyBlocked extends StatelessWidget {
     super.key,
     this.useWebStyle = false,
     this.onOpenSettings,
+    this.body,
   });
 
   final bool useWebStyle;
   final VoidCallback? onOpenSettings;
+  final String? body;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class ProfilePrivacyBlocked extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.profilePrivateViewerBody,
+              body ?? l10n.profilePrivateViewerBody,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: AppFonts.lexendDeca,

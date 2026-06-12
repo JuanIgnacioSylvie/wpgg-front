@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
@@ -14,7 +12,8 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../profile/data/datasources/profile_remote_datasource.dart';
 import '../../../profile/presentation/bloc/profile_settings_bloc.dart';
 import '../../../profile/presentation/pages/web_user_profile_page.dart';
-import '../../../profile/presentation/widgets/profile_privacy_dialog.dart';
+import '../../../profile/presentation/profile_leaderboard_access.dart';
+import '../../../profile/presentation/widgets/profile_privacy_blocked.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../bloc/leaderboard_bloc.dart';
 
@@ -31,12 +30,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   void initState() {
     super.initState();
-    _reload();
+    context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
   }
 
-  void _reload() {
+  void _reloadLeaderboard() {
     context.read<LeaderboardBloc>().add(const LoadLeaderboard());
-    context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
   }
 
   void _openSettings() {
@@ -51,19 +49,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 
   void _openProfile(LeaderboardEntry entry) {
-    final settings = context.read<ProfileSettingsBloc>().state;
-    final isPrivate = settings is! ProfileSettingsLoaded ||
-        !settings.profilePublic;
-
-    if (isPrivate) {
-      showProfilePrivacyDialog(
-        context,
-        useWebStyle: widget.useWebStyle,
-        onOpenSettings: _openSettings,
-      );
-      return;
-    }
-
     if (widget.useWebStyle) {
       showWebUserProfileDialog(
         context,
@@ -75,111 +60,145 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     context.push('/users/${entry.userId}');
   }
 
+  Widget _blockedView() {
+    return ProfilePrivacyBlocked(
+      useWebStyle: widget.useWebStyle,
+      onOpenSettings: _openSettings,
+      body: context.l10n.leaderboardPrivateBody,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
     final useWeb = widget.useWebStyle;
 
-    final body = BlocListener<ProfileSettingsBloc, ProfileSettingsState>(
+    return BlocConsumer<ProfileSettingsBloc, ProfileSettingsState>(
       listenWhen: (prev, curr) =>
-          curr is ProfileSettingsLoaded &&
-          (prev is! ProfileSettingsLoaded ||
-              prev.profilePublic != curr.profilePublic),
-      listener: (_, __) =>
-          context.read<LeaderboardBloc>().add(const LoadLeaderboard()),
-      child: BlocBuilder<LeaderboardBloc, LeaderboardState>(
-        builder: (context, state) {
-          if (state is LeaderboardLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: WpggBrand.primary),
+          prev is ProfileSettingsLoaded &&
+              curr is ProfileSettingsLoaded
+          ? prev.profilePublic != curr.profilePublic
+          : curr is ProfileSettingsLoaded,
+      listener: (context, state) {
+        if (canAccessLeaderboard(state)) {
+          _reloadLeaderboard();
+        }
+      },
+      builder: (context, settingsState) {
+        if (settingsState is ProfileSettingsLoading ||
+            settingsState is ProfileSettingsInitial) {
+          final loading = const Center(
+            child: CircularProgressIndicator(color: WpggBrand.primary),
+          );
+          if (useWeb) return loading;
+          return WpggGradientScaffold(body: loading);
+        }
+
+        if (!canAccessLeaderboard(settingsState)) {
+          if (useWeb) return _blockedView();
+          return WpggGradientScaffold(body: _blockedView());
+        }
+
+        final body = BlocBuilder<LeaderboardBloc, LeaderboardState>(
+          builder: (context, state) {
+            if (state is LeaderboardInitial) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _reloadLeaderboard();
+              });
+            }
+            if (state is LeaderboardLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: WpggBrand.primary),
+              );
+            }
+            if (state is LeaderboardError) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      l10n.errorGeneric,
+                      style: TextStyle(
+                        color:
+                            useWeb ? WebColors.textSecondary : WpggBrand.white,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      onPressed: _reloadLeaderboard,
+                      child: Text(l10n.retry),
+                    ),
+                  ],
+                ),
+              );
+            }
+            if (state is! LeaderboardLoaded || state.entries.isEmpty) {
+              return Center(
+                child: Text(
+                  l10n.leaderboardEmpty,
+                  style: TextStyle(
+                    color: useWeb ? WebColors.textMuted : WpggBrand.textMuted,
+                  ),
+                ),
+              );
+            }
+
+            return ListView.separated(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, useWeb ? 24 : 100),
+              itemCount: state.entries.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final entry = state.entries[index];
+                final summoner = SummonerEntity(
+                  gameName: entry.gameName,
+                  tagLine: entry.tagLine,
+                  region: entry.region,
+                  profileIconId: entry.profileIconId,
+                  puuid: '',
+                  summonerLevel: 0,
+                );
+
+                return _LeaderboardRow(
+                  entry: entry,
+                  summoner: summoner,
+                  ddragon: ddragon,
+                  useWebStyle: useWeb,
+                  onTap: () => _openProfile(entry),
+                );
+              },
             );
-          }
-          if (state is LeaderboardError) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    l10n.errorGeneric,
-                    style: TextStyle(
-                      color: useWeb ? WebColors.textSecondary : WpggBrand.white,
+          },
+        );
+
+        if (useWeb) {
+          return body;
+        }
+
+        return WpggGradientScaffold(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                  child: Text(
+                    l10n.leaderboardTitle,
+                    style: const TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: WpggBrand.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: _reload,
-                    child: Text(l10n.retry),
-                  ),
-                ],
-              ),
-            );
-          }
-          if (state is! LeaderboardLoaded || state.entries.isEmpty) {
-            return Center(
-              child: Text(
-                l10n.leaderboardEmpty,
-                style: TextStyle(
-                  color: useWeb ? WebColors.textMuted : WpggBrand.textMuted,
                 ),
               ),
-            );
-          }
-
-          return ListView.separated(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, useWeb ? 24 : 100),
-            itemCount: state.entries.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final entry = state.entries[index];
-              final summoner = SummonerEntity(
-                gameName: entry.gameName,
-                tagLine: entry.tagLine,
-                region: entry.region,
-                profileIconId: entry.profileIconId,
-                puuid: '',
-                summonerLevel: 0,
-              );
-
-              return _LeaderboardRow(
-                entry: entry,
-                summoner: summoner,
-                ddragon: ddragon,
-                useWebStyle: useWeb,
-                onTap: () => _openProfile(entry),
-              );
-            },
-          );
-        },
-      ),
-    );
-
-    if (useWeb) {
-      return body;
-    }
-
-    return WpggGradientScaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-              child: Text(
-                l10n.leaderboardTitle,
-                style: const TextStyle(
-                  fontFamily: AppFonts.lexendDeca,
-                  color: WpggBrand.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+              Expanded(child: body),
+            ],
           ),
-          Expanded(child: body),
-        ],
-      ),
+        );
+      },
     );
   }
 }

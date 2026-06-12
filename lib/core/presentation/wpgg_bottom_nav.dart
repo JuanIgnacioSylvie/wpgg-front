@@ -9,11 +9,13 @@ class WpggBottomNav extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     required this.onFabTap,
+    this.showLeaderboard = true,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
   final VoidCallback onFabTap;
+  final bool showLeaderboard;
 
   static const _fabSize = 54.0;
   static const _fabLogoSize = 28.0;
@@ -44,9 +46,14 @@ class WpggBottomNav extends StatelessWidget {
     ),
   ];
 
+  List<_NavItemData> get _visibleItems => showLeaderboard
+      ? _items
+      : _items.where((item) => item.navIndex != 3).toList();
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final visibleItems = _visibleItems;
 
     return Material(
       color: Colors.transparent,
@@ -76,12 +83,12 @@ class WpggBottomNav extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      for (var i = 0; i < _items.length; i++) ...[
+                      for (var i = 0; i < visibleItems.length; i++) ...[
                         Expanded(
                           child: _NavItem(
-                            item: _items[i],
-                            selected: currentIndex == _items[i].navIndex,
-                            onTap: () => onTap(_items[i].navIndex),
+                            item: visibleItems[i],
+                            selected: currentIndex == visibleItems[i].navIndex,
+                            onTap: () => onTap(visibleItems[i].navIndex),
                           ),
                         ),
                         if (i == 1) const SizedBox(width: _fabSize),

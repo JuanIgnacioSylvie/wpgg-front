@@ -15,6 +15,8 @@ import '../../../features/notifications/presentation/bloc/notifications_inbox_bl
 import '../../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
 import '../../../features/profile/presentation/bloc/profile_settings_bloc.dart';
+import '../../../features/profile/presentation/profile_leaderboard_access.dart';
+import '../../../features/profile/presentation/widgets/profile_privacy_dialog.dart';
 import '../../firebase/firebase_bootstrap.dart';
 import '../../l10n/l10n_extension.dart';
 import 'web_document_title.dart';
@@ -58,6 +60,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     context.read<DDragonProvider>().ensureLoaded();
     context.read<MissionsBloc>().add(const LoadMissionsHome());
     context.read<WalletBloc>().add(const LoadWallet());
+    context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
     context.read<NotificationsInboxBloc>().add(const LoadNotificationsInbox());
     context.read<NotificationsBloc>().add(const ResumeWebPushRegistration());
 
@@ -106,6 +109,19 @@ class _WebAppShellPageState extends State<WebAppShellPage>
   }
 
   void _onSidebarTap(int branchIndex) {
+    if (branchIndex == 3) {
+      final settings = context.read<ProfileSettingsBloc>().state;
+      if (!canAccessLeaderboard(settings)) {
+        showProfilePrivacyDialog(
+          context,
+          useWebStyle: true,
+          body: context.l10n.leaderboardPrivateBody,
+          onOpenSettings: _openSettingsDialog,
+        );
+        return;
+      }
+    }
+
     setState(() => _settingsDialogOpen = false);
     widget.navigationShell.goBranch(
       branchIndex,
@@ -116,7 +132,6 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     }
     if (branchIndex == 3) {
       context.read<LeaderboardBloc>().add(const LoadLeaderboard());
-      context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
     }
   }
 
@@ -193,6 +208,19 @@ class _WebAppShellPageState extends State<WebAppShellPage>
 
     return MultiBlocListener(
       listeners: [
+        BlocListener<ProfileSettingsBloc, ProfileSettingsState>(
+          listenWhen: (prev, curr) =>
+              prev is ProfileSettingsLoaded &&
+                  curr is ProfileSettingsLoaded
+              ? prev.profilePublic != curr.profilePublic
+              : curr is ProfileSettingsLoaded,
+          listener: (context, state) {
+            if (!canAccessLeaderboard(state) &&
+                widget.navigationShell.currentIndex == 3) {
+              widget.navigationShell.goBranch(0, initialLocation: true);
+            }
+          },
+        ),
         BlocListener<AuthBloc, AuthState>(
           listenWhen: (_, curr) => curr is AuthUnauthenticated,
           listener: (context, _) {
@@ -249,23 +277,37 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                               ? inboxState.unreadCount
                               : 0;
 
-                          return WebSidebar(
-                            expanded: _sidebarExpanded,
-                            onToggleExpanded: () => setState(
-                              () => _sidebarExpanded = !_sidebarExpanded,
-                            ),
-                            currentIndex: sidebarIndex,
-                            onTap: _onSidebarTap,
-                            onSettingsTap: _openSettingsDialog,
-                            settingsSelected: _settingsDialogOpen,
-                            onHeaderTap: () => _onSidebarTap(0),
-                            summoner: summoner,
-                            ddragon: ddragon,
-                            balance: _walletBalance(walletState),
-                            onNotificationsTap: _toggleNotificationsPanel,
-                            notificationsBellKey: _notificationsBellKey,
-                            unreadCount: unreadCount,
-                            notificationsPanelOpen: _notificationsPanelOpen,
+                          return BlocBuilder<ProfileSettingsBloc,
+                              ProfileSettingsState>(
+                            buildWhen: (prev, curr) =>
+                                prev is ProfileSettingsLoaded &&
+                                    curr is ProfileSettingsLoaded
+                                ? prev.profilePublic != curr.profilePublic
+                                : curr is ProfileSettingsLoaded ||
+                                    curr is ProfileSettingsLoading,
+                            builder: (context, settingsState) {
+                              return WebSidebar(
+                                expanded: _sidebarExpanded,
+                                onToggleExpanded: () => setState(
+                                  () => _sidebarExpanded = !_sidebarExpanded,
+                                ),
+                                currentIndex: sidebarIndex,
+                                onTap: _onSidebarTap,
+                                onSettingsTap: _openSettingsDialog,
+                                settingsSelected: _settingsDialogOpen,
+                                onHeaderTap: () => _onSidebarTap(0),
+                                summoner: summoner,
+                                ddragon: ddragon,
+                                balance: _walletBalance(walletState),
+                                onNotificationsTap: _toggleNotificationsPanel,
+                                notificationsBellKey: _notificationsBellKey,
+                                unreadCount: unreadCount,
+                                notificationsPanelOpen:
+                                    _notificationsPanelOpen,
+                                showLeaderboard:
+                                    canAccessLeaderboard(settingsState),
+                              );
+                            },
                           );
                         },
                       );

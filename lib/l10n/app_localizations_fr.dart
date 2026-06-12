@@ -680,6 +680,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pour visiter les profils d\'autres joueurs, rendez votre profil public dans les Paramètres.';
 
   @override
+  String get leaderboardPrivateBody =>
+      'Pour accéder au classement et visiter d\'autres joueurs, rendez votre profil public dans les Paramètres.';
+
+  @override
   String get profileOpenSettings => 'Aller aux Paramètres';
 
   @override

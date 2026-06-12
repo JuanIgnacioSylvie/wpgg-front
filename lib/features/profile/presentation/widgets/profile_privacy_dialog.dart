@@ -9,15 +9,17 @@ Future<void> showProfilePrivacyDialog(
   BuildContext context, {
   required VoidCallback onOpenSettings,
   bool useWebStyle = false,
+  String? body,
 }) {
   final l10n = context.l10n;
+  final message = body ?? l10n.profilePrivateViewerBody;
 
   if (!useWebStyle) {
     return showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.profilePrivateViewerTitle),
-        content: Text(l10n.profilePrivateViewerBody),
+        content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -51,7 +53,7 @@ Future<void> showProfilePrivacyDialog(
         ),
       ),
       content: Text(
-        l10n.profilePrivateViewerBody,
+        message,
         style: const TextStyle(
           color: WebColors.textSecondary,
           height: 1.45,

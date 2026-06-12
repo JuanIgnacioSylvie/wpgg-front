@@ -269,6 +269,7 @@
   "profilePublicHint": "Privé par défaut. Un profil public est requis pour visiter d'autres joueurs.",
   "profilePrivateViewerTitle": "Votre profil est privé",
   "profilePrivateViewerBody": "Pour visiter les profils d'autres joueurs, rendez votre profil public dans les Paramètres.",
+  "leaderboardPrivateBody": "Pour accéder au classement et visiter d'autres joueurs, rendez votre profil public dans les Paramètres.",
   "profileOpenSettings": "Aller aux Paramètres",
   "profileNotPublic": "Ce profil n'est pas public.",
   "navNotifications": "Notifications",

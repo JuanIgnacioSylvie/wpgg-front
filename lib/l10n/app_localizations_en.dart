@@ -670,6 +670,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'To visit other players\' profiles, make your profile public in Settings.';
 
   @override
+  String get leaderboardPrivateBody =>
+      'To access the leaderboard and visit other players, make your profile public in Settings.';
+
+  @override
   String get profileOpenSettings => 'Go to Settings';
 
   @override
