@@ -66,6 +66,7 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/icons/
+    - assets/icons/missions/
   fonts:
     - family: LexendDeca
       fonts:
