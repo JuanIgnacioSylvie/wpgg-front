@@ -25,6 +25,10 @@ class WebSidebar extends StatelessWidget {
     this.ddragon,
     this.balance,
     required this.onLogout,
+    this.onNotificationsTap,
+    this.notificationsBellKey,
+    this.unreadCount = 0,
+    this.notificationsPanelOpen = false,
   });
 
   final bool expanded;
@@ -37,6 +41,10 @@ class WebSidebar extends StatelessWidget {
   final DDragonProvider? ddragon;
   final int? balance;
   final VoidCallback onLogout;
+  final VoidCallback? onNotificationsTap;
+  final GlobalKey? notificationsBellKey;
+  final int unreadCount;
+  final bool notificationsPanelOpen;
 
   static const _branchIndices = [0, 1, 2, 3];
 
@@ -159,9 +167,11 @@ class WebSidebar extends StatelessWidget {
               label: l10n.navNotifications,
             ),
             expanded: expanded,
-            selected: false,
-            onTap: () {},
-            enabled: false,
+            selected: notificationsPanelOpen,
+            onTap: onNotificationsTap ?? () {},
+            enabled: onNotificationsTap != null,
+            bellKey: notificationsBellKey,
+            badgeCount: unreadCount,
           ),
           const SizedBox(height: 12),
         ],
@@ -428,6 +438,8 @@ class _SidebarNavRow extends StatefulWidget {
     required this.selected,
     required this.onTap,
     this.enabled = true,
+    this.bellKey,
+    this.badgeCount = 0,
   });
 
   final _NavItem item;
@@ -435,6 +447,8 @@ class _SidebarNavRow extends StatefulWidget {
   final bool selected;
   final VoidCallback onTap;
   final bool enabled;
+  final GlobalKey? bellKey;
+  final int badgeCount;
 
   @override
   State<_SidebarNavRow> createState() => _SidebarNavRowState();
@@ -475,8 +489,9 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
                   ? Row(
                       children: [
                         SizedBox(
+                          key: widget.bellKey,
                           width: 40,
-                          child: Center(child: _icon(color)),
+                          child: Center(child: _iconWithBadge(color)),
                         ),
                         Expanded(
                           child: AnimatedOpacity(
@@ -502,11 +517,51 @@ class _SidebarNavRowState extends State<_SidebarNavRow> {
                         ),
                       ],
                     )
-                  : Center(child: _icon(color)),
+                  : Center(
+                      key: widget.bellKey,
+                      child: _iconWithBadge(color),
+                    ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _iconWithBadge(Color color) {
+    final icon = _icon(color);
+    if (widget.badgeCount <= 0) return icon;
+
+    final label = widget.badgeCount > 9 ? '9+' : '${widget.badgeCount}';
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        icon,
+        Positioned(
+          right: -4,
+          top: -4,
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+            decoration: BoxDecoration(
+              color: WebColors.accent,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: WebColors.topBar, width: 1.5),
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: AppFonts.lexendDeca,
+                color: Colors.white,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                height: 1.1,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -257,6 +257,8 @@
   "tokenPriceUpdatedHint": "Prix en USD · mis à jour toutes les 60 s",
   "navDashboard": "Tableau de bord",
   "navNotifications": "Notifications",
+  "notificationsInboxEmpty": "Aucune notification pour le moment",
+  "notificationsMarkAllRead": "Tout marquer comme lu",
   "sidebarExpandMenu": "Développer le menu",
   "sidebarCollapse": "Réduire",
   "addMissionButton": "Ajouter",

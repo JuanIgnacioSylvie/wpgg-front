@@ -654,6 +654,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navNotifications => 'Notifications';
 
   @override
+  String get notificationsInboxEmpty => 'Aucune notification pour le moment';
+
+  @override
+  String get notificationsMarkAllRead => 'Tout marquer comme lu';
+
+  @override
   String get sidebarExpandMenu => 'Développer le menu';
 
   @override

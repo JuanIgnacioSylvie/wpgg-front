@@ -25,6 +25,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     LoadNotificationPreference event,
     Emitter<NotificationsState> emit,
   ) async {
+    clearFcmRecoveryFlags();
     emit(NotificationsLoaded(enabled: _local.enabled));
   }
 
@@ -40,6 +41,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           throw Exception('Push notifications are only available on web for now.');
         }
 
+        clearFcmRecoveryFlags();
         final token = await fetchWebPushToken();
         if (token == null || token.isEmpty) {
           throw Exception('Notification permission denied or unavailable.');

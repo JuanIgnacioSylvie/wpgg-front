@@ -1260,6 +1260,18 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get navNotifications;
 
+  /// No description provided for @notificationsInboxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notificationsInboxEmpty;
+
+  /// No description provided for @notificationsMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationsMarkAllRead;
+
   /// No description provided for @sidebarExpandMenu.
   ///
   /// In en, this message translates to:

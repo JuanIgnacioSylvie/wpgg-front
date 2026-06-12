@@ -48,5 +48,7 @@ self.firebaseConfig = {
 };
 "@
 
-Set-Content -Path $outPath -Value $content -Encoding UTF8
+# UTF-8 without BOM — a BOM breaks firebase-config.js inside the service worker.
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($outPath, $content, $utf8NoBom)
 Write-Host "Wrote $outPath"

@@ -42,6 +42,7 @@ import '../../features/store/presentation/bloc/store_bloc.dart';
 import '../../features/notifications/data/datasources/notifications_remote_datasource.dart';
 import '../../features/notifications/data/notifications_local_store.dart';
 import '../../features/notifications/presentation/bloc/notifications_bloc.dart';
+import '../../features/notifications/presentation/bloc/notifications_inbox_bloc.dart';
 import '../../features/wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 
@@ -156,5 +157,8 @@ Future<void> initDependencies() async {
       sl<NotificationsRemoteDataSource>(),
       sl<NotificationsLocalStore>(),
     ),
+  );
+  sl.registerLazySingleton(
+    () => NotificationsInboxBloc(sl<NotificationsRemoteDataSource>()),
   );
 }
