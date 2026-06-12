@@ -1,7 +1,8 @@
 /* Firebase Cloud Messaging service worker. Requires /firebase-config.js at deploy root. */
+/* Keep JS SDK version in sync with firebase_core_web (supportedFirebaseJsSdkVersion). */
 importScripts('/firebase-config.js');
-importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.14.0/firebase-messaging-compat.js');
 
 firebase.initializeApp(self.firebaseConfig);
 

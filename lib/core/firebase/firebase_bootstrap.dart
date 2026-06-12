@@ -66,6 +66,10 @@ Future<String?> fetchWebPushToken() async {
   const maxAttempts = 5;
   for (var attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
+      if (attempt > 1) {
+        // Drop stale push subscription / FIS pairing before retrying.
+        await messaging.deleteToken();
+      }
       return await messaging.getToken(
         vapidKey: vapidKey,
         serviceWorkerScriptPath: _fcmServiceWorkerPath,
