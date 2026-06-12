@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +21,14 @@ Future<void> main() async {
   captureOauthCallbackFragmentAtAppStart();
   WidgetsFlutterBinding.ensureInitialized();
   configureUrlStrategy();
-  await bootstrapFirebase();
   await initDependencies();
-  runApp(const WpggApp());
+  if (kIsWeb) {
+    runApp(const WpggApp());
+    unawaited(bootstrapFirebase());
+  } else {
+    await bootstrapFirebase();
+    runApp(const WpggApp());
+  }
 }
 
 class WpggApp extends StatelessWidget {

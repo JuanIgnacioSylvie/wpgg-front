@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:js_interop';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
 import 'package:web/web.dart' as web;
+
+import 'turnstile_script_loader.dart';
 
 @JS('turnstile')
 external TurnstileApi? get _turnstile;
@@ -74,10 +77,20 @@ class _TurnstileWidgetState extends State<TurnstileWidget> {
   }
 
   void _renderWhenReady(web.HTMLDivElement div) {
-    void tryRender() {
+    Future<void> tryRender() async {
+      try {
+        await ensureTurnstileScriptLoaded();
+      } catch (_) {
+        widget.onError?.call();
+        return;
+      }
+
       final api = _turnstile;
       if (api == null) {
-        Future<void>.delayed(const Duration(milliseconds: 120), tryRender);
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+        if (div.isConnected) {
+          await tryRender();
+        }
         return;
       }
 
@@ -102,7 +115,7 @@ class _TurnstileWidgetState extends State<TurnstileWidget> {
       );
     }
 
-    tryRender();
+    unawaited(tryRender());
   }
 
   @override

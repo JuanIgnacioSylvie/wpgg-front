@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
 
 import '../config/app_public_config.dart';
@@ -62,7 +65,11 @@ Future<void> initDependencies() async {
     ),
   );
 
-  await AppPublicConfig.load(sl<ApiClient>());
+  if (kIsWeb) {
+    unawaited(AppPublicConfig.load(sl<ApiClient>()));
+  } else {
+    await AppPublicConfig.load(sl<ApiClient>());
+  }
 
   sl.registerLazySingleton<DDragonRemoteDataSource>(
     () => DDragonRemoteDataSource(sl<CdnClient>()),

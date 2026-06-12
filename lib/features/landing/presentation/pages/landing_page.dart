@@ -30,23 +30,31 @@ class _LandingPageState extends State<LandingPage> {
   final _coinKey = GlobalKey();
   final _sponsorsKey = GlobalKey();
 
+  var _checkingSession = true;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeRedirectSession());
+    _maybeRedirectSession();
   }
 
   Future<void> _maybeRedirectSession() async {
-    final storage = sl<SecureStorage>();
-    final token = await storage.getAccessToken();
-    if (!mounted) return;
-    if (token != null && token.isNotEmpty) {
-      context.go('/home');
-      return;
+    try {
+      final storage = sl<SecureStorage>();
+      final token = await storage.getAccessToken();
+      if (!mounted) return;
+      if (token != null && token.isNotEmpty) {
+        context.go('/home');
+        return;
+      }
+      final refreshed = await sl<RefreshTokenUseCase>()();
+      if (!mounted) return;
+      refreshed.fold((_) {}, (_) => context.go('/home'));
+    } finally {
+      if (mounted) {
+        setState(() => _checkingSession = false);
+      }
     }
-    final refreshed = await sl<RefreshTokenUseCase>()();
-    if (!mounted) return;
-    refreshed.fold((_) {}, (_) => context.go('/home'));
   }
 
   @override
@@ -68,6 +76,22 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_checkingSession) {
+      return const Scaffold(
+        backgroundColor: WebColors.background,
+        body: Center(
+          child: SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: WebColors.accent,
+            ),
+          ),
+        ),
+      );
+    }
+
     final l10n = context.l10n;
     final maxContent = MediaQuery.sizeOf(context).width.clamp(0, 1080).toDouble();
 
