@@ -8,6 +8,7 @@ import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'web_mission_styles.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
@@ -77,49 +78,11 @@ class _WebMissionCardState extends State<WebMissionCard> {
             duration: const Duration(milliseconds: 150),
             width: 280,
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: _hovered && interactive
-                  ? WebColors.surfaceElevated
-                  : (mission.isWelcome
-                      ? WpggBrand.welcomeAccentSoft.withValues(alpha: 0.35)
-                      : difficultyCardBackground(mission.difficulty)),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isPlaceholder
-                    ? WebColors.border
-                    : (mission.isWelcome
-                        ? WpggBrand.welcomeAccent.withValues(alpha: 0.5)
-                        : color.withValues(alpha: _hovered && interactive ? 0.55 : 0.4)),
-                width: mission.isWelcome
-                    ? 2
-                    : difficultyBorderWidth(mission.difficulty),
-                strokeAlign: BorderSide.strokeAlignOutside,
-              ),
-              boxShadow: isDragFeedback
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ]
-                  : (mission.difficulty == MissionDifficulty.hard && !isPast
-                      ? [
-                          BoxShadow(
-                            color: color.withValues(alpha: 0.12),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : (_hovered && interactive
-                          ? [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : null)),
+            decoration: webMissionCardDecoration(
+              mission,
+              hovered: _hovered && interactive,
+              isPlaceholder: isPlaceholder,
+              dragFeedback: isDragFeedback,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

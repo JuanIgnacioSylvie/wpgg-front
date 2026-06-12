@@ -19,14 +19,20 @@ class MissionCardModel extends MissionCardEntity {
   });
 
   factory MissionCardModel.fromJson(Map<String, dynamic> json) {
+    final titleEs = json['titleEs'] as String? ?? '';
+    final titleEn = json['titleEn'] as String? ?? '';
     return MissionCardModel(
       id: json['id'] as String,
       offerId: json['offerId'] as String?,
       kind: _kind(json['kind'] as String?),
-      category: _category(json['category'] as String?),
+      category: _category(
+        json['category'] as String?,
+        titleEs: titleEs,
+        titleEn: titleEn,
+      ),
       difficulty: _difficulty(json['difficulty'] as String?),
-      titleEs: json['titleEs'] as String? ?? '',
-      titleEn: json['titleEn'] as String? ?? '',
+      titleEs: titleEs,
+      titleEn: titleEn,
       subtitleEs: json['subtitleEs'] as String?,
       subtitleEn: json['subtitleEn'] as String?,
       rewardWpgg: (json['rewardWpgg'] as num?)?.toInt() ?? 0,
@@ -46,7 +52,23 @@ class MissionCardModel extends MissionCardEntity {
     return MissionKind.standard;
   }
 
-  static MissionCategory _category(String? raw) {
+  static MissionCategory _category(
+    String? raw, {
+    required String titleEs,
+    required String titleEn,
+  }) {
+    final fromApi = _categoryFromApi(raw);
+    if (raw != null && raw.isNotEmpty) {
+      return fromApi;
+    }
+    return _categoryFromTitle(titleEs) ??
+        _categoryFromTitle(titleEn) ??
+        _categoryFromLegacyTitle(titleEs) ??
+        _categoryFromLegacyTitle(titleEn) ??
+        fromApi;
+  }
+
+  static MissionCategory _categoryFromApi(String? raw) {
     switch (raw?.toUpperCase()) {
       case 'WELCOME':
         return MissionCategory.welcome;
@@ -85,6 +107,95 @@ class MissionCardModel extends MissionCardEntity {
       default:
         return MissionCategory.versatile;
     }
+  }
+
+  static MissionCategory? _categoryFromTitle(String title) {
+    final colon = title.indexOf(':');
+    if (colon <= 0) return null;
+    final label = title.substring(0, colon).trim().toLowerCase();
+    switch (label) {
+      case 'versatile':
+        return MissionCategory.versatile;
+      case 'farming':
+        return MissionCategory.farming;
+      case 'support':
+        return MissionCategory.support;
+      case 'winstreak':
+      case 'racha':
+      case 'streak':
+        return MissionCategory.winstreak;
+      case 'otp':
+        return MissionCategory.otp;
+      case 'top':
+        return MissionCategory.top;
+      case 'jungle':
+      case 'jungla':
+      case 'jg':
+        return MissionCategory.jg;
+      case 'mid':
+        return MissionCategory.mid;
+      case 'adc':
+      case 'bottom':
+        return MissionCategory.bottom;
+      case 'tank':
+        return MissionCategory.tank;
+      case 'healer':
+        return MissionCategory.healer;
+      case 'clutch':
+        return MissionCategory.clutch;
+      case 'multikill':
+        return MissionCategory.multikill;
+      case 'gold':
+        return MissionCategory.gold;
+      case 'objetivos':
+      case 'objectives':
+        return MissionCategory.objectives;
+      case 'assassin':
+        return MissionCategory.assassin;
+      case 'wards':
+        return MissionCategory.wards;
+      default:
+        return null;
+    }
+  }
+
+  /// Heuristic for pre-migration templates without category or title prefix.
+  static MissionCategory? _categoryFromLegacyTitle(String title) {
+    if (title.isEmpty) return null;
+    final t = title.toLowerCase();
+    if (t.contains('ward')) {
+      if (t.contains('place') || t.contains('coloca')) {
+        return MissionCategory.wards;
+      }
+      return MissionCategory.support;
+    }
+    if (t.contains('farm') || t.contains(' cs')) {
+      return MissionCategory.farming;
+    }
+    if (t.contains('vision')) return MissionCategory.support;
+    if (t.contains('kill participation') || t.contains('participación')) {
+      return MissionCategory.winstreak;
+    }
+    if (t.contains('champion') || t.contains('campeón')) {
+      return MissionCategory.otp;
+    }
+    if (t.contains('streak') || t.contains('racha')) {
+      return MissionCategory.winstreak;
+    }
+    if (t.contains('structure') || t.contains('estructura')) {
+      return MissionCategory.top;
+    }
+    if (t.contains('heal') || t.contains('cura')) {
+      return MissionCategory.healer;
+    }
+    if (t.contains('pentakill') || t.contains('multikill')) {
+      return MissionCategory.multikill;
+    }
+    if (t.contains('damage taken') || t.contains('daño')) {
+      return MissionCategory.tank;
+    }
+    if (t.contains('role')) return MissionCategory.versatile;
+    return null;
   }
 
   static MissionDifficulty _difficulty(String? raw) {

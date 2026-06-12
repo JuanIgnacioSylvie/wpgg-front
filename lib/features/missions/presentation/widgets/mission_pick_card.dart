@@ -27,10 +27,7 @@ class MissionPickCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: WpggBrand.cardSurface,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: missionCardDecoration(mission),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -53,9 +50,24 @@ class MissionPickCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  difficultyLabel(mission.difficulty, l10n),
-                  style: const TextStyle(fontSize: 12, color: Colors.black45),
+                Row(
+                  children: [
+                    Text(
+                      difficultyLabel(mission.difficulty, l10n),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: difficultyColor(mission.difficulty),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    MissionRewardRow(
+                      amount: mission.rewardWpgg,
+                      color: difficultyColor(mission.difficulty),
+                      fontSize: 12,
+                      coinSize: 18,
+                    ),
+                  ],
                 ),
               ],
             ),

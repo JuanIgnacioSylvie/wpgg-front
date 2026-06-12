@@ -8,6 +8,7 @@ import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
+import 'web_mission_styles.dart';
 
 class WebMissionPickCard extends StatefulWidget {
   const WebMissionPickCard({
@@ -34,6 +35,7 @@ class _WebMissionPickCardState extends State<WebMissionPickCard> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final mission = widget.mission;
+    final accent = difficultyColor(mission.difficulty);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -42,13 +44,12 @@ class _WebMissionPickCardState extends State<WebMissionPickCard> {
         duration: WebMotion.resolve(context, WebMotion.fast),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: _hovered ? WebColors.surfaceElevated : WebColors.surface,
-          borderRadius: BorderRadius.circular(12),
+        decoration: webMissionCardDecoration(mission, hovered: _hovered).copyWith(
           border: Border.all(
             color: widget.accepted
-                ? WebColors.online.withValues(alpha: 0.4)
-                : (_hovered ? WebColors.border : WebColors.borderSubtle),
+                ? WebColors.online.withValues(alpha: 0.55)
+                : accent.withValues(alpha: _hovered ? 0.55 : 0.4),
+            width: difficultyBorderWidth(mission.difficulty),
           ),
         ),
         child: Row(
@@ -73,14 +74,26 @@ class _WebMissionPickCardState extends State<WebMissionPickCard> {
                       color: WebColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    difficultyLabel(mission.difficulty, l10n),
-                    style: const TextStyle(
-                      fontFamily: AppFonts.lexendDeca,
-                      fontSize: 12,
-                      color: WebColors.textMuted,
-                    ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text(
+                        difficultyLabel(mission.difficulty, l10n),
+                        style: TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          fontSize: 12,
+                          color: accent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      MissionRewardRow(
+                        amount: mission.rewardWpgg,
+                        color: accent,
+                        fontSize: 12,
+                        coinSize: 18,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -158,14 +171,14 @@ class _ActionButtonState extends State<_ActionButton> {
         child: GestureDetector(
           onTap: widget.enabled ? widget.onTap : null,
           child: AnimatedContainer(
-          duration: WebMotion.resolve(context, WebMotion.fast),
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: borderColor),
-          ),
+            duration: WebMotion.resolve(context, WebMotion.fast),
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor),
+            ),
             child: Icon(widget.icon, color: iconColor, size: 20),
           ),
         ),
