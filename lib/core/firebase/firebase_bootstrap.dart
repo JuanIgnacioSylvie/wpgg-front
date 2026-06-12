@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -15,6 +16,33 @@ import '../constants/app_constants.dart';
 
 /// Scope registered in [web/index.html] — must not be '/' (Flutter owns that).
 const String _fcmServiceWorkerScope = '/firebase-cloud-messaging-push-scope';
+
+void _assertValidVapidKey(String vapidKey) {
+  if (vapidKey.isEmpty) {
+    throw StateError('WPGG_FIREBASE_VAPID_KEY is missing.');
+  }
+  if (vapidKey.contains('VAPID') || vapidKey.contains('TU_')) {
+    throw StateError(
+      'WPGG_FIREBASE_VAPID_KEY parece un placeholder ($vapidKey). '
+      'Rebuild con la clave pública real de Firebase Console → Cloud Messaging '
+      '→ Web Push certificates.',
+    );
+  }
+  try {
+    final normalized = vapidKey.replaceAll('-', '+').replaceAll('_', '/');
+    final padding = (4 - normalized.length % 4) % 4;
+    final decoded = base64.decode(normalized + '=' * padding);
+    if (decoded.length != 65 || decoded.first != 0x04) {
+      throw const FormatException('invalid VAPID length or prefix');
+    }
+  } on FormatException {
+    throw StateError(
+      'WPGG_FIREBASE_VAPID_KEY no es una clave VAPID válida. '
+      'Copiá la clave pública exacta de Firebase Console y rebuild con '
+      '--dart-define=WPGG_FIREBASE_VAPID_KEY=...',
+    );
+  }
+}
 
 /// Initializes Firebase on web. Mobile platforms are configured separately.
 Future<void> bootstrapFirebase() async {
@@ -45,6 +73,23 @@ Future<String?> fetchWebPushToken() {
   return _fetchWebPushTokenInFlight ??= _fetchWebPushTokenImpl().whenComplete(() {
     _fetchWebPushTokenInFlight = null;
   });
+}
+
+/// Removes push subscriptions that may have been created with a wrong VAPID key
+/// or on the wrong service worker (e.g. flutter_service_worker.js).
+Future<void> _clearStalePushSubscriptions() async {
+  final container = web.window.navigator.serviceWorker;
+  for (final scope in [_fcmServiceWorkerScope, '/']) {
+    final reg = await container.getRegistration(scope).toDart;
+    if (reg == null) continue;
+    final sub = await reg.pushManager.getSubscription().toDart;
+    if (sub != null) {
+      await sub.unsubscribe().toDart;
+    }
+  }
+  try {
+    await FirebaseMessaging.instance.deleteToken();
+  } catch (_) {}
 }
 
 Future<web.ServiceWorkerRegistration> _waitForFcmServiceWorker() async {
@@ -89,9 +134,7 @@ Future<String> _getTokenWithFcmServiceWorker(String vapidKey) async {
 
 Future<String?> _fetchWebPushTokenImpl() async {
   const vapidKey = AppConstants.firebaseVapidKey;
-  if (vapidKey.isEmpty) {
-    throw StateError('WPGG_FIREBASE_VAPID_KEY is missing.');
-  }
+  _assertValidVapidKey(vapidKey);
 
   final messaging = FirebaseMessaging.instance;
   final settings = await messaging.requestPermission();
@@ -99,13 +142,19 @@ Future<String?> _fetchWebPushTokenImpl() async {
     return null;
   }
 
+  await _clearStalePushSubscriptions();
+
   try {
     return await _getTokenWithFcmServiceWorker(vapidKey);
   } on FirebaseException catch (e) {
     debugPrint('FCM getToken error: ${e.code} — ${e.message}');
     if (e.code == 'token-subscribe-failed') {
       throw StateError(
-        'FCM registration failed. Clear site data for wpgg.lol and try again.',
+        'FCM registration failed: la suscripción push no coincide con la '
+        'VAPID key. En Firebase Console → Cloud Messaging → Web Push '
+        'certificates, verificá que la clave pública sea exactamente la del '
+        'build (WPGG_FIREBASE_VAPID_KEY). Si no coincide, generá un key pair '
+        'nuevo, actualizá el build y borrá datos del sitio.',
       );
     }
     rethrow;
