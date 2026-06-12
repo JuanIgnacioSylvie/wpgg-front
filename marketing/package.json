@@ -1,0 +1,11 @@
+{
+  "name": "wpgg-marketing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ig-story": "node generate-ig-story.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.68"
+  }
+}
