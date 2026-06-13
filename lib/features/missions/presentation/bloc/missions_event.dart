@@ -51,6 +51,19 @@ class CancelActiveMission extends MissionsEvent {
   List<Object?> get props => [missionId];
 }
 
+class ReorderActiveMissions extends MissionsEvent {
+  const ReorderActiveMissions({
+    required this.draggedId,
+    required this.targetId,
+  });
+
+  final String draggedId;
+  final String targetId;
+
+  @override
+  List<Object?> get props => [draggedId, targetId];
+}
+
 class ClearMissionActionFeedback extends MissionsEvent {
   const ClearMissionActionFeedback();
 }

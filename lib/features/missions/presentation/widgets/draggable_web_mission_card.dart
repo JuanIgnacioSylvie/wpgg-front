@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'web_mission_card.dart';
+
+typedef MissionReorderCallback = void Function(String draggedId, String targetId);
 
 class DraggableWebMissionCard extends StatefulWidget {
   const DraggableWebMissionCard({
@@ -11,12 +14,14 @@ class DraggableWebMissionCard extends StatefulWidget {
     this.endsInSeconds,
     required this.onDragStarted,
     required this.onDragEnded,
+    this.onReorder,
   });
 
   final MissionCardEntity mission;
   final int? endsInSeconds;
   final ValueChanged<String> onDragStarted;
   final VoidCallback onDragEnded;
+  final MissionReorderCallback? onReorder;
 
   @override
   State<DraggableWebMissionCard> createState() => _DraggableWebMissionCardState();
@@ -40,7 +45,44 @@ class _DraggableWebMissionCardState extends State<DraggableWebMissionCard> {
   @override
   Widget build(BuildContext context) {
     final duration = WebMotion.resolve(context, WebMotion.fast);
+    final card = _buildDraggable(duration);
 
+    if (widget.onReorder == null) return card;
+
+    return DragTarget<String>(
+      onWillAcceptWithDetails: (details) =>
+          details.data.isNotEmpty && details.data != widget.mission.id,
+      onAcceptWithDetails: (details) {
+        widget.onReorder?.call(details.data, widget.mission.id);
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isDropTarget = candidateData.isNotEmpty;
+
+        return AnimatedContainer(
+          duration: duration,
+          curve: WebMotion.curve,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: isDropTarget
+                ? Border.all(color: WebColors.accent, width: 2)
+                : null,
+            boxShadow: isDropTarget
+                ? [
+                    BoxShadow(
+                      color: WebColors.accent.withValues(alpha: 0.25),
+                      blurRadius: 16,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                : null,
+          ),
+          child: card,
+        );
+      },
+    );
+  }
+
+  Widget _buildDraggable(Duration duration) {
     return Draggable<String>(
       data: widget.mission.id,
       maxSimultaneousDrags: 1,

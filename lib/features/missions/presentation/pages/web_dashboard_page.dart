@@ -92,6 +92,16 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
     await _cancelMissionWithAnimation(missionId);
   }
 
+  void _onReorder(String draggedId, String targetId) {
+    setState(() => _draggingMissionId = null);
+    context.read<MissionsBloc>().add(
+          ReorderActiveMissions(
+            draggedId: draggedId,
+            targetId: targetId,
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -266,6 +276,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                             : null,
                                         onDragStarted: _onDragStarted,
                                         onDragEnded: _onDragEnded,
+                                        onReorder: _onReorder,
                                       ),
                                     );
                                   },

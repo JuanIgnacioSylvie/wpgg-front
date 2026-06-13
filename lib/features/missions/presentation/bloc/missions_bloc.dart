@@ -1,27 +1,32 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/network/network_error_message.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import '../../data/datasources/missions_remote_datasource.dart';
+import '../../data/mission_layout_store.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import '../utils/mission_layout_utils.dart';
 
 part 'missions_event.dart';
 part 'missions_state.dart';
 
 class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
-  MissionsBloc(this._dataSource) : super(const MissionsState()) {
+  MissionsBloc(this._dataSource, this._layoutStore) : super(const MissionsState()) {
     on<LoadMissionsHome>(_onHome);
     on<LoadPickToday>(_onPick);
     on<LoadMissionsByDay>(_onByDay);
     on<AcceptMissionOffer>(_onAccept);
     on<RerollMissionOffer>(_onReroll);
     on<CancelActiveMission>(_onCancel);
+    on<ReorderActiveMissions>(_onReorder);
     on<ClearMissionActionFeedback>(_onClearActionFeedback);
   }
 
   final MissionsRemoteDataSource _dataSource;
+  final MissionLayoutStore _layoutStore;
 
   void _refreshWallet() {
     sl<WalletBloc>().add(const LoadWallet());
@@ -42,17 +47,21 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     }
     try {
       final home = await _dataSource.fetchHome();
+      final baseHome = MissionsHomeData(
+        welcome: home.welcome,
+        primary: home.primary,
+        secondary: home.secondary,
+        past: home.past,
+        endsInSeconds: home.endsInSeconds,
+        missionDate: home.missionDate,
+        missionDayTimezone: home.missionDayTimezone,
+      );
+      final active = activeMissionsFromHome(baseHome);
+      final savedOrder = _layoutStore.loadOrder(home.missionDate);
+      final ordered = applySavedOrder(active, savedOrder);
       emit(state.copyWith(
         homeStatus: MissionsLoadStatus.loaded,
-        home: MissionsHomeData(
-          welcome: home.welcome,
-          primary: home.primary,
-          secondary: home.secondary,
-          past: home.past,
-          endsInSeconds: home.endsInSeconds,
-          missionDate: home.missionDate,
-          missionDayTimezone: home.missionDayTimezone,
-        ),
+        home: homeFromOrderedMissions(baseHome, ordered),
         clearHomeError: true,
       ));
     } catch (e) {
@@ -200,6 +209,34 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
         ),
       ));
     }
+  }
+
+  Future<void> _onReorder(
+    ReorderActiveMissions event,
+    Emitter<MissionsState> emit,
+  ) async {
+    final home = state.home;
+    if (home == null) return;
+
+    final active = activeMissionsFromHome(home);
+    final reordered = reorderMissions(
+      active,
+      event.draggedId,
+      event.targetId,
+    );
+    if (listEquals(
+      active.map((mission) => mission.id).toList(),
+      reordered.map((mission) => mission.id).toList(),
+    )) {
+      return;
+    }
+
+    final updatedHome = homeFromOrderedMissions(home, reordered);
+    emit(state.copyWith(home: updatedHome));
+    await _layoutStore.saveOrder(
+      home.missionDate,
+      reordered.map((mission) => mission.id).toList(),
+    );
   }
 
   Future<void> _onCancel(

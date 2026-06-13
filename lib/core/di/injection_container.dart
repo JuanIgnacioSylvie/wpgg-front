@@ -39,6 +39,7 @@ import '../../features/riot/domain/usecases/get_summoner_profile_usecase.dart';
 import '../../features/riot/domain/usecases/link_riot_account_usecase.dart';
 import '../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../features/missions/data/datasources/missions_remote_datasource.dart';
+import '../../features/missions/data/mission_layout_store.dart';
 import '../../features/missions/presentation/bloc/missions_bloc.dart';
 import '../../features/store/data/datasources/store_remote_datasource.dart';
 import '../../features/store/presentation/bloc/store_bloc.dart';
@@ -140,8 +141,13 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<MissionsRemoteDataSource>(
     () => MissionsRemoteDataSourceImpl(sl<ApiClient>()),
   );
+  final missionLayoutStore = await MissionLayoutStore.create();
+  sl.registerSingleton<MissionLayoutStore>(missionLayoutStore);
   sl.registerLazySingleton(
-    () => MissionsBloc(sl<MissionsRemoteDataSource>()),
+    () => MissionsBloc(
+      sl<MissionsRemoteDataSource>(),
+      sl<MissionLayoutStore>(),
+    ),
   );
 
   sl.registerLazySingleton<WalletRemoteDataSource>(
