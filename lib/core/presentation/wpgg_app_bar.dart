@@ -93,6 +93,14 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: WpggBrand.white,
                       ),
                     ),
+                    if (summoner!.tagLine.isNotEmpty)
+                      Text(
+                        '#${summoner!.tagLine}',
+                        style: _homeTextStyle.copyWith(
+                          color: WpggBrand.textMuted,
+                          fontSize: 12,
+                        ),
+                      ),
                   ],
                 )
               : null,

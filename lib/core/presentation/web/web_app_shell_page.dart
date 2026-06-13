@@ -252,7 +252,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
             }
 
             final sectionTitle = isDashboard && summoner != null
-                ? summoner.gameName
+                ? summoner.riotId
                 : webSectionTitleForLocation(context.l10n, location);
 
             final ddragon = context.watch<DDragonProvider>();

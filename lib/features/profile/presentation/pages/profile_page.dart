@@ -328,6 +328,17 @@ class _ProfilePageState extends State<ProfilePage>
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                              if (summoner.tagLine.isNotEmpty)
+                                Text(
+                                  '#${summoner.tagLine}',
+                                  style: TextStyle(
+                                    fontFamily: AppFonts.lexendDeca,
+                                    color: widget.embeddedInPanel
+                                        ? WpggBrand.textMuted
+                                        : WpggBrand.textMuted,
+                                    fontSize: 13,
+                                  ),
+                                ),
                               const SizedBox(height: 20),
                             ],
                           ],

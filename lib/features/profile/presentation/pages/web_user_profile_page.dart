@@ -88,7 +88,10 @@ class _WebUserProfileDialog extends StatelessWidget {
               BlocBuilder<UserProfileBloc, UserProfileState>(
                 builder: (context, state) {
                   final title = switch (state) {
-                    UserProfileLoaded(:final profile) => profile.gameName,
+                    UserProfileLoaded(:final profile) =>
+                      profile.tagLine.isNotEmpty
+                          ? '${profile.gameName}#${profile.tagLine}'
+                          : profile.gameName,
                     _ => context.l10n.profile,
                   };
                   return ProfilePanelHeader(
