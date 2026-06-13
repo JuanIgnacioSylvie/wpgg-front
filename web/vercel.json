@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/((?!robots\\.txt|sitemap\\.xml|firebase-messaging-sw\\.js|firebase-config\\.js).*)",
+      "source": "/((?!robots\\.txt|sitemap\\.xml|firebase-messaging-sw\\.js|firebase-config\\.js|_vercel/).*)",
       "destination": "/index.html"
     }
   ]

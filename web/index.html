@@ -144,6 +144,16 @@
       } catch (e) {}
     })();
   </script>
+  <!-- Vercel Web Analytics: enable in Vercel → Project → Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.wpggNotifyRouteChange = function (path) {
+      try {
+        window.va('pageview', { route: path || window.location.pathname });
+      } catch (e) {}
+    };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <script>
     // Scope aislado: flutter_service_worker.js ya usa scope '/'.
     if ('serviceWorker' in navigator) {

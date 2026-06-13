@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'core/analytics/vercel_analytics.dart';
 import 'core/firebase/firebase_bootstrap.dart';
 import 'core/platform/configure_url_strategy.dart';
 import 'core/platform/oauth_callback_fragment_capture.dart';
@@ -22,6 +23,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureUrlStrategy();
   await initDependencies();
+  if (kIsWeb) {
+    initVercelAnalytics(appRouter);
+  }
   if (kIsWeb) {
     runApp(const WpggApp());
     unawaited(bootstrapFirebase());
