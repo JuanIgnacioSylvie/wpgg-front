@@ -256,13 +256,27 @@ class _LeaderboardRow extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  entry.gameName,
-                  style: TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    color: textColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.gameName,
+                      style: TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
+                        color: textColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (entry.tagLine.isNotEmpty)
+                      Text(
+                        '#${entry.tagLine}',
+                        style: TextStyle(
+                          fontFamily: AppFonts.lexendDeca,
+                          color: mutedColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Row(

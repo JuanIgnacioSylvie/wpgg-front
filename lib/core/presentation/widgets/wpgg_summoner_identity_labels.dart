@@ -68,13 +68,13 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _WebBadge(text: gameName),
-          if (showTagAndServer && tagLine.trim().isNotEmpty) ...[
-            const SizedBox(width: 6),
-            _WebBadge(text: '#${tagLine.trim()}'),
-          ],
           if (showTagAndServer && region.trim().isNotEmpty) ...[
             const SizedBox(width: 6),
             WpggServerTag(region: region, useWebStyle: true),
+          ],
+          if (showTagAndServer && tagLine.trim().isNotEmpty) ...[
+            const SizedBox(width: 6),
+            _WebBadge(text: '#${tagLine.trim()}'),
           ],
         ],
       );
@@ -84,11 +84,22 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          gameName,
-          maxLines: nameMaxLines,
-          overflow: TextOverflow.ellipsis,
-          style: nameStyle ?? _defaultNameStyle(useWebStyle),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                gameName,
+                maxLines: nameMaxLines,
+                overflow: TextOverflow.ellipsis,
+                style: nameStyle ?? _defaultNameStyle(useWebStyle),
+              ),
+            ),
+            if (showTagAndServer && region.trim().isNotEmpty) ...[
+              const SizedBox(width: 8),
+              WpggServerTag(region: region, useWebStyle: useWebStyle),
+            ],
+          ],
         ),
         if (showTagAndServer && tagLine.trim().isNotEmpty)
           Text(
@@ -97,8 +108,6 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: tagLineStyle ?? _defaultTagLineStyle(useWebStyle),
           ),
-        if (showTagAndServer)
-          WpggServerTag(region: region, useWebStyle: useWebStyle),
       ],
     );
   }
