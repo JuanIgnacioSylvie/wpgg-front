@@ -4,6 +4,7 @@ import '../../constants/app_fonts.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
 import '../widgets/mission_day_countdown.dart';
+import '../widgets/wpgg_server_tag.dart';
 import 'web_colors.dart';
 import 'web_motion.dart';
 
@@ -11,6 +12,7 @@ class WebTopBar extends StatelessWidget {
   const WebTopBar({
     super.key,
     required this.sectionTitle,
+    this.sectionServerRegion,
     this.showAddButton = true,
     this.addButtonEnabled = true,
     this.showDayCountdown = false,
@@ -19,6 +21,7 @@ class WebTopBar extends StatelessWidget {
   });
 
   final String sectionTitle;
+  final String? sectionServerRegion;
   final bool showAddButton;
   final bool addButtonEnabled;
   final bool showDayCountdown;
@@ -68,21 +71,37 @@ class WebTopBar extends StatelessWidget {
                 ),
               );
             },
-            child: Container(
-              key: ValueKey<String>(sectionTitle),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: WebColors.surface,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: WebColors.border),
+            child: Row(
+              key: ValueKey<String>(
+                '$sectionTitle|${sectionServerRegion ?? ''}',
               ),
-              child: Text(
-                sectionTitle,
-                style: const TextStyle(
-                  color: WebColors.textSecondary,
-                  fontSize: 12,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: WebColors.surface,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: WebColors.border),
+                  ),
+                  child: Text(
+                    sectionTitle,
+                    style: const TextStyle(
+                      color: WebColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
-              ),
+                if (sectionServerRegion != null &&
+                    sectionServerRegion!.trim().isNotEmpty) ...[
+                  const SizedBox(width: 6),
+                  WpggServerTag(
+                    region: sectionServerRegion!,
+                    useWebStyle: true,
+                  ),
+                ],
+              ],
             ),
           ),
           const Spacer(),

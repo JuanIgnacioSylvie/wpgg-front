@@ -9,6 +9,7 @@ import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
+import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -286,15 +287,10 @@ class _ProfilePageState extends State<ProfilePage>
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    if (summoner.tagLine.isNotEmpty)
-                                      Text(
-                                        '#${summoner.tagLine}',
-                                        style: const TextStyle(
-                                          fontFamily: AppFonts.lexendDeca,
-                                          color: WebColors.textMuted,
-                                          fontSize: 13,
-                                        ),
-                                      ),
+                                    WpggServerTag(
+                                      region: summoner.region,
+                                      useWebStyle: true,
+                                    ),
                                   ],
                                 ],
                               ),
@@ -328,17 +324,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              if (summoner.tagLine.isNotEmpty)
-                                Text(
-                                  '#${summoner.tagLine}',
-                                  style: TextStyle(
-                                    fontFamily: AppFonts.lexendDeca,
-                                    color: widget.embeddedInPanel
-                                        ? WpggBrand.textMuted
-                                        : WpggBrand.textMuted,
-                                    fontSize: 13,
-                                  ),
-                                ),
+                              WpggServerTag(region: summoner.region),
                               const SizedBox(height: 20),
                             ],
                           ],

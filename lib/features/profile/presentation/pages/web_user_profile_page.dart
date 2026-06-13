@@ -8,6 +8,7 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_section_header.dart';
+import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../missions/presentation/widgets/web_mission_card.dart';
@@ -88,10 +89,7 @@ class _WebUserProfileDialog extends StatelessWidget {
               BlocBuilder<UserProfileBloc, UserProfileState>(
                 builder: (context, state) {
                   final title = switch (state) {
-                    UserProfileLoaded(:final profile) =>
-                      profile.tagLine.isNotEmpty
-                          ? '${profile.gameName}#${profile.tagLine}'
-                          : profile.gameName,
+                    UserProfileLoaded(:final profile) => profile.gameName,
                     _ => context.l10n.profile,
                   };
                   return ProfilePanelHeader(
@@ -218,15 +216,10 @@ class _WebUserProfileContent extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      if (profile.tagLine.isNotEmpty)
-                        Text(
-                          '#${profile.tagLine}',
-                          style: const TextStyle(
-                            fontFamily: AppFonts.lexendDeca,
-                            color: WebColors.textMuted,
-                            fontSize: 14,
-                          ),
-                        ),
+                      WpggServerTag(
+                        region: profile.region,
+                        useWebStyle: true,
+                      ),
                     ],
                   ),
                 ],

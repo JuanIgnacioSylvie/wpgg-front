@@ -7,6 +7,7 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
+import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../profile/data/datasources/profile_remote_datasource.dart';
@@ -267,15 +268,10 @@ class _LeaderboardRow extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (entry.tagLine.isNotEmpty)
-                      Text(
-                        '#${entry.tagLine}',
-                        style: TextStyle(
-                          fontFamily: AppFonts.lexendDeca,
-                          color: mutedColor,
-                          fontSize: 12,
-                        ),
-                      ),
+                    WpggServerTag(
+                      region: entry.region,
+                      useWebStyle: useWebStyle,
+                    ),
                   ],
                 ),
               ),

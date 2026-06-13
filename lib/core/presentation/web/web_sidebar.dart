@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/riot/domain/entities/summoner_entity.dart';
+import '../widgets/wpgg_server_tag.dart';
 import '../wpgg_profile_avatar.dart';
 import 'web_animations.dart';
 import 'web_colors.dart';
@@ -260,15 +261,9 @@ class _SidebarProfileHeaderState extends State<_SidebarProfileHeader> {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                Text(
-                                  '#${widget.summoner!.tagLine}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: AppFonts.lexendDeca,
-                                    color: WebColors.textMuted,
-                                    fontSize: 11,
-                                  ),
+                                WpggServerTag(
+                                  region: widget.summoner!.region,
+                                  useWebStyle: true,
                                 ),
                               ],
                             ),

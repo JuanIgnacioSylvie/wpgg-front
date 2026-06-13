@@ -9,6 +9,7 @@ import '../../../../core/di/injection_container.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
+import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../missions/presentation/widgets/mission_primary_card.dart';
@@ -123,16 +124,10 @@ class _UserProfileView extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  if (profile.tagLine.isNotEmpty)
-                    Text(
-                      '#${profile.tagLine}',
-                      style: TextStyle(
-                        fontFamily: AppFonts.lexendDeca,
-                        color: useWebStyle
-                            ? WebColors.textMuted
-                            : WpggBrand.textMuted,
-                      ),
-                    ),
+                  WpggServerTag(
+                    region: profile.region,
+                    useWebStyle: useWebStyle,
+                  ),
                 ],
               ),
             ),
