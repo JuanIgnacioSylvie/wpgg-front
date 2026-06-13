@@ -90,6 +90,7 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     WpggSummonerIdentityLabels.fromSummoner(
                       summoner!,
+                      showTagAndServer: true,
                       nameStyle: _homeTextStyle.copyWith(
                         color: WpggBrand.white,
                       ),

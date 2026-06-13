@@ -7,7 +7,6 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
-import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../profile/data/datasources/profile_remote_datasource.dart';
@@ -257,20 +256,12 @@ class _LeaderboardRow extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: WpggSummonerIdentityLabels(
-                  gameName: entry.gameName,
-                  tagLine: entry.tagLine,
-                  region: entry.region,
-                  useWebStyle: useWebStyle,
-                  nameStyle: TextStyle(
+                child: Text(
+                  entry.gameName,
+                  style: TextStyle(
                     fontFamily: AppFonts.lexendDeca,
                     color: textColor,
                     fontWeight: FontWeight.w600,
-                  ),
-                  tagLineStyle: TextStyle(
-                    fontFamily: AppFonts.lexendDeca,
-                    color: mutedColor,
-                    fontSize: 12,
                   ),
                 ),
               ),

@@ -118,6 +118,7 @@ class _UserProfileView extends StatelessWidget {
                     tagLine: profile.tagLine,
                     region: profile.region,
                     useWebStyle: useWebStyle,
+                    showTagAndServer: true,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     nameStyle: TextStyle(
                       fontFamily: AppFonts.lexendDeca,

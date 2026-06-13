@@ -21,6 +21,7 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
     this.nameStyle,
     this.tagLineStyle,
     this.nameMaxLines = 1,
+    this.showTagAndServer = false,
   });
 
   factory WpggSummonerIdentityLabels.fromSummoner(
@@ -32,6 +33,7 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
     TextStyle? nameStyle,
     TextStyle? tagLineStyle,
     int nameMaxLines = 1,
+    bool showTagAndServer = false,
   }) {
     return WpggSummonerIdentityLabels(
       key: key,
@@ -44,6 +46,7 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
       nameStyle: nameStyle,
       tagLineStyle: tagLineStyle,
       nameMaxLines: nameMaxLines,
+      showTagAndServer: showTagAndServer,
     );
   }
 
@@ -56,6 +59,7 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
   final TextStyle? nameStyle;
   final TextStyle? tagLineStyle;
   final int nameMaxLines;
+  final bool showTagAndServer;
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +68,11 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _WebBadge(text: gameName),
-          if (tagLine.trim().isNotEmpty) ...[
+          if (showTagAndServer && tagLine.trim().isNotEmpty) ...[
             const SizedBox(width: 6),
             _WebBadge(text: '#${tagLine.trim()}'),
           ],
-          if (region.trim().isNotEmpty) ...[
+          if (showTagAndServer && region.trim().isNotEmpty) ...[
             const SizedBox(width: 6),
             WpggServerTag(region: region, useWebStyle: true),
           ],
@@ -86,14 +90,15 @@ class WpggSummonerIdentityLabels extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: nameStyle ?? _defaultNameStyle(useWebStyle),
         ),
-        if (tagLine.trim().isNotEmpty)
+        if (showTagAndServer && tagLine.trim().isNotEmpty)
           Text(
             '#${tagLine.trim()}',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: tagLineStyle ?? _defaultTagLineStyle(useWebStyle),
           ),
-        WpggServerTag(region: region, useWebStyle: useWebStyle),
+        if (showTagAndServer)
+          WpggServerTag(region: region, useWebStyle: useWebStyle),
       ],
     );
   }

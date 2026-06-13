@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants/app_fonts.dart';
 import '../../constants/wpgg_brand.dart';
+import '../../utils/riot_region_label.dart';
 import '../web/web_colors.dart';
 
 /// Label for the Riot platform region (e.g. LA2, BR1).
@@ -17,7 +18,7 @@ class WpggServerTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = region.trim().toUpperCase();
+    final label = formatRiotServerLabel(region);
     if (label.isEmpty) return const SizedBox.shrink();
 
     if (useWebStyle) {

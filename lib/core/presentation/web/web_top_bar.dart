@@ -77,6 +77,7 @@ class WebTopBar extends StatelessWidget {
                     key: ValueKey<String>(dashboardSummoner!.riotId),
                     dashboardSummoner!,
                     layout: WpggSummonerIdentityLayout.horizontalBadges,
+                    showTagAndServer: true,
                   )
                 : Container(
                     key: ValueKey<String>(sectionTitle),

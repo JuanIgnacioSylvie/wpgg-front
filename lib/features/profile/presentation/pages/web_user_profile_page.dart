@@ -212,6 +212,7 @@ class _WebUserProfileContent extends StatelessWidget {
                         tagLine: profile.tagLine,
                         region: profile.region,
                         useWebStyle: true,
+                        showTagAndServer: true,
                         nameStyle: const TextStyle(
                           fontFamily: AppFonts.lexendDeca,
                           color: WebColors.textPrimary,
