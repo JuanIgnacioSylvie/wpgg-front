@@ -25,6 +25,8 @@ import 'web_notifications_panel.dart';
 import 'web_settings_dialog.dart';
 import 'web_shell_scope.dart';
 import 'web_shell_transition.dart';
+import 'web_colors.dart';
+import 'web_layout.dart';
 import 'web_sidebar.dart';
 import 'web_motion.dart';
 import 'web_top_bar.dart';
@@ -122,7 +124,12 @@ class _WebAppShellPageState extends State<WebAppShellPage>
       }
     }
 
-    setState(() => _settingsDialogOpen = false);
+    setState(() {
+      _settingsDialogOpen = false;
+      if (WebLayout.isMobileLayout(context) && _sidebarExpanded) {
+        _sidebarExpanded = false;
+      }
+    });
     widget.navigationShell.goBranch(
       branchIndex,
       initialLocation: branchIndex == widget.navigationShell.currentIndex,
@@ -137,6 +144,9 @@ class _WebAppShellPageState extends State<WebAppShellPage>
 
   Future<void> _openSettingsDialog() async {
     if (_settingsDialogOpen) return;
+    if (WebLayout.isMobileLayout(context) && _sidebarExpanded) {
+      setState(() => _sidebarExpanded = false);
+    }
     setState(() => _settingsDialogOpen = true);
     await showWebSettingsDialog(context);
     if (mounted) {
@@ -150,6 +160,9 @@ class _WebAppShellPageState extends State<WebAppShellPage>
     if (_notificationsPanelOpen) {
       _closeNotificationsPanel();
       return;
+    }
+    if (WebLayout.isMobileLayout(context) && _sidebarExpanded) {
+      setState(() => _sidebarExpanded = false);
     }
     if (_settingsDialogOpen) {
       Navigator.of(context, rootNavigator: true).maybePop();
@@ -198,6 +211,77 @@ class _WebAppShellPageState extends State<WebAppShellPage>
       WalletWithdrawError(:final summary) => summary.balance,
       _ => null,
     };
+  }
+
+  Widget _buildSidebar({
+    required bool expanded,
+    required int sidebarIndex,
+    required SummonerEntity? summoner,
+    required DDragonProvider ddragon,
+    required int? balance,
+    required int unreadCount,
+  }) {
+    return WebSidebar(
+      expanded: expanded,
+      onToggleExpanded: () => setState(
+        () => _sidebarExpanded = !_sidebarExpanded,
+      ),
+      currentIndex: sidebarIndex,
+      onTap: _onSidebarTap,
+      onSettingsTap: _openSettingsDialog,
+      settingsSelected: _settingsDialogOpen,
+      onHeaderTap: () => _onSidebarTap(0),
+      summoner: summoner,
+      ddragon: ddragon,
+      balance: balance,
+      onNotificationsTap: _toggleNotificationsPanel,
+      notificationsBellKey: _notificationsBellKey,
+      unreadCount: unreadCount,
+      notificationsPanelOpen: _notificationsPanelOpen,
+    );
+  }
+
+  Widget _buildMainColumn({
+    required String sectionTitle,
+    required SummonerEntity? dashboardSummoner,
+    required bool isDashboard,
+  }) {
+    return Expanded(
+      child: Column(
+        children: [
+          BlocBuilder<MissionsBloc, MissionsState>(
+            buildWhen: (prev, curr) =>
+                prev.home?.endsInSeconds != curr.home?.endsInSeconds ||
+                prev.home != curr.home,
+            builder: (context, missionsState) {
+              final home = missionsState.home;
+              final endsIn = isDashboard ? home?.endsInSeconds : null;
+              final activeCount = home == null
+                  ? 0
+                  : (home.primary != null ? 1 : 0) + home.secondary.length;
+
+              return WebTopBar(
+                sectionTitle: sectionTitle,
+                dashboardSummoner: dashboardSummoner,
+                showAddButton: isDashboard,
+                addButtonEnabled: activeCount < 3,
+                showDayCountdown:
+                    isDashboard && endsIn != null && endsIn > 0,
+                dayEndsInSeconds: endsIn,
+                onAddTap: _openPickMissions,
+              );
+            },
+          ),
+          Expanded(
+            child: WebDotGridBackground(
+              child: WebShellBranchTransition(
+                navigationShell: widget.navigationShell,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -257,90 +341,78 @@ class _WebAppShellPageState extends State<WebAppShellPage>
             final dashboardSummoner = isDashboard ? summoner : null;
 
             final ddragon = context.watch<DDragonProvider>();
+            final isMobile = WebLayout.isMobileLayout(context);
 
             return Scaffold(
               backgroundColor: Colors.black,
-              body: Row(
-                children: [
-                  BlocBuilder<WalletBloc, WalletState>(
-                    builder: (context, walletState) {
-                      return BlocBuilder<NotificationsInboxBloc,
-                          NotificationsInboxState>(
-                        buildWhen: (prev, curr) =>
-                            prev is NotificationsInboxLoaded &&
-                                curr is NotificationsInboxLoaded
-                            ? prev.unreadCount != curr.unreadCount
-                            : curr is NotificationsInboxLoaded ||
-                                curr is NotificationsInboxLoading,
-                        builder: (context, inboxState) {
-                          final unreadCount = inboxState
-                                  is NotificationsInboxLoaded
+              body: BlocBuilder<WalletBloc, WalletState>(
+                builder: (context, walletState) {
+                  return BlocBuilder<NotificationsInboxBloc,
+                      NotificationsInboxState>(
+                    buildWhen: (prev, curr) =>
+                        prev is NotificationsInboxLoaded &&
+                            curr is NotificationsInboxLoaded
+                        ? prev.unreadCount != curr.unreadCount
+                        : curr is NotificationsInboxLoaded ||
+                            curr is NotificationsInboxLoading,
+                    builder: (context, inboxState) {
+                      final unreadCount =
+                          inboxState is NotificationsInboxLoaded
                               ? inboxState.unreadCount
                               : 0;
+                      final balance = _walletBalance(walletState);
+                      final sidebar = _buildSidebar(
+                        expanded: _sidebarExpanded,
+                        sidebarIndex: sidebarIndex,
+                        summoner: summoner,
+                        ddragon: ddragon,
+                        balance: balance,
+                        unreadCount: unreadCount,
+                      );
+                      final mainColumn = _buildMainColumn(
+                        sectionTitle: sectionTitle,
+                        dashboardSummoner: dashboardSummoner,
+                        isDashboard: isDashboard,
+                      );
 
-                          return WebSidebar(
-                            expanded: _sidebarExpanded,
-                            onToggleExpanded: () => setState(
-                              () => _sidebarExpanded = !_sidebarExpanded,
+                      if (!isMobile) {
+                        return Row(
+                          children: [sidebar, mainColumn],
+                        );
+                      }
+
+                      return Stack(
+                        children: [
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: WebColors.sidebarCollapsedWidth,
+                              ),
+                              mainColumn,
+                            ],
+                          ),
+                          if (_sidebarExpanded)
+                            Positioned.fill(
+                              child: GestureDetector(
+                                onTap: () => setState(
+                                  () => _sidebarExpanded = false,
+                                ),
+                                child: ColoredBox(
+                                  color: Colors.black.withValues(alpha: 0.55),
+                                ),
+                              ),
                             ),
-                            currentIndex: sidebarIndex,
-                            onTap: _onSidebarTap,
-                            onSettingsTap: _openSettingsDialog,
-                            settingsSelected: _settingsDialogOpen,
-                            onHeaderTap: () => _onSidebarTap(0),
-                            summoner: summoner,
-                            ddragon: ddragon,
-                            balance: _walletBalance(walletState),
-                            onNotificationsTap: _toggleNotificationsPanel,
-                            notificationsBellKey: _notificationsBellKey,
-                            unreadCount: unreadCount,
-                            notificationsPanelOpen: _notificationsPanelOpen,
-                          );
-                        },
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            child: sidebar,
+                          ),
+                        ],
                       );
                     },
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        BlocBuilder<MissionsBloc, MissionsState>(
-                          buildWhen: (prev, curr) =>
-                              prev.home?.endsInSeconds !=
-                                  curr.home?.endsInSeconds ||
-                              prev.home != curr.home,
-                          builder: (context, missionsState) {
-                            final home = missionsState.home;
-                            final endsIn =
-                                isDashboard ? home?.endsInSeconds : null;
-                            final activeCount = home == null
-                                ? 0
-                                : (home.primary != null ? 1 : 0) +
-                                    home.secondary.length;
-
-                            return WebTopBar(
-                              sectionTitle: sectionTitle,
-                              dashboardSummoner: dashboardSummoner,
-                              showAddButton: isDashboard,
-                              addButtonEnabled: activeCount < 3,
-                              showDayCountdown: isDashboard &&
-                                  endsIn != null &&
-                                  endsIn > 0,
-                              dayEndsInSeconds: endsIn,
-                              onAddTap: _openPickMissions,
-                            );
-                          },
-                        ),
-                        Expanded(
-                          child: WebDotGridBackground(
-                            child: WebShellBranchTransition(
-                              navigationShell: widget.navigationShell,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             );
           },

@@ -12,6 +12,7 @@ cd "$ROOT"
 : "${WPGG_FIREBASE_VAPID_KEY:?WPGG_FIREBASE_VAPID_KEY is required}"
 
 bash scripts/prepare-firebase-web.sh
+bash scripts/sync-web-icons.sh
 
 BUILD_ARGS=(
   build web --release
