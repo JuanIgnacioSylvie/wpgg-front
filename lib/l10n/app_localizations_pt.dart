@@ -219,6 +219,60 @@ class AppLocalizationsPt extends AppLocalizations {
   String get contactUs => 'Fale conosco';
 
   @override
+  String get supportMenuItem => 'Suporte';
+
+  @override
+  String get supportIntro => 'Conte sua dúvida e responderemos em breve.';
+
+  @override
+  String get supportEmailLabel => 'Seu email';
+
+  @override
+  String get supportEmailUnavailable =>
+      'Não foi possível obter seu email. Entre novamente e tente de novo.';
+
+  @override
+  String get supportSubjectLabel => 'Assunto';
+
+  @override
+  String get supportSubjectHint => 'Ex.: problema com saque';
+
+  @override
+  String get supportSubjectError => 'Informe um assunto (mín. 5 caracteres)';
+
+  @override
+  String get supportMessageLabel => 'Mensagem';
+
+  @override
+  String get supportMessageHint =>
+      'Descreva sua dúvida com o máximo de detalhes possível.';
+
+  @override
+  String get supportMessageError => 'Conte um pouco mais (mín. 20 caracteres)';
+
+  @override
+  String get supportSubmit => 'Enviar solicitação';
+
+  @override
+  String get supportTurnstileRequired =>
+      'Complete a verificação de segurança antes de enviar.';
+
+  @override
+  String get supportSubmitError =>
+      'Não foi possível enviar sua solicitação. Tente novamente.';
+
+  @override
+  String get supportThanksSnackbar =>
+      'Obrigado! Recebemos sua solicitação e responderemos em breve.';
+
+  @override
+  String get supportSentTitle => 'Solicitação enviada';
+
+  @override
+  String get supportSentBody =>
+      'Obrigado por entrar em contato. Analisamos cada mensagem e responderemos em breve.';
+
+  @override
   String get privacyPolicy => 'Política de privacidade';
 
   @override

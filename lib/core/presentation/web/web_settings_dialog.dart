@@ -8,13 +8,14 @@ import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/profile/presentation/bloc/profile_settings_bloc.dart';
 import '../../../features/profile/presentation/pages/faqs_page.dart';
 import '../../../features/profile/presentation/pages/settings_page.dart';
+import '../../../features/profile/presentation/pages/support_page.dart';
 import '../../../features/profile/presentation/pages/terms_page.dart';
 import '../../../features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'web_animations.dart';
 import 'web_colors.dart';
 import 'web_motion.dart';
 
-enum _WebSettingsPanel { settings, faqs, terms }
+enum _WebSettingsPanel { settings, faqs, support, terms }
 
 Future<void> showWebSettingsDialog(BuildContext context) {
   return showWebDialog<void>(
@@ -53,6 +54,8 @@ class _WebSettingsDialogState extends State<_WebSettingsDialog> {
   void _showSettings() => setState(() => _panel = _WebSettingsPanel.settings);
 
   void _showFaqs() => setState(() => _panel = _WebSettingsPanel.faqs);
+
+  void _showSupport() => setState(() => _panel = _WebSettingsPanel.support);
 
   void _showTerms() => setState(() => _panel = _WebSettingsPanel.terms);
 
@@ -103,10 +106,17 @@ class _WebSettingsDialogState extends State<_WebSettingsDialog> {
                   useWebPanelStyle: true,
                   onClose: () => Navigator.of(context).pop(),
                   onOpenFaqs: _showFaqs,
+                  onOpenSupport: _showSupport,
                   onOpenTerms: _showTerms,
                 ),
               _WebSettingsPanel.faqs => FaqsPage(
                   key: const ValueKey('faqs'),
+                  embeddedInPanel: true,
+                  useWebPanelStyle: true,
+                  onBack: _showSettings,
+                ),
+              _WebSettingsPanel.support => SupportPage(
+                  key: const ValueKey('support'),
                   embeddedInPanel: true,
                   useWebPanelStyle: true,
                   onBack: _showSettings,

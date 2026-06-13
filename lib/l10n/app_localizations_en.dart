@@ -218,6 +218,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactUs => 'Contact us';
 
   @override
+  String get supportMenuItem => 'Support';
+
+  @override
+  String get supportIntro =>
+      'Tell us about your issue and we\'ll get back to you soon.';
+
+  @override
+  String get supportEmailLabel => 'Your email';
+
+  @override
+  String get supportEmailUnavailable =>
+      'We couldn\'t get your email. Please sign in again and retry.';
+
+  @override
+  String get supportSubjectLabel => 'Subject';
+
+  @override
+  String get supportSubjectHint => 'E.g. withdrawal issue';
+
+  @override
+  String get supportSubjectError => 'Enter a subject (min. 5 characters)';
+
+  @override
+  String get supportMessageLabel => 'Message';
+
+  @override
+  String get supportMessageHint =>
+      'Describe your issue in as much detail as possible.';
+
+  @override
+  String get supportMessageError => 'Tell us a bit more (min. 20 characters)';
+
+  @override
+  String get supportSubmit => 'Send request';
+
+  @override
+  String get supportTurnstileRequired =>
+      'Complete the security check before sending.';
+
+  @override
+  String get supportSubmitError =>
+      'We couldn\'t send your request. Please try again.';
+
+  @override
+  String get supportThanksSnackbar =>
+      'Thanks! We received your request and will reply soon.';
+
+  @override
+  String get supportSentTitle => 'Request sent';
+
+  @override
+  String get supportSentBody =>
+      'Thanks for reaching out. We review every message and will get back to you soon.';
+
+  @override
   String get privacyPolicy => 'Privacy policy';
 
   @override

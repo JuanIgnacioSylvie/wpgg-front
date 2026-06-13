@@ -1,51 +1,19 @@
-import { createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
-import { execSync } from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {
+  W,
+  H,
+  TOTAL_FRAMES,
+  colors,
+  setupFonts,
+  loadCoin,
+  clamp,
+  easeOutCubic,
+  easeOutElastic,
+  drawRoundedRect,
+  encodeVideo,
+} from './lib/shared.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = join(__dirname, '..');
-
-const W = 1080;
-const H = 1920;
-const FPS = 30;
-const DURATION_SEC = 5;
-const TOTAL_FRAMES = FPS * DURATION_SEC;
-
-const colors = {
-  background: '#0B0B0F',
-  dotGrid: 'rgba(42, 42, 53, 0.35)',
-  textPrimary: '#F4F4F5',
-  textSecondary: '#9CA3AF',
-  textMuted: '#6B7280',
-  accent: '#AD1F0F',
-  accentHover: '#C42818',
-  gold: '#E8A317',
-  online: '#22C55E',
-};
-
-GlobalFonts.registerFromPath(join(root, 'assets/fonts/Wallpoet-Regular.ttf'), 'Wallpoet');
-GlobalFonts.registerFromPath(join(root, 'assets/fonts/LexendDeca-SemiBold.ttf'), 'LexendDeca');
-GlobalFonts.registerFromPath(join(root, 'assets/fonts/LexendDeca-Bold.ttf'), 'LexendDecaBold');
-GlobalFonts.registerFromPath(join(root, 'assets/fonts/LexendDeca-Medium.ttf'), 'LexendDecaMedium');
-
-const coin = await loadImage(join(root, 'assets/images/wpgg-coin_512x512.png'));
-
-function easeOutCubic(t) {
-  return 1 - (1 - t) ** 3;
-}
-
-function easeOutElastic(t) {
-  if (t === 0 || t === 1) return t;
-  const p = 0.35;
-  const s = p / 4;
-  return 2 ** (-10 * t) * Math.sin(((t - s) * (2 * Math.PI)) / p) + 1;
-}
-
-function clamp(v, min, max) {
-  return Math.min(max, Math.max(min, v));
-}
+setupFonts();
+const coin = await loadCoin();
 
 function drawDotGrid(ctx) {
   ctx.fillStyle = colors.background;
@@ -140,16 +108,6 @@ function drawCoin(ctx, frame) {
   ctx.restore();
 }
 
-function drawRoundedRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-}
-
 function drawTextBlock(ctx, frame) {
   const textStart = 24;
   const textT = clamp((frame - textStart) / 36, 0, 1);
@@ -170,11 +128,11 @@ function drawTextBlock(ctx, frame) {
   ctx.font = '44px LexendDeca';
   ctx.fillStyle = colors.textPrimary;
   ctx.letterSpacing = '0px';
-  ctx.fillText('Jugá League of Legends', W / 2, baseY + 78);
+  ctx.fillText('Play League of Legends', W / 2, baseY + 78);
 
   ctx.font = '52px LexendDecaBold';
   ctx.fillStyle = colors.textPrimary;
-  const line2 = 'Ganá ';
+  const line2 = 'Earn ';
   const wpgg = 'WPGG';
   const line2Width = ctx.measureText(line2 + wpgg).width;
   const line2X = W / 2 - line2Width / 2;
@@ -200,7 +158,7 @@ function drawTextBlock(ctx, frame) {
 
   ctx.font = '26px LexendDecaBold';
   ctx.fillStyle = colors.online;
-  ctx.fillText('100% GRATIS', W / 2, badgeY + 38);
+  ctx.fillText('100% FREE', W / 2, badgeY + 38);
 
   ctx.font = '22px LexendDecaMedium';
   ctx.fillStyle = colors.textSecondary;
@@ -218,45 +176,10 @@ function drawTopAccent(ctx) {
   ctx.fillRect(0, 0, W, 4);
 }
 
-const framesDir = join(__dirname, '.frames');
-rmSync(framesDir, { recursive: true, force: true });
-mkdirSync(framesDir, { recursive: true });
-
-const canvas = createCanvas(W, H);
-const ctx = canvas.getContext('2d');
-
-console.log(`Rendering ${TOTAL_FRAMES} frames at ${W}x${H}...`);
-
-for (let frame = 0; frame < TOTAL_FRAMES; frame++) {
+encodeVideo('ig-story-wpgg.mp4', (ctx, frame) => {
   drawDotGrid(ctx);
   drawAmbientGlow(ctx, frame);
   drawCoin(ctx, frame);
   drawTextBlock(ctx, frame);
   drawTopAccent(ctx);
-
-  const framePath = join(framesDir, `frame_${String(frame).padStart(4, '0')}.png`);
-  writeFileSync(framePath, canvas.toBuffer('image/png'));
-
-  if (frame % 30 === 0) {
-    console.log(`  ${Math.round((frame / TOTAL_FRAMES) * 100)}%`);
-  }
-}
-
-const outputPath = join(__dirname, 'ig-story-wpgg.mp4');
-const ffmpegCmd = [
-  'ffmpeg',
-  '-y',
-  '-framerate', String(FPS),
-  '-i', join(framesDir, 'frame_%04d.png'),
-  '-c:v', 'libx264',
-  '-pix_fmt', 'yuv420p',
-  '-crf', '18',
-  '-movflags', '+faststart',
-  outputPath,
-].join(' ');
-
-console.log('Encoding MP4...');
-execSync(ffmpegCmd, { stdio: 'inherit' });
-
-rmSync(framesDir, { recursive: true, force: true });
-console.log(`Done: ${outputPath}`);
+});

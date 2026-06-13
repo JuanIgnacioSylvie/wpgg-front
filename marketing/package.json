@@ -3,7 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ig-story": "node generate-ig-story.mjs"
+    "ig-story": "node generate-ig-story.mjs",
+    "ig-story:v2": "node generate-ig-story-v2-neon.mjs",
+    "ig-story:v3": "node generate-ig-story-v3-card.mjs",
+    "ig-story:all": "node generate-ig-story.mjs && node generate-ig-story-v2-neon.mjs && node generate-ig-story-v3-card.mjs"
   },
   "dependencies": {
     "@napi-rs/canvas": "^0.1.68"

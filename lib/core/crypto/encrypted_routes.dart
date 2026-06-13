@@ -11,6 +11,7 @@ bool requiresEncryptedPayload(String method, String path) {
     '/auth/refresh',
     '/withdrawals',
     '/contact/sponsor',
+    '/contact/support',
   };
   if (exact.contains(normalized)) {
     return true;

@@ -19,6 +19,7 @@ import '../../../notifications/presentation/bloc/notifications_bloc.dart';
 import '../../../wallet/data/datasources/wallet_remote_datasource.dart';
 import '../../../wallet/presentation/bloc/wallet_bloc.dart';
 import 'faqs_page.dart';
+import 'support_page.dart';
 import 'terms_page.dart';
 import '../widgets/profile_panel_header.dart';
 import '../widgets/withdraw_dialog.dart';
@@ -31,6 +32,7 @@ class ProfilePage extends StatefulWidget {
     this.onClose,
     this.onOpenFaqs,
     this.onOpenTerms,
+    this.onOpenSupport,
   });
 
   final bool embeddedInPanel;
@@ -38,6 +40,7 @@ class ProfilePage extends StatefulWidget {
   final VoidCallback? onClose;
   final VoidCallback? onOpenFaqs;
   final VoidCallback? onOpenTerms;
+  final VoidCallback? onOpenSupport;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -448,19 +451,13 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                               _SettingsRow(
                                 icon: Icons.support_agent_outlined,
-                                label: l10n.helpSupport,
+                                label: l10n.supportMenuItem,
                                 useWebStyle: useWeb,
-                              ),
-                              Divider(
-                                height: 1,
-                                color: useWeb
-                                    ? WebColors.borderSubtle
-                                    : null,
-                              ),
-                              _SettingsRow(
-                                icon: Icons.chat_bubble_outline,
-                                label: l10n.contactUs,
-                                useWebStyle: useWeb,
+                                onTap: () => openSupportPage(
+                                  context,
+                                  embeddedInPanel: widget.embeddedInPanel,
+                                  onOpenInPanel: widget.onOpenSupport,
+                                ),
                               ),
                               Divider(
                                 height: 1,

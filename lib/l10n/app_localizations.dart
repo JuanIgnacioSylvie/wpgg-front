@@ -480,6 +480,102 @@ abstract class AppLocalizations {
   /// **'Contact us'**
   String get contactUs;
 
+  /// No description provided for @supportMenuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get supportMenuItem;
+
+  /// No description provided for @supportIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about your issue and we\'ll get back to you soon.'**
+  String get supportIntro;
+
+  /// No description provided for @supportEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email'**
+  String get supportEmailLabel;
+
+  /// No description provided for @supportEmailUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t get your email. Please sign in again and retry.'**
+  String get supportEmailUnavailable;
+
+  /// No description provided for @supportSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get supportSubjectLabel;
+
+  /// No description provided for @supportSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. withdrawal issue'**
+  String get supportSubjectHint;
+
+  /// No description provided for @supportSubjectError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a subject (min. 5 characters)'**
+  String get supportSubjectError;
+
+  /// No description provided for @supportMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get supportMessageLabel;
+
+  /// No description provided for @supportMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your issue in as much detail as possible.'**
+  String get supportMessageHint;
+
+  /// No description provided for @supportMessageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us a bit more (min. 20 characters)'**
+  String get supportMessageError;
+
+  /// No description provided for @supportSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get supportSubmit;
+
+  /// No description provided for @supportTurnstileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the security check before sending.'**
+  String get supportTurnstileRequired;
+
+  /// No description provided for @supportSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t send your request. Please try again.'**
+  String get supportSubmitError;
+
+  /// No description provided for @supportThanksSnackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks! We received your request and will reply soon.'**
+  String get supportThanksSnackbar;
+
+  /// No description provided for @supportSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent'**
+  String get supportSentTitle;
+
+  /// No description provided for @supportSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for reaching out. We review every message and will get back to you soon.'**
+  String get supportSentBody;
+
   /// No description provided for @privacyPolicy.
   ///
   /// In en, this message translates to:

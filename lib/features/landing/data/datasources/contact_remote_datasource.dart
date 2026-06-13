@@ -24,21 +24,46 @@ class ContactRemoteDataSource {
       }
       await _api.post<void>('/contact/sponsor', data: data);
     } on DioException catch (e) {
-      final status = e.response?.statusCode;
-      final body = e.response?.data;
-      if (status == 400 && body is Map && body['message'] != null) {
-        final msg = body['message'];
-        if (msg is List && msg.isNotEmpty) {
-          throw ContactException(msg.first.toString());
-        }
-        if (msg is String) {
-          throw ContactException(msg);
-        }
-      }
-      throw ContactException(
-        'No pudimos enviar tu propuesta. Intentá de nuevo en unos minutos.',
-      );
+      throw _mapContactException(e);
     }
+  }
+
+  Future<void> submitSupportRequest({
+    required String contactEmail,
+    required String subject,
+    required String message,
+    String? turnstileToken,
+  }) async {
+    try {
+      final data = <String, dynamic>{
+        'contactEmail': contactEmail,
+        'subject': subject,
+        'message': message,
+      };
+      if (turnstileToken != null && turnstileToken.isNotEmpty) {
+        data['turnstileToken'] = turnstileToken;
+      }
+      await _api.post<void>('/contact/support', data: data);
+    } on DioException catch (e) {
+      throw _mapContactException(e);
+    }
+  }
+
+  ContactException _mapContactException(DioException e) {
+    final status = e.response?.statusCode;
+    final body = e.response?.data;
+    if (status == 400 && body is Map && body['message'] != null) {
+      final msg = body['message'];
+      if (msg is List && msg.isNotEmpty) {
+        return ContactException(msg.first.toString());
+      }
+      if (msg is String) {
+        return ContactException(msg);
+      }
+    }
+    return ContactException(
+      'No pudimos enviar tu consulta. Intentá de nuevo en unos minutos.',
+    );
   }
 }
 

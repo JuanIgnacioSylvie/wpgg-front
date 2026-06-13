@@ -219,6 +219,62 @@ class AppLocalizationsFr extends AppLocalizations {
   String get contactUs => 'Nous contacter';
 
   @override
+  String get supportMenuItem => 'Support';
+
+  @override
+  String get supportIntro =>
+      'Décrivez votre demande et nous vous répondrons rapidement.';
+
+  @override
+  String get supportEmailLabel => 'Votre email';
+
+  @override
+  String get supportEmailUnavailable =>
+      'Impossible d\'obtenir votre email. Reconnectez-vous et réessayez.';
+
+  @override
+  String get supportSubjectLabel => 'Objet';
+
+  @override
+  String get supportSubjectHint => 'Ex. : problème de retrait';
+
+  @override
+  String get supportSubjectError => 'Entrez un objet (min. 5 caractères)';
+
+  @override
+  String get supportMessageLabel => 'Message';
+
+  @override
+  String get supportMessageHint =>
+      'Décrivez votre demande avec le plus de détails possible.';
+
+  @override
+  String get supportMessageError =>
+      'Dites-nous un peu plus (min. 20 caractères)';
+
+  @override
+  String get supportSubmit => 'Envoyer la demande';
+
+  @override
+  String get supportTurnstileRequired =>
+      'Complétez la vérification de sécurité avant d\'envoyer.';
+
+  @override
+  String get supportSubmitError =>
+      'Impossible d\'envoyer votre demande. Réessayez.';
+
+  @override
+  String get supportThanksSnackbar =>
+      'Merci ! Nous avons reçu votre demande et vous répondrons bientôt.';
+
+  @override
+  String get supportSentTitle => 'Demande envoyée';
+
+  @override
+  String get supportSentBody =>
+      'Merci de nous avoir contactés. Nous examinons chaque message et vous répondrons bientôt.';
+
+  @override
   String get privacyPolicy => 'Politique de confidentialité';
 
   @override

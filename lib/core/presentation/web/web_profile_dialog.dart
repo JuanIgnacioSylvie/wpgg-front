@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../locale/locale_provider.dart';
+import '../../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/profile/presentation/pages/faqs_page.dart';
 import '../../../features/profile/presentation/pages/profile_page.dart';
+import '../../../features/profile/presentation/pages/support_page.dart';
 import '../../../features/profile/presentation/pages/terms_page.dart';
 import '../../../features/riot/presentation/bloc/riot_bloc.dart';
 import '../../../features/notifications/presentation/bloc/notifications_bloc.dart';
@@ -14,7 +16,7 @@ import 'web_animations.dart';
 import 'web_colors.dart';
 import 'web_motion.dart';
 
-enum _WebProfilePanel { profile, faqs, terms }
+enum _WebProfilePanel { profile, faqs, support, terms }
 
 Future<void> showWebProfileDialog(BuildContext context) {
   return showWebDialog<void>(
@@ -24,6 +26,7 @@ Future<void> showWebProfileDialog(BuildContext context) {
         BlocProvider.value(value: context.read<RiotBloc>()),
         BlocProvider.value(value: context.read<WalletBloc>()),
         BlocProvider.value(value: context.read<NotificationsBloc>()),
+        BlocProvider.value(value: context.read<AuthBloc>()),
       ],
       child: MultiProvider(
         providers: [
@@ -53,6 +56,8 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
   void _showProfile() => setState(() => _panel = _WebProfilePanel.profile);
 
   void _showFaqs() => setState(() => _panel = _WebProfilePanel.faqs);
+
+  void _showSupport() => setState(() => _panel = _WebProfilePanel.support);
 
   void _showTerms() => setState(() => _panel = _WebProfilePanel.terms);
 
@@ -103,10 +108,17 @@ class _WebProfileDialogState extends State<_WebProfileDialog> {
                     useWebPanelStyle: true,
                     onClose: () => Navigator.of(context).pop(),
                     onOpenFaqs: _showFaqs,
+                    onOpenSupport: _showSupport,
                     onOpenTerms: _showTerms,
                   ),
                 _WebProfilePanel.faqs => FaqsPage(
                     key: const ValueKey('faqs'),
+                    embeddedInPanel: true,
+                    useWebPanelStyle: true,
+                    onBack: _showProfile,
+                  ),
+                _WebProfilePanel.support => SupportPage(
+                    key: const ValueKey('support'),
                     embeddedInPanel: true,
                     useWebPanelStyle: true,
                     onBack: _showProfile,

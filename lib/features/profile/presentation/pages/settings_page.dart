@@ -15,6 +15,7 @@ import '../../../notifications/presentation/bloc/notifications_bloc.dart';
 import '../bloc/profile_settings_bloc.dart';
 import '../widgets/profile_panel_header.dart';
 import 'faqs_page.dart';
+import 'support_page.dart';
 import 'terms_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -25,6 +26,7 @@ class SettingsPage extends StatefulWidget {
     this.onClose,
     this.onOpenFaqs,
     this.onOpenTerms,
+    this.onOpenSupport,
   });
 
   final bool embeddedInPanel;
@@ -32,6 +34,7 @@ class SettingsPage extends StatefulWidget {
   final VoidCallback? onClose;
   final VoidCallback? onOpenFaqs;
   final VoidCallback? onOpenTerms;
+  final VoidCallback? onOpenSupport;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -288,6 +291,20 @@ class _SettingsPageState extends State<SettingsPage> {
                           context,
                           embeddedInPanel: widget.embeddedInPanel,
                           onOpenInPanel: widget.onOpenFaqs,
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        color: useWeb ? WebColors.borderSubtle : null,
+                      ),
+                      _SettingsRow(
+                        icon: Icons.support_agent_outlined,
+                        label: l10n.supportMenuItem,
+                        useWebStyle: useWeb,
+                        onTap: () => openSupportPage(
+                          context,
+                          embeddedInPanel: widget.embeddedInPanel,
+                          onOpenInPanel: widget.onOpenSupport,
                         ),
                       ),
                       Divider(

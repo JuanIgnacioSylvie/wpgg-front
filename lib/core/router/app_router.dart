@@ -23,6 +23,7 @@ import '../../features/missions/presentation/pages/web_missions_by_day_page.dart
 import '../../features/missions/presentation/pages/pick_missions_page.dart';
 import '../../features/profile/presentation/pages/faqs_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
+import '../../features/profile/presentation/pages/support_page.dart';
 import '../../features/profile/presentation/pages/user_profile_page.dart';
 import '../../features/profile/presentation/bloc/profile_settings_bloc.dart';
 import '../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
@@ -152,6 +153,16 @@ final GoRouter appRouter = GoRouter(
       builder: (_, __) => BlocProvider.value(
         value: sl<RiotBloc>(),
         child: const TermsPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/support',
+      builder: (_, __) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: sl<RiotBloc>()),
+          BlocProvider.value(value: sl<AuthBloc>()),
+        ],
+        child: const SupportPage(),
       ),
     ),
     GoRoute(

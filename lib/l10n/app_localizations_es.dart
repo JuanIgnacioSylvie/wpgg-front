@@ -219,6 +219,61 @@ class AppLocalizationsEs extends AppLocalizations {
   String get contactUs => 'Contáctanos';
 
   @override
+  String get supportMenuItem => 'Soporte';
+
+  @override
+  String get supportIntro =>
+      'Contanos tu consulta y te respondemos a la brevedad.';
+
+  @override
+  String get supportEmailLabel => 'Tu email';
+
+  @override
+  String get supportEmailUnavailable =>
+      'No pudimos obtener tu email. Volvé a iniciar sesión e intentá de nuevo.';
+
+  @override
+  String get supportSubjectLabel => 'Asunto';
+
+  @override
+  String get supportSubjectHint => 'Ej: problema con un retiro';
+
+  @override
+  String get supportSubjectError => 'Ingresá un asunto (mín. 5 caracteres)';
+
+  @override
+  String get supportMessageLabel => 'Mensaje';
+
+  @override
+  String get supportMessageHint =>
+      'Describí tu consulta con el mayor detalle posible.';
+
+  @override
+  String get supportMessageError => 'Contanos un poco más (mín. 20 caracteres)';
+
+  @override
+  String get supportSubmit => 'Enviar consulta';
+
+  @override
+  String get supportTurnstileRequired =>
+      'Completá la verificación de seguridad antes de enviar.';
+
+  @override
+  String get supportSubmitError =>
+      'No pudimos enviar tu consulta. Intentá de nuevo.';
+
+  @override
+  String get supportThanksSnackbar =>
+      '¡Gracias! Recibimos tu consulta y te vamos a responder.';
+
+  @override
+  String get supportSentTitle => 'Consulta enviada';
+
+  @override
+  String get supportSentBody =>
+      'Gracias por contactarnos. Revisamos cada mensaje y te respondemos a la brevedad.';
+
+  @override
   String get privacyPolicy => 'Política de privacidad';
 
   @override
