@@ -9,7 +9,7 @@ import '../../../../core/di/injection_container.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
-import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
+import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../missions/presentation/widgets/mission_primary_card.dart';
@@ -113,9 +113,13 @@ class _UserProfileView extends StatelessWidget {
                     enableHero: false,
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    profile.gameName,
-                    style: TextStyle(
+                  WpggSummonerIdentityLabels(
+                    gameName: profile.gameName,
+                    tagLine: profile.tagLine,
+                    region: profile.region,
+                    useWebStyle: useWebStyle,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    nameStyle: TextStyle(
                       fontFamily: AppFonts.lexendDeca,
                       color: useWebStyle
                           ? WebColors.textPrimary
@@ -123,10 +127,6 @@ class _UserProfileView extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
-                  ),
-                  WpggServerTag(
-                    region: profile.region,
-                    useWebStyle: useWebStyle,
                   ),
                 ],
               ),

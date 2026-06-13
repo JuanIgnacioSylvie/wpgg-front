@@ -254,8 +254,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
             final sectionTitle = isDashboard && summoner != null
                 ? summoner.gameName
                 : webSectionTitleForLocation(context.l10n, location);
-            final sectionServerRegion =
-                isDashboard && summoner != null ? summoner.region : null;
+            final dashboardSummoner = isDashboard ? summoner : null;
 
             final ddragon = context.watch<DDragonProvider>();
 
@@ -320,7 +319,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
 
                             return WebTopBar(
                               sectionTitle: sectionTitle,
-                              sectionServerRegion: sectionServerRegion,
+                              dashboardSummoner: dashboardSummoner,
                               showAddButton: isDashboard,
                               addButtonEnabled: activeCount < 3,
                               showDayCountdown: isDashboard &&

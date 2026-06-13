@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../constants/app_fonts.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
+import '../../../features/riot/domain/entities/summoner_entity.dart';
 import '../widgets/mission_day_countdown.dart';
-import '../widgets/wpgg_server_tag.dart';
+import '../widgets/wpgg_summoner_identity_labels.dart';
 import 'web_colors.dart';
 import 'web_motion.dart';
 
@@ -12,7 +13,7 @@ class WebTopBar extends StatelessWidget {
   const WebTopBar({
     super.key,
     required this.sectionTitle,
-    this.sectionServerRegion,
+    this.dashboardSummoner,
     this.showAddButton = true,
     this.addButtonEnabled = true,
     this.showDayCountdown = false,
@@ -21,7 +22,7 @@ class WebTopBar extends StatelessWidget {
   });
 
   final String sectionTitle;
-  final String? sectionServerRegion;
+  final SummonerEntity? dashboardSummoner;
   final bool showAddButton;
   final bool addButtonEnabled;
   final bool showDayCountdown;
@@ -71,38 +72,29 @@ class WebTopBar extends StatelessWidget {
                 ),
               );
             },
-            child: Row(
-              key: ValueKey<String>(
-                '$sectionTitle|${sectionServerRegion ?? ''}',
-              ),
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: WebColors.surface,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: WebColors.border),
-                  ),
-                  child: Text(
-                    sectionTitle,
-                    style: const TextStyle(
-                      color: WebColors.textSecondary,
-                      fontSize: 12,
+            child: dashboardSummoner != null
+                ? WpggSummonerIdentityLabels.fromSummoner(
+                    key: ValueKey<String>(dashboardSummoner!.riotId),
+                    dashboardSummoner!,
+                    layout: WpggSummonerIdentityLayout.horizontalBadges,
+                  )
+                : Container(
+                    key: ValueKey<String>(sectionTitle),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: WebColors.surface,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: WebColors.border),
+                    ),
+                    child: Text(
+                      sectionTitle,
+                      style: const TextStyle(
+                        color: WebColors.textSecondary,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
-                if (sectionServerRegion != null &&
-                    sectionServerRegion!.trim().isNotEmpty) ...[
-                  const SizedBox(width: 6),
-                  WpggServerTag(
-                    region: sectionServerRegion!,
-                    useWebStyle: true,
-                  ),
-                ],
-              ],
-            ),
           ),
           const Spacer(),
           if (showDayCountdown && dayEndsInSeconds != null) ...[

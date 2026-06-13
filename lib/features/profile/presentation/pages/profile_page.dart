@@ -9,7 +9,7 @@ import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
-import '../../../../core/presentation/widgets/wpgg_server_tag.dart';
+import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../../core/presentation/wpgg_snackbar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -278,18 +278,17 @@ class _ProfilePageState extends State<ProfilePage>
                                   avatarWidget,
                                   if (summoner != null) ...[
                                     const SizedBox(height: 12),
-                                    Text(
-                                      summoner.gameName,
-                                      style: const TextStyle(
+                                    WpggSummonerIdentityLabels.fromSummoner(
+                                      summoner,
+                                      useWebStyle: true,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      nameStyle: const TextStyle(
                                         fontFamily: AppFonts.lexendDeca,
                                         color: WebColors.textPrimary,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
                                       ),
-                                    ),
-                                    WpggServerTag(
-                                      region: summoner.region,
-                                      useWebStyle: true,
                                     ),
                                   ],
                                 ],
@@ -313,9 +312,10 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                             ),
                             if (summoner != null) ...[
-                              Text(
-                                summoner.gameName,
-                                style: TextStyle(
+                              WpggSummonerIdentityLabels.fromSummoner(
+                                summoner,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                nameStyle: TextStyle(
                                   fontFamily: AppFonts.lexendDeca,
                                   color: widget.embeddedInPanel
                                       ? WpggBrand.cardTextDark
@@ -324,7 +324,6 @@ class _ProfilePageState extends State<ProfilePage>
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              WpggServerTag(region: summoner.region),
                               const SizedBox(height: 20),
                             ],
                           ],

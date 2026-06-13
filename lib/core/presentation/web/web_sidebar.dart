@@ -7,7 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../l10n/l10n_extension.dart';
 import '../../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../features/riot/domain/entities/summoner_entity.dart';
-import '../widgets/wpgg_server_tag.dart';
+import '../widgets/wpgg_summoner_identity_labels.dart';
 import '../wpgg_profile_avatar.dart';
 import 'web_animations.dart';
 import 'web_colors.dart';
@@ -244,28 +244,17 @@ class _SidebarProfileHeaderState extends State<_SidebarProfileHeader> {
                             duration:
                                 WebMotion.resolve(context, WebMotion.normal),
                             curve: WebMotion.curve,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.summoner!.gameName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontFamily: AppFonts.lexendDeca,
-                                    color: _hovered
-                                        ? WebColors.textPrimary
-                                        : WebColors.textSecondary,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                WpggServerTag(
-                                  region: widget.summoner!.region,
-                                  useWebStyle: true,
-                                ),
-                              ],
+                            child: WpggSummonerIdentityLabels.fromSummoner(
+                              widget.summoner!,
+                              useWebStyle: true,
+                              nameStyle: TextStyle(
+                                fontFamily: AppFonts.lexendDeca,
+                                color: _hovered
+                                    ? WebColors.textPrimary
+                                    : WebColors.textSecondary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

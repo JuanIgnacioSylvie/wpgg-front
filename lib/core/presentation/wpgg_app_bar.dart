@@ -6,7 +6,7 @@ import '../constants/wpgg_brand.dart';
 import '../l10n/l10n_extension.dart';
 import '../../features/ddragon/presentation/providers/ddragon_provider.dart';
 import '../../features/riot/domain/entities/summoner_entity.dart';
-import 'widgets/wpgg_server_tag.dart';
+import 'widgets/wpgg_summoner_identity_labels.dart';
 import 'wpgg_profile_avatar.dart';
 
 class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -88,13 +88,12 @@ class WpggAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: WpggBrand.textMuted,
                       ),
                     ),
-                    Text(
-                      summoner!.gameName,
-                      style: _homeTextStyle.copyWith(
+                    WpggSummonerIdentityLabels.fromSummoner(
+                      summoner!,
+                      nameStyle: _homeTextStyle.copyWith(
                         color: WpggBrand.white,
                       ),
                     ),
-                    WpggServerTag(region: summoner!.region),
                   ],
                 )
               : null,
