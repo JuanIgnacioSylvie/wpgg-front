@@ -238,9 +238,11 @@ class _LeaderboardRow extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                width: 28,
+                width: 44,
                 child: Text(
                   '#${entry.rank}',
+                  maxLines: 1,
+                  softWrap: false,
                   style: TextStyle(
                     fontFamily: AppFonts.lexendDeca,
                     color: mutedColor,
