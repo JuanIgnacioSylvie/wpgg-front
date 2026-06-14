@@ -24,6 +24,29 @@ class WpggTokenPrice {
     );
   }
 
+  factory WpggTokenPrice.fromGeckoTerminalPool(Map<String, dynamic> pool) {
+    final attrs = pool['attributes'] as Map<String, dynamic>? ?? {};
+    final priceChange =
+        attrs['price_change_percentage'] as Map<String, dynamic>?;
+    final volume = attrs['volume_usd'] as Map<String, dynamic>?;
+
+    return WpggTokenPrice(
+      priceUsd: _parseDouble(attrs['base_token_price_usd']),
+      priceChangeH24: _parseDouble(priceChange?['h24']),
+      volumeH24: _parseDouble(volume?['h24']),
+      liquidityUsd: _parseDouble(attrs['reserve_in_usd']),
+    );
+  }
+
+  factory WpggTokenPrice.fromCoinGeckoToken(Map<String, dynamic> token) {
+    return WpggTokenPrice(
+      priceUsd: _parseDouble(token['usd']),
+      priceChangeH24: _parseDouble(token['usd_24h_change']),
+      volumeH24: _parseDouble(token['usd_24h_vol']),
+      liquidityUsd: 0,
+    );
+  }
+
   static double _parseDouble(dynamic value) {
     if (value == null) return 0;
     if (value is num) return value.toDouble();

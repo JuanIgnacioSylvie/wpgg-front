@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../wallet/data/datasources/dexscreener_datasource.dart';
 import 'profile_balance_card.dart';
 
-/// Balance card that values WPGG using the same live DexScreener price as Finance.
+/// Balance card valued with the same live price chain as Finance.
 class LiveProfileBalanceCard extends StatefulWidget {
   const LiveProfileBalanceCard({
     super.key,

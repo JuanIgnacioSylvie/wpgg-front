@@ -10,7 +10,7 @@ import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../data/datasources/dexscreener_datasource.dart';
 import '../../data/models/wpgg_token_price.dart';
 
-/// Live WPGG token price from DexScreener with 60s auto-refresh.
+/// Live WPGG token price (DexScreener → CoinGecko → GeckoTerminal) with 60s refresh.
 class WpggPriceWidget extends StatefulWidget {
   const WpggPriceWidget({
     super.key,
