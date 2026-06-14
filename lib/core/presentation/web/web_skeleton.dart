@@ -352,6 +352,74 @@ class _ProfileSettingsRowSkeleton extends StatelessWidget {
   }
 }
 
+class LeaderboardSkeleton extends StatelessWidget {
+  const LeaderboardSkeleton({super.key, this.rowCount = 8});
+
+  final int rowCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return WebShimmerScope(
+      child: Column(
+        children: [
+          for (var i = 0; i < rowCount; i++) ...[
+            if (i > 0) const SizedBox(height: 10),
+            const _LeaderboardRowSkeleton(),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LeaderboardRowSkeleton extends StatelessWidget {
+  const _LeaderboardRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: WebColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: WebColors.borderSubtle),
+      ),
+      child: Row(
+        children: const [
+          WebSkeletonBox(
+            width: 32,
+            height: 32,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          SizedBox(width: 14),
+          WebSkeletonBox(
+            width: 40,
+            height: 40,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                WebSkeletonBox(width: 120, height: 14),
+                SizedBox(height: 6),
+                WebSkeletonBox(width: 64, height: 11),
+              ],
+            ),
+          ),
+          SizedBox(width: 12),
+          WebSkeletonBox(
+            width: 72,
+            height: 28,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class WebPickMissionsSkeleton extends StatelessWidget {
   const WebPickMissionsSkeleton({super.key});
 
