@@ -38,15 +38,6 @@ class WpggTokenPrice {
     );
   }
 
-  factory WpggTokenPrice.fromCoinGeckoToken(Map<String, dynamic> token) {
-    return WpggTokenPrice(
-      priceUsd: _parseDouble(token['usd']),
-      priceChangeH24: _parseDouble(token['usd_24h_change']),
-      volumeH24: _parseDouble(token['usd_24h_vol']),
-      liquidityUsd: 0,
-    );
-  }
-
   static double _parseDouble(dynamic value) {
     if (value == null) return 0;
     if (value is num) return value.toDouble();

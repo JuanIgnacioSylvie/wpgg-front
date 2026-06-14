@@ -41,16 +41,4 @@ void main() {
     expect(price.liquidityUsd, 374.571);
   });
 
-  test('WpggTokenPrice.fromCoinGeckoToken parses token fields', () {
-    final price = WpggTokenPrice.fromCoinGeckoToken({
-      'usd': 0.00153,
-      'usd_24h_change': 1.25,
-      'usd_24h_vol': 500.0,
-    });
-
-    expect(price.priceUsd, 0.00153);
-    expect(price.priceChangeH24, 1.25);
-    expect(price.volumeH24, 500);
-    expect(price.liquidityUsd, 0);
-  });
 }
