@@ -275,6 +275,81 @@
   "settingsTitle": "Paramètres",
   "leaderboardTitle": "Classement",
   "leaderboardEmpty": "Aucun profil public au classement pour le moment.",
+  "leaderboardSubtitle": "Classement par solde WPGG",
+  "leaderboardYourPosition": "Votre position",
+  "leaderboardRankOf": "#{rank} sur {total}",
+  "@leaderboardRankOf": {
+    "placeholders": {
+      "rank": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "leaderboardGapToRank": "{amount} WPGG pour #{rank}",
+  "@leaderboardGapToRank": {
+    "placeholders": {
+      "amount": {"type": "int"},
+      "rank": {"type": "int"}
+    }
+  },
+  "leaderboardGapFromLeader": "{amount} WPGG du leader",
+  "@leaderboardGapFromLeader": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "leaderboardOutsideTop": "Hors du top {limit}",
+  "@leaderboardOutsideTop": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "leaderboardNearYou": "Près de vous",
+  "leaderboardFullList": "Classement complet",
+  "leaderboardAllRegions": "Toutes",
+  "leaderboardSortByBalance": "Solde",
+  "leaderboardSortByMissions": "Missions",
+  "leaderboardVsYou": "{amount} WPGG vs vous",
+  "@leaderboardVsYou": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "leaderboardRankDeltaUp": "↑{count}",
+  "@leaderboardRankDeltaUp": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardRankDeltaDown": "↓{count}",
+  "@leaderboardRankDeltaDown": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardMissionsCount": "{count} missions",
+  "@leaderboardMissionsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardActiveProgress": "{percent}% active",
+  "@leaderboardActiveProgress": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "leaderboardRestOfRanking": "Reste du classement",
+  "leaderboardHoverLoading": "Chargement du profil…",
+  "leaderboardMissionsLoading": "Chargement des missions {loaded}/{total}",
+  "@leaderboardMissionsLoading": {
+    "placeholders": {
+      "loaded": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "profileLeaderboardRankLabel": "Classement",
+  "profileCompletedMissionsLabel": "Missions terminées",
+  "profileGapToAboveLabel": "Pour monter",
   "balanceUsdEquivalent": "≈ {amount} USD",
   "@balanceUsdEquivalent": {
     "placeholders": {

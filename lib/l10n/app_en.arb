@@ -275,6 +275,81 @@
   "settingsTitle": "Settings",
   "leaderboardTitle": "Leaderboard",
   "leaderboardEmpty": "No public profiles on the leaderboard yet.",
+  "leaderboardSubtitle": "Ranked by WPGG balance",
+  "leaderboardYourPosition": "Your position",
+  "leaderboardRankOf": "#{rank} of {total}",
+  "@leaderboardRankOf": {
+    "placeholders": {
+      "rank": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "leaderboardGapToRank": "{amount} WPGG to #{rank}",
+  "@leaderboardGapToRank": {
+    "placeholders": {
+      "amount": {"type": "int"},
+      "rank": {"type": "int"}
+    }
+  },
+  "leaderboardGapFromLeader": "{amount} WPGG behind leader",
+  "@leaderboardGapFromLeader": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "leaderboardOutsideTop": "Outside top {limit}",
+  "@leaderboardOutsideTop": {
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "leaderboardNearYou": "Near you",
+  "leaderboardFullList": "Full ranking",
+  "leaderboardAllRegions": "All",
+  "leaderboardSortByBalance": "Balance",
+  "leaderboardSortByMissions": "Missions",
+  "leaderboardVsYou": "{amount} WPGG vs you",
+  "@leaderboardVsYou": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "leaderboardRankDeltaUp": "↑{count}",
+  "@leaderboardRankDeltaUp": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardRankDeltaDown": "↓{count}",
+  "@leaderboardRankDeltaDown": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardMissionsCount": "{count} missions",
+  "@leaderboardMissionsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "leaderboardActiveProgress": "{percent}% active",
+  "@leaderboardActiveProgress": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "leaderboardRestOfRanking": "Rest of the ranking",
+  "leaderboardHoverLoading": "Loading profile…",
+  "leaderboardMissionsLoading": "Loading missions {loaded}/{total}",
+  "@leaderboardMissionsLoading": {
+    "placeholders": {
+      "loaded": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "profileLeaderboardRankLabel": "Leaderboard",
+  "profileCompletedMissionsLabel": "Completed missions",
+  "profileGapToAboveLabel": "To rank up",
   "balanceUsdEquivalent": "≈ {amount} USD",
   "@balanceUsdEquivalent": {
     "placeholders": {

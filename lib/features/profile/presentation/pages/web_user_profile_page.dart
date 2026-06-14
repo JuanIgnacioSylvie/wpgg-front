@@ -15,11 +15,11 @@ import '../../../missions/presentation/widgets/web_mission_card.dart';
 import '../../../missions/presentation/widgets/web_mission_welcome_card.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../bloc/user_profile_bloc.dart';
-import '../widgets/live_profile_balance_card.dart';
+import '../widgets/profile_balance_card.dart';
 import '../widgets/profile_panel_header.dart';
 import '../widgets/profile_privacy_blocked.dart';
+import '../widgets/public_profile_stats_row.dart';
 
-/// Opens the viewed user's profile in the same layout as the web dashboard.
 Future<void> showWebUserProfileDialog(
   BuildContext context, {
   required String userId,
@@ -33,8 +33,7 @@ Future<void> showWebUserProfileDialog(
     builder: (ctx) => MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => sl<UserProfileBloc>()
-            ..add(LoadUserProfile(userId)),
+          create: (_) => sl<UserProfileBloc>()..add(LoadUserProfile(userId)),
         ),
       ],
       child: ChangeNotifierProvider<DDragonProvider>.value(
@@ -59,56 +58,70 @@ class _WebUserProfileDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final horizontalInset = width < 600 ? 12.0 : width < 960 ? 24.0 : 48.0;
+    final verticalInset = width < 600 ? 12.0 : 24.0;
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        constraints: const BoxConstraints(
-          minWidth: 640,
-          maxWidth: 960,
-          minHeight: 520,
-          maxHeight: 720,
-        ),
-        decoration: BoxDecoration(
-          color: WebColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: WebColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.5),
-              blurRadius: 32,
-              offset: const Offset(0, 8),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: horizontalInset,
+        vertical: verticalInset,
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxW = constraints.maxWidth.clamp(320.0, 960.0);
+          final maxH = constraints.maxHeight.clamp(420.0, 720.0);
+
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            constraints: BoxConstraints(
+              minWidth: 320,
+              maxWidth: maxW,
+              minHeight: 420,
+              maxHeight: maxH,
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Column(
-            children: [
-              BlocBuilder<UserProfileBloc, UserProfileState>(
-                builder: (context, state) {
-                  final title = switch (state) {
-                    UserProfileLoaded(:final profile) => profile.gameName,
-                    _ => context.l10n.profile,
-                  };
-                  return ProfilePanelHeader(
-                    title: title,
-                    onClose: () => Navigator.of(context).pop(),
-                    useWebStyle: true,
-                  );
-                },
-              ),
-              const Divider(height: 1, color: WebColors.borderSubtle),
-              Expanded(
-                child: _WebUserProfileContent(
-                  userId: userId,
-                  onOpenSettings: onOpenSettings,
+            decoration: BoxDecoration(
+              color: WebColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: WebColors.border),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  blurRadius: 32,
+                  offset: const Offset(0, 8),
                 ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Column(
+                children: [
+                  BlocBuilder<UserProfileBloc, UserProfileState>(
+                    builder: (context, state) {
+                      final title = switch (state) {
+                        UserProfileLoaded(:final profile) => profile.gameName,
+                        _ => context.l10n.profile,
+                      };
+                      return ProfilePanelHeader(
+                        title: title,
+                        onClose: () => Navigator.of(context).pop(),
+                        useWebStyle: true,
+                      );
+                    },
+                  ),
+                  const Divider(height: 1, color: WebColors.borderSubtle),
+                  Expanded(
+                    child: _WebUserProfileContent(
+                      userId: userId,
+                      onOpenSettings: onOpenSettings,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -127,6 +140,8 @@ class _WebUserProfileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final ddragon = context.watch<DDragonProvider>();
+    final compact = MediaQuery.sizeOf(context).width < 640;
+    final hPad = compact ? 16.0 : 32.0;
 
     return BlocBuilder<UserProfileBloc, UserProfileState>(
       builder: (context, state) {
@@ -191,23 +206,53 @@ class _WebUserProfileContent extends StatelessWidget {
             (profile.welcome != null ? 1 : 0) + activeMissions.length;
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
+          padding: EdgeInsets.fromLTRB(hPad, 24, hPad, 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  WpggProfileAvatar(
-                    summoner: summoner,
-                    ddragon: ddragon,
-                    size: 64,
-                    enableHero: false,
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      WpggSummonerIdentityLabels(
+              if (compact)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WpggProfileAvatar(
+                      summoner: summoner,
+                      ddragon: ddragon,
+                      size: 72,
+                      enableHero: false,
+                    ),
+                    const SizedBox(height: 12),
+                    WpggSummonerIdentityLabels(
+                      gameName: profile.gameName,
+                      tagLine: profile.tagLine,
+                      region: profile.region,
+                      useWebStyle: true,
+                      showTagAndServer: true,
+                      nameStyle: const TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
+                        color: WebColors.textPrimary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      tagLineStyle: const TextStyle(
+                        fontFamily: AppFonts.lexendDeca,
+                        color: WebColors.textMuted,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    WpggProfileAvatar(
+                      summoner: summoner,
+                      ddragon: ddragon,
+                      size: 72,
+                      enableHero: false,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: WpggSummonerIdentityLabels(
                         gameName: profile.gameName,
                         tagLine: profile.tagLine,
                         region: profile.region,
@@ -225,13 +270,15 @@ class _WebUserProfileContent extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              LiveProfileBalanceCard(
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 20),
+              PublicProfileStatsRow(profile: profile, useWebStyle: true),
+              const SizedBox(height: 20),
+              ProfileBalanceCard(
                 balanceWpgg: profile.balanceWpgg,
+                balanceUsd: profile.balanceUsd,
                 useWebStyle: true,
               ),
               const SizedBox(height: 32),

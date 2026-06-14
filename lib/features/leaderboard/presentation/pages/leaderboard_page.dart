@@ -7,12 +7,12 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
-import '../../../../core/presentation/web/web_motion.dart';
 import '../../../../core/presentation/web/web_section_header.dart';
 import '../../../../core/presentation/web/web_shell_scope.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
-import '../../../../core/presentation/wpgg_profile_avatar.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../profile/data/datasources/profile_remote_datasource.dart';
 import '../../../profile/presentation/bloc/profile_settings_bloc.dart';
@@ -20,7 +20,14 @@ import '../../../profile/presentation/pages/web_user_profile_page.dart';
 import '../../../profile/presentation/profile_leaderboard_access.dart';
 import '../../../profile/presentation/widgets/profile_privacy_blocked.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
+import '../../data/leaderboard_rank_snapshot_store.dart';
+import '../../domain/leaderboard_helpers.dart';
 import '../bloc/leaderboard_bloc.dart';
+import '../widgets/leaderboard_controls.dart';
+import '../widgets/leaderboard_layout.dart';
+import '../widgets/leaderboard_podium.dart';
+import '../widgets/leaderboard_row.dart';
+import '../widgets/leaderboard_viewer_card.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key, this.useWebStyle = false});
@@ -32,10 +39,21 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
+  String? _regionFilter;
+  LeaderboardListMode _listMode = LeaderboardListMode.full;
+  double? _priceUsd;
+  Map<String, int> _rankDeltas = {};
+  LeaderboardRankSnapshotStore? _rankStore;
+
   @override
   void initState() {
     super.initState();
     context.read<ProfileSettingsBloc>().add(const LoadProfileSettings());
+    _initRankStore();
+  }
+
+  Future<void> _initRankStore() async {
+    _rankStore = await LeaderboardRankSnapshotStore.create();
   }
 
   void _reloadLeaderboard() {
@@ -65,6 +83,52 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     context.push('/users/${entry.userId}');
   }
 
+  LeaderboardViewerSnapshot _viewerSnapshot(
+    BuildContext context,
+    LeaderboardViewerPayload? payload,
+  ) {
+    final authState = context.read<AuthBloc>().state;
+    String? userId;
+    if (authState is AuthAuthenticated) {
+      userId = authState.user.id;
+    }
+    return LeaderboardViewerSnapshot(
+      userId: userId,
+      balanceWpgg: payload?.balanceWpgg ?? 0,
+    );
+  }
+
+  Future<void> _persistRankSnapshots(List<LeaderboardEntry> entries) async {
+    final store = _rankStore;
+    if (store == null) return;
+
+    final previous = store.load();
+    final deltas = store.computeDeltas(
+      previous: previous,
+      current: entries
+          .map((e) => (userId: e.userId, rank: e.rank))
+          .toList(growable: false),
+    );
+
+    await store.save({for (final e in entries) e.userId: e.rank});
+    if (!mounted) return;
+    setState(() => _rankDeltas = deltas);
+  }
+
+  List<LeaderboardEntry> _prepareEntries({
+    required List<LeaderboardEntry> raw,
+    required LeaderboardViewerRank viewerRank,
+  }) {
+    var entries = leaderboardFilterByRegion(raw, _regionFilter);
+    if (_listMode == LeaderboardListMode.nearMe) {
+      entries = leaderboardSliceNearViewer(
+        entries: entries,
+        viewerRank: viewerRank,
+      );
+    }
+    return entries;
+  }
+
   Widget _blockedView() {
     return ProfilePrivacyBlocked(
       useWebStyle: widget.useWebStyle,
@@ -75,9 +139,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   Widget _loadingView({required bool useWeb}) {
     if (useWeb) {
-      return const SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(32, 32, 32, 120),
-        child: LeaderboardSkeleton(),
+      return SingleChildScrollView(
+        padding: leaderboardPagePadding(context, useWeb: true),
+        child: const LeaderboardSkeleton(),
       );
     }
     return const Center(
@@ -115,7 +179,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
     if (useWeb) {
       return SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
+        padding: leaderboardPagePadding(context, useWeb: true),
         child: Center(child: content),
       );
     }
@@ -133,67 +197,141 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
     if (useWeb) {
       return SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
+        padding: leaderboardPagePadding(context, useWeb: true),
         child: child,
       );
     }
     return Center(child: child);
   }
 
+  Widget _buildRow({
+    required LeaderboardEntry item,
+    required int index,
+    required bool useWeb,
+    required DDragonProvider ddragon,
+    required List<LeaderboardEntry> allEntries,
+    required LeaderboardViewerSnapshot viewer,
+  }) {
+    final summoner = SummonerEntity(
+      gameName: item.gameName,
+      tagLine: item.tagLine,
+      region: item.region,
+      profileIconId: item.profileIconId,
+      puuid: '',
+      summonerLevel: 0,
+    );
+
+    return WebAnimatedAppear(
+      key: ValueKey('leaderboard-${item.userId}-${item.rank}'),
+      staggerIndex: index,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: useWeb ? 10 : 8),
+        child: LeaderboardRow(
+          entry: item,
+          summoner: summoner,
+          ddragon: ddragon,
+          useWebStyle: useWeb,
+          onTap: () => _openProfile(item),
+          gapToAbove: leaderboardGapToRankAbove(item, allEntries),
+          rankDelta: _rankDeltas[item.userId],
+          priceUsd: _priceUsd,
+          viewer: viewer,
+          allEntries: allEntries,
+          isViewer: viewer.userId == item.userId,
+        ),
+      ),
+    );
+  }
+
   Widget _entriesList({
-    required List<LeaderboardEntry> entries,
+    required LeaderboardResponse response,
     required bool useWeb,
     required DDragonProvider ddragon,
     required String title,
   }) {
-    final rows = entries.asMap().entries.map((entry) {
-      final index = entry.key;
-      final item = entry.value;
-      final summoner = SummonerEntity(
-        gameName: item.gameName,
-        tagLine: item.tagLine,
-        region: item.region,
-        profileIconId: item.profileIconId,
-        puuid: '',
-        summonerLevel: 0,
-      );
+    final l10n = context.l10n;
+    final rawEntries = response.entries;
+    final viewer = _viewerSnapshot(context, response.viewer);
+    final listedEntry = leaderboardFindByUserId(rawEntries, viewer.userId);
+    final viewerRank = leaderboardViewerRankFromPayload(
+      response.viewer,
+      entry: listedEntry,
+    );
 
-      return WebAnimatedAppear(
-        key: ValueKey('leaderboard-${item.userId}'),
-        staggerIndex: index,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: useWeb ? 10 : 8),
-          child: _LeaderboardRow(
-            entry: item,
-            summoner: summoner,
-            ddragon: ddragon,
-            useWebStyle: useWeb,
-            onTap: () => _openProfile(item),
-          ),
-        ),
-      );
-    }).toList();
-
-    if (useWeb) {
-      return SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(32, 32, 32, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            WebSectionHeader(
-              title: title,
-              count: entries.length,
-            ),
-            const SizedBox(height: 20),
-            ...rows,
-          ],
-        ),
-      );
+    if (_priceUsd == null && response.latestPriceUsd > 0) {
+      _priceUsd = response.latestPriceUsd;
     }
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      children: rows,
+    final entries = _prepareEntries(raw: rawEntries, viewerRank: viewerRank);
+    final showPodium = _listMode == LeaderboardListMode.full;
+    final split = showPodium
+        ? leaderboardSplitPodium(entries)
+        : (podium: <LeaderboardEntry>[], rest: entries);
+    final regions = leaderboardDistinctRegions(rawEntries);
+
+    final children = <Widget>[
+      WebSectionHeader(
+        title: title,
+        count: entries.length,
+        subtitle: l10n.leaderboardSubtitle,
+      ),
+      const SizedBox(height: 16),
+      LeaderboardControls(
+        regions: regions,
+        selectedRegion: _regionFilter,
+        onRegionChanged: (region) => setState(() => _regionFilter = region),
+        listMode: _listMode,
+        onListModeChanged: (mode) => setState(() => _listMode = mode),
+        useWebStyle: useWeb,
+      ),
+      const SizedBox(height: 20),
+      LeaderboardViewerCard(
+        viewerRank: viewerRank,
+        viewer: viewer,
+        allEntries: rawEntries,
+        ddragon: ddragon,
+        priceUsd: _priceUsd ?? response.latestPriceUsd,
+        useWebStyle: useWeb,
+      ),
+      const SizedBox(height: 20),
+      if (split.podium.isNotEmpty) ...[
+        LeaderboardPodium(
+          entries: split.podium,
+          ddragon: ddragon,
+          priceUsd: _priceUsd ?? response.latestPriceUsd,
+          onTap: _openProfile,
+          useWebStyle: useWeb,
+        ),
+        const SizedBox(height: 24),
+        if (split.rest.isNotEmpty)
+          Text(
+            l10n.leaderboardRestOfRanking,
+            style: TextStyle(
+              fontFamily: AppFonts.lexendDeca,
+              color: useWeb ? WebColors.textMuted : WpggBrand.textMuted,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        if (split.rest.isNotEmpty) const SizedBox(height: 12),
+      ],
+      for (final entry in split.rest.asMap().entries)
+        _buildRow(
+          item: entry.value,
+          index: entry.key + split.podium.length,
+          useWeb: useWeb,
+          ddragon: ddragon,
+          allEntries: rawEntries,
+          viewer: viewer,
+        ),
+    ];
+
+    return SingleChildScrollView(
+      padding: leaderboardPagePadding(context, useWeb: useWeb),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 
@@ -211,6 +349,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       });
     }
 
+    if (state is LeaderboardLoaded) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _persistRankSnapshots(state.entries);
+      });
+    }
+
     return WebAnimatedSwitcher(
       child: switch (state) {
         LeaderboardLoading() => KeyedSubtree(
@@ -225,17 +369,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               onRetry: _reloadLeaderboard,
             ),
           ),
-        LeaderboardLoaded(:final entries) when entries.isEmpty => KeyedSubtree(
+        LeaderboardLoaded(:final response) when response.entries.isEmpty =>
+          KeyedSubtree(
             key: const ValueKey('leaderboard-empty'),
             child: _emptyView(
               useWeb: useWeb,
               message: l10n.leaderboardEmpty,
             ),
           ),
-        LeaderboardLoaded(:final entries) => KeyedSubtree(
-            key: ValueKey('leaderboard-loaded-${entries.length}'),
+        LeaderboardLoaded(:final response) => KeyedSubtree(
+            key: ValueKey('leaderboard-loaded-${response.entries.length}'),
             child: _entriesList(
-              entries: entries,
+              response: response,
               useWeb: useWeb,
               ddragon: ddragon,
               title: title,
@@ -315,262 +460,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           ),
         );
       },
-    );
-  }
-}
-
-Color? _leaderboardRankAccent(int rank) {
-  switch (rank) {
-    case 1:
-      return const Color(0xFFEAB308);
-    case 2:
-      return const Color(0xFF94A3B8);
-    case 3:
-      return const Color(0xFFD97706);
-    default:
-      return null;
-  }
-}
-
-class _LeaderboardRow extends StatefulWidget {
-  const _LeaderboardRow({
-    required this.entry,
-    required this.summoner,
-    required this.ddragon,
-    required this.onTap,
-    this.useWebStyle = false,
-  });
-
-  final LeaderboardEntry entry;
-  final SummonerEntity summoner;
-  final DDragonProvider? ddragon;
-  final VoidCallback onTap;
-  final bool useWebStyle;
-
-  @override
-  State<_LeaderboardRow> createState() => _LeaderboardRowState();
-}
-
-class _LeaderboardRowState extends State<_LeaderboardRow> {
-  var _hovered = false;
-
-  BoxDecoration _decoration() {
-    final rankAccent = _leaderboardRankAccent(widget.entry.rank);
-    final radius = BorderRadius.circular(widget.useWebStyle ? 12 : 16);
-
-    if (widget.useWebStyle) {
-      return BoxDecoration(
-        color: _hovered ? WebColors.surfaceElevated : WebColors.surface,
-        borderRadius: radius,
-        border: Border.all(
-          color: rankAccent != null
-              ? rankAccent.withValues(alpha: _hovered ? 0.5 : 0.32)
-              : (_hovered ? WebColors.border : WebColors.borderSubtle),
-        ),
-        boxShadow: rankAccent != null && widget.entry.rank == 1
-            ? [
-                BoxShadow(
-                  color: rankAccent.withValues(alpha: _hovered ? 0.14 : 0.08),
-                  blurRadius: 18,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
-      );
-    }
-
-    return BoxDecoration(
-      color: WpggBrand.cardSurface,
-      borderRadius: radius,
-      border: rankAccent != null
-          ? Border.all(color: rankAccent.withValues(alpha: 0.35))
-          : null,
-    );
-  }
-
-  Widget _rankBadge(Color mutedColor) {
-    final rankAccent = _leaderboardRankAccent(widget.entry.rank);
-    final rank = widget.entry.rank;
-
-    if (rankAccent != null) {
-      return Container(
-        width: 32,
-        height: 32,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: rankAccent.withValues(alpha: 0.14),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: rankAccent.withValues(alpha: 0.45)),
-        ),
-        child: Text(
-          '$rank',
-          style: TextStyle(
-            fontFamily: AppFonts.lexendDeca,
-            color: rankAccent,
-            fontWeight: FontWeight.w800,
-            fontSize: 14,
-          ),
-        ),
-      );
-    }
-
-    return SizedBox(
-      width: 32,
-      child: Text(
-        '#$rank',
-        maxLines: 1,
-        softWrap: false,
-        style: TextStyle(
-          fontFamily: AppFonts.lexendDeca,
-          color: mutedColor,
-          fontWeight: FontWeight.w700,
-          fontSize: 13,
-        ),
-      ),
-    );
-  }
-
-  Widget _balanceChip({required Color textColor}) {
-    final balanceStyle = TextStyle(
-      fontFamily: AppFonts.lexendDeca,
-      color: textColor,
-      fontWeight: FontWeight.w700,
-      fontSize: widget.useWebStyle ? 14 : 15,
-    );
-
-    final balanceText = widget.useWebStyle
-        ? WebAnimatedNumber(
-            value: widget.entry.balanceWpgg,
-            style: balanceStyle,
-          )
-        : Text(
-            '${widget.entry.balanceWpgg}',
-            style: balanceStyle,
-          );
-
-    if (widget.useWebStyle) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: WebColors.surfaceElevated,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: WebColors.borderSubtle),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/images/wpgg-coin_24x24.png',
-              width: 16,
-              height: 16,
-              filterQuality: FilterQuality.high,
-            ),
-            const SizedBox(width: 6),
-            balanceText,
-          ],
-        ),
-      );
-    }
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          'assets/images/wpgg-coin_24x24.png',
-          width: 18,
-          height: 18,
-        ),
-        const SizedBox(width: 6),
-        balanceText,
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final textColor =
-        widget.useWebStyle ? WebColors.textPrimary : WpggBrand.cardTextDark;
-    final mutedColor =
-        widget.useWebStyle ? WebColors.textMuted : WpggBrand.textMuted;
-    final avatarSize = widget.entry.rank <= 3 ? 44.0 : 40.0;
-    final duration = WebMotion.resolve(context, WebMotion.fast);
-
-    final row = AnimatedContainer(
-      duration: duration,
-      curve: WebMotion.curve,
-      decoration: _decoration(),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(widget.useWebStyle ? 12 : 16),
-        child: InkWell(
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(widget.useWebStyle ? 12 : 16),
-          hoverColor: widget.useWebStyle
-              ? WebColors.sidebarHover.withValues(alpha: 0.35)
-              : null,
-          splashColor: widget.useWebStyle
-              ? WebColors.accent.withValues(alpha: 0.08)
-              : null,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.useWebStyle ? 16 : 16,
-              vertical: widget.useWebStyle ? 14 : 12,
-            ),
-            child: Row(
-              children: [
-                _rankBadge(mutedColor),
-                SizedBox(width: widget.useWebStyle ? 14 : 12),
-                WpggProfileAvatar(
-                  summoner: widget.summoner,
-                  ddragon: widget.ddragon,
-                  size: avatarSize,
-                  enableHero: false,
-                ),
-                SizedBox(width: widget.useWebStyle ? 14 : 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.entry.gameName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: AppFonts.lexendDeca,
-                          color: textColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: widget.useWebStyle ? 14 : 15,
-                        ),
-                      ),
-                      if (widget.entry.tagLine.isNotEmpty)
-                        Text(
-                          '#${widget.entry.tagLine}',
-                          style: TextStyle(
-                            fontFamily: AppFonts.lexendDeca,
-                            color: mutedColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                _balanceChip(textColor: textColor),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    if (!widget.useWebStyle) {
-      return row;
-    }
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: row,
     );
   }
 }

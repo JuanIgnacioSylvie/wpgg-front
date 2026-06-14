@@ -19,7 +19,9 @@ import '../../../missions/presentation/widgets/mission_welcome_card.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../bloc/user_profile_bloc.dart';
 import '../widgets/live_profile_balance_card.dart';
+import '../widgets/profile_balance_card.dart';
 import '../widgets/profile_privacy_blocked.dart';
+import '../widgets/public_profile_stats_row.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({
@@ -133,9 +135,26 @@ class _UserProfileView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            LiveProfileBalanceCard(
-              balanceWpgg: profile.balanceWpgg,
-              useWebStyle: useWebStyle,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PublicProfileStatsRow(
+                profile: profile,
+                useWebStyle: useWebStyle,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: profile.balanceUsd > 0
+                  ? ProfileBalanceCard(
+                      balanceWpgg: profile.balanceWpgg,
+                      balanceUsd: profile.balanceUsd,
+                      useWebStyle: useWebStyle,
+                    )
+                  : LiveProfileBalanceCard(
+                      balanceWpgg: profile.balanceWpgg,
+                      useWebStyle: useWebStyle,
+                    ),
             ),
             const SizedBox(height: 24),
             Padding(

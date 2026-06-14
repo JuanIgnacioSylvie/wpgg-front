@@ -18,6 +18,11 @@ class LeaderboardEntry {
     required this.tagLine,
     required this.region,
     required this.profileIconId,
+    this.completedMissionsCount = 0,
+    this.activeMissionTitleEn,
+    this.activeMissionTitleEs,
+    this.activeMissionProgressPercent,
+    this.activeMissionChampionId,
   });
 
   final int rank;
@@ -27,6 +32,56 @@ class LeaderboardEntry {
   final String tagLine;
   final String region;
   final int profileIconId;
+  final int completedMissionsCount;
+  final String? activeMissionTitleEn;
+  final String? activeMissionTitleEs;
+  final int? activeMissionProgressPercent;
+  final int? activeMissionChampionId;
+
+  bool get hasActiveMission =>
+      activeMissionProgressPercent != null &&
+      (activeMissionTitleEn?.isNotEmpty == true ||
+          activeMissionTitleEs?.isNotEmpty == true);
+
+  String localizedActiveMissionTitle(String languageCode) {
+    if (languageCode == 'es') {
+      final es = activeMissionTitleEs?.trim();
+      if (es != null && es.isNotEmpty) return es;
+    }
+    final en = activeMissionTitleEn?.trim();
+    if (en != null && en.isNotEmpty) return en;
+    return activeMissionTitleEs?.trim() ?? '';
+  }
+}
+
+class LeaderboardViewerPayload {
+  const LeaderboardViewerPayload({
+    required this.rank,
+    required this.inTop,
+    required this.balanceWpgg,
+    this.gapToAbove,
+    this.gapToLeader,
+    required this.totalPlayers,
+  });
+
+  final int rank;
+  final bool inTop;
+  final int balanceWpgg;
+  final int? gapToAbove;
+  final int? gapToLeader;
+  final int totalPlayers;
+}
+
+class LeaderboardResponse {
+  const LeaderboardResponse({
+    required this.entries,
+    required this.viewer,
+    required this.latestPriceUsd,
+  });
+
+  final List<LeaderboardEntry> entries;
+  final LeaderboardViewerPayload viewer;
+  final double latestPriceUsd;
 }
 
 class PublicUserProfile {
@@ -40,6 +95,11 @@ class PublicUserProfile {
     required this.balanceWpgg,
     required this.balanceUsd,
     required this.latestPriceUsd,
+    this.completedMissionsCount = 0,
+    this.leaderboardRank = 0,
+    this.leaderboardInTop = false,
+    this.gapToAbove,
+    this.gapToLeader,
     this.welcome,
     this.primary,
     required this.secondary,
@@ -55,6 +115,11 @@ class PublicUserProfile {
   final int balanceWpgg;
   final double balanceUsd;
   final double latestPriceUsd;
+  final int completedMissionsCount;
+  final int leaderboardRank;
+  final bool leaderboardInTop;
+  final int? gapToAbove;
+  final int? gapToLeader;
   final MissionCardModel? welcome;
   final MissionCardModel? primary;
   final List<MissionCardModel> secondary;
@@ -64,7 +129,7 @@ class PublicUserProfile {
 abstract class ProfileRemoteDataSource {
   Future<ProfileSettings> fetchSettings();
   Future<ProfileSettings> updateSettings({required bool profilePublic});
-  Future<List<LeaderboardEntry>> fetchLeaderboard({int limit = 50});
+  Future<LeaderboardResponse> fetchLeaderboard({int limit = 50});
   Future<PublicUserProfile> fetchUserProfile(String userId);
 }
 
@@ -95,14 +160,28 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  Future<List<LeaderboardEntry>> fetchLeaderboard({int limit = 50}) async {
-    final res = await _client.get<List<dynamic>>(
+  Future<LeaderboardResponse> fetchLeaderboard({int limit = 50}) async {
+    final res = await _client.get<Map<String, dynamic>>(
       '/profile/leaderboard',
       queryParameters: {'limit': limit},
     );
-    return (res.data ?? [])
+    final data = res.data ?? {};
+    final entries = (data['entries'] as List<dynamic>? ?? [])
         .map((e) => _parseLeaderboardEntry(e as Map<String, dynamic>))
         .toList();
+    final viewerRaw = data['viewer'] as Map<String, dynamic>? ?? {};
+    return LeaderboardResponse(
+      entries: entries,
+      viewer: LeaderboardViewerPayload(
+        rank: (viewerRaw['rank'] as num?)?.toInt() ?? 0,
+        inTop: viewerRaw['inTop'] as bool? ?? false,
+        balanceWpgg: (viewerRaw['balanceWpgg'] as num?)?.toInt() ?? 0,
+        gapToAbove: (viewerRaw['gapToAbove'] as num?)?.toInt(),
+        gapToLeader: (viewerRaw['gapToLeader'] as num?)?.toInt(),
+        totalPlayers: (viewerRaw['totalPlayers'] as num?)?.toInt() ?? entries.length,
+      ),
+      latestPriceUsd: (data['latestPriceUsd'] as num?)?.toDouble() ?? 0,
+    );
   }
 
   @override
@@ -133,6 +212,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       tagLine: json['tagLine'] as String? ?? '',
       region: json['region'] as String? ?? '',
       profileIconId: (json['profileIconId'] as num?)?.toInt() ?? 0,
+      completedMissionsCount:
+          (json['completedMissionsCount'] as num?)?.toInt() ?? 0,
+      activeMissionTitleEn: json['activeMissionTitleEn'] as String?,
+      activeMissionTitleEs: json['activeMissionTitleEs'] as String?,
+      activeMissionProgressPercent:
+          (json['activeMissionProgressPercent'] as num?)?.toInt(),
+      activeMissionChampionId:
+          (json['activeMissionChampionId'] as num?)?.toInt(),
     );
   }
 
@@ -152,6 +239,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       balanceWpgg: (data['balanceWpgg'] as num?)?.toInt() ?? 0,
       balanceUsd: (data['balanceUsd'] as num?)?.toDouble() ?? 0,
       latestPriceUsd: (data['latestPriceUsd'] as num?)?.toDouble() ?? 0,
+      completedMissionsCount:
+          (data['completedMissionsCount'] as num?)?.toInt() ?? 0,
+      leaderboardRank: (data['leaderboardRank'] as num?)?.toInt() ?? 0,
+      leaderboardInTop: data['leaderboardInTop'] as bool? ?? false,
+      gapToAbove: (data['gapToAbove'] as num?)?.toInt(),
+      gapToLeader: (data['gapToLeader'] as num?)?.toInt(),
       welcome: parseMission(data['welcome']),
       primary: parseMission(data['primary']),
       secondary: (data['secondary'] as List<dynamic>? ?? [])

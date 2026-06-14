@@ -1368,6 +1368,138 @@ abstract class AppLocalizations {
   /// **'No public profiles on the leaderboard yet.'**
   String get leaderboardEmpty;
 
+  /// No description provided for @leaderboardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked by WPGG balance'**
+  String get leaderboardSubtitle;
+
+  /// No description provided for @leaderboardYourPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Your position'**
+  String get leaderboardYourPosition;
+
+  /// No description provided for @leaderboardRankOf.
+  ///
+  /// In en, this message translates to:
+  /// **'#{rank} of {total}'**
+  String leaderboardRankOf(int rank, int total);
+
+  /// No description provided for @leaderboardGapToRank.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} WPGG to #{rank}'**
+  String leaderboardGapToRank(int amount, int rank);
+
+  /// No description provided for @leaderboardGapFromLeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} WPGG behind leader'**
+  String leaderboardGapFromLeader(int amount);
+
+  /// No description provided for @leaderboardOutsideTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside top {limit}'**
+  String leaderboardOutsideTop(int limit);
+
+  /// No description provided for @leaderboardNearYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Near you'**
+  String get leaderboardNearYou;
+
+  /// No description provided for @leaderboardFullList.
+  ///
+  /// In en, this message translates to:
+  /// **'Full ranking'**
+  String get leaderboardFullList;
+
+  /// No description provided for @leaderboardAllRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get leaderboardAllRegions;
+
+  /// No description provided for @leaderboardSortByBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get leaderboardSortByBalance;
+
+  /// No description provided for @leaderboardSortByMissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Missions'**
+  String get leaderboardSortByMissions;
+
+  /// No description provided for @leaderboardVsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} WPGG vs you'**
+  String leaderboardVsYou(int amount);
+
+  /// No description provided for @leaderboardRankDeltaUp.
+  ///
+  /// In en, this message translates to:
+  /// **'↑{count}'**
+  String leaderboardRankDeltaUp(int count);
+
+  /// No description provided for @leaderboardRankDeltaDown.
+  ///
+  /// In en, this message translates to:
+  /// **'↓{count}'**
+  String leaderboardRankDeltaDown(int count);
+
+  /// No description provided for @leaderboardMissionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} missions'**
+  String leaderboardMissionsCount(int count);
+
+  /// No description provided for @leaderboardActiveProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% active'**
+  String leaderboardActiveProgress(int percent);
+
+  /// No description provided for @leaderboardRestOfRanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest of the ranking'**
+  String get leaderboardRestOfRanking;
+
+  /// No description provided for @leaderboardHoverLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading profile…'**
+  String get leaderboardHoverLoading;
+
+  /// No description provided for @leaderboardMissionsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading missions {loaded}/{total}'**
+  String leaderboardMissionsLoading(int loaded, int total);
+
+  /// No description provided for @profileLeaderboardRankLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get profileLeaderboardRankLabel;
+
+  /// No description provided for @profileCompletedMissionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed missions'**
+  String get profileCompletedMissionsLabel;
+
+  /// No description provided for @profileGapToAboveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'To rank up'**
+  String get profileGapToAboveLabel;
+
   /// No description provided for @balanceUsdEquivalent.
   ///
   /// In en, this message translates to:

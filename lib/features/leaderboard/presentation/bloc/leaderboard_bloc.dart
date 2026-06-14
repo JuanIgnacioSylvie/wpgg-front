@@ -19,8 +19,8 @@ class LeaderboardBloc extends Bloc<LeaderboardEvent, LeaderboardState> {
   ) async {
     emit(const LeaderboardLoading());
     try {
-      final entries = await _datasource.fetchLeaderboard();
-      emit(LeaderboardLoaded(entries: entries));
+      final response = await _datasource.fetchLeaderboard();
+      emit(LeaderboardLoaded(response: response));
     } catch (e) {
       emit(LeaderboardError(e.toString()));
     }

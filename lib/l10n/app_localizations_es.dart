@@ -713,6 +713,92 @@ class AppLocalizationsEs extends AppLocalizations {
   String get leaderboardEmpty => 'Aún no hay perfiles públicos en el ranking.';
 
   @override
+  String get leaderboardSubtitle => 'Ranking por balance WPGG';
+
+  @override
+  String get leaderboardYourPosition => 'Tu posición';
+
+  @override
+  String leaderboardRankOf(int rank, int total) {
+    return '#$rank de $total';
+  }
+
+  @override
+  String leaderboardGapToRank(int amount, int rank) {
+    return '$amount WPGG para #$rank';
+  }
+
+  @override
+  String leaderboardGapFromLeader(int amount) {
+    return '$amount WPGG del líder';
+  }
+
+  @override
+  String leaderboardOutsideTop(int limit) {
+    return 'Fuera del top $limit';
+  }
+
+  @override
+  String get leaderboardNearYou => 'Cerca de vos';
+
+  @override
+  String get leaderboardFullList => 'Ranking completo';
+
+  @override
+  String get leaderboardAllRegions => 'Todas';
+
+  @override
+  String get leaderboardSortByBalance => 'Balance';
+
+  @override
+  String get leaderboardSortByMissions => 'Misiones';
+
+  @override
+  String leaderboardVsYou(int amount) {
+    return '$amount WPGG vs vos';
+  }
+
+  @override
+  String leaderboardRankDeltaUp(int count) {
+    return '↑$count';
+  }
+
+  @override
+  String leaderboardRankDeltaDown(int count) {
+    return '↓$count';
+  }
+
+  @override
+  String leaderboardMissionsCount(int count) {
+    return '$count misiones';
+  }
+
+  @override
+  String leaderboardActiveProgress(int percent) {
+    return '$percent% activa';
+  }
+
+  @override
+  String get leaderboardRestOfRanking => 'Resto del ranking';
+
+  @override
+  String get leaderboardHoverLoading => 'Cargando perfil…';
+
+  @override
+  String leaderboardMissionsLoading(int loaded, int total) {
+    return 'Cargando misiones $loaded/$total';
+  }
+
+  @override
+  String get profileLeaderboardRankLabel => 'Ranking';
+
+  @override
+  String get profileCompletedMissionsLabel => 'Misiones completadas';
+
+  @override
+  String get profileGapToAboveLabel => 'Para subir';
+
+  @override
   String balanceUsdEquivalent(String amount) {
     return '≈ $amount USD';
   }
