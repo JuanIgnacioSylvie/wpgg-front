@@ -12,7 +12,6 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../profile/data/datasources/profile_remote_datasource.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../domain/leaderboard_helpers.dart';
-import 'leaderboard_hover_preview.dart';
 import 'leaderboard_layout.dart';
 import 'leaderboard_podium.dart' show leaderboardRankAccentOrNull;
 
@@ -149,27 +148,10 @@ class _LeaderboardRowState extends State<LeaderboardRow> {
     );
   }
 
-  Widget? _missionStat(Color mutedColor) {
-    if (widget.entry.completedMissionsCount <= 0 && !widget.entry.hasActiveMission) {
-      return null;
-    }
-    return Text(
-      context.l10n.leaderboardMissionsCount(widget.entry.completedMissionsCount),
-      style: TextStyle(
-        fontFamily: AppFonts.lexendDeca,
-        color: mutedColor,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-      ),
-    );
-  }
-
   Widget? _middleStats(Color mutedColor, {required bool narrow}) {
     if (narrow) return null;
 
     final parts = <Widget>[];
-    final mission = _missionStat(mutedColor);
-    if (mission != null) parts.add(mission);
 
     if (widget.gapToAbove != null && widget.gapToAbove! > 0) {
       parts.add(
@@ -313,8 +295,6 @@ class _LeaderboardRowState extends State<LeaderboardRow> {
     final duration = WebMotion.resolve(context, WebMotion.fast);
     final narrow = leaderboardIsNarrowRow(context);
     final middle = _middleStats(mutedColor, narrow: narrow);
-    final missionBelow = narrow ? _missionStat(mutedColor) : null;
-    final showHoverPreview = widget.useWebStyle && _hovered;
 
     final row = AnimatedContainer(
       duration: duration,
@@ -337,60 +317,41 @@ class _LeaderboardRowState extends State<LeaderboardRow> {
               horizontal: widget.useWebStyle ? 16 : 16,
               vertical: widget.useWebStyle ? 14 : 12,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _rankBadge(mutedColor),
-                    SizedBox(width: widget.useWebStyle ? 14 : 12),
-                    WpggProfileAvatar(
-                      summoner: widget.summoner,
-                      ddragon: widget.ddragon,
-                      size: avatarSize,
-                      enableHero: false,
-                    ),
-                    SizedBox(width: widget.useWebStyle ? 14 : 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          WpggSummonerIdentityLabels.fromSummoner(
-                            widget.summoner,
-                            useWebStyle: widget.useWebStyle,
-                            showTagAndServer: true,
-                            nameStyle: TextStyle(
-                              fontFamily: AppFonts.lexendDeca,
-                              color: textColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: widget.useWebStyle ? 14 : 15,
-                            ),
-                          ),
-                          if (missionBelow != null) ...[
-                            const SizedBox(height: 4),
-                            missionBelow,
-                          ],
-                        ],
-                      ),
-                    ),
-                    if (middle != null) ...[
-                      const SizedBox(width: 12),
-                      middle,
-                      const SizedBox(width: 12),
-                    ] else
-                      const SizedBox(width: 12),
-                    _balanceColumn(
-                      textColor: textColor,
-                      mutedColor: mutedColor,
-                    ),
-                  ],
+                _rankBadge(mutedColor),
+                SizedBox(width: widget.useWebStyle ? 14 : 12),
+                WpggProfileAvatar(
+                  summoner: widget.summoner,
+                  ddragon: widget.ddragon,
+                  size: avatarSize,
+                  enableHero: false,
                 ),
-                if (showHoverPreview)
-                  LeaderboardHoverPreview(
-                    entry: widget.entry,
-                    visible: _hovered,
+                SizedBox(width: widget.useWebStyle ? 14 : 12),
+                Expanded(
+                  child: WpggSummonerIdentityLabels.fromSummoner(
+                    widget.summoner,
+                    useWebStyle: widget.useWebStyle,
+                    showTagAndServer: true,
+                    nameStyle: TextStyle(
+                      fontFamily: AppFonts.lexendDeca,
+                      color: textColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: widget.useWebStyle ? 14 : 15,
+                    ),
                   ),
+                ),
+                if (middle != null) ...[
+                  const SizedBox(width: 12),
+                  middle,
+                  const SizedBox(width: 12),
+                ] else
+                  const SizedBox(width: 12),
+                _balanceColumn(
+                  textColor: textColor,
+                  mutedColor: mutedColor,
+                ),
               ],
             ),
           ),

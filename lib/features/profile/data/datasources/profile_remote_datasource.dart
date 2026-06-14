@@ -18,11 +18,6 @@ class LeaderboardEntry {
     required this.tagLine,
     required this.region,
     required this.profileIconId,
-    this.completedMissionsCount = 0,
-    this.activeMissionTitleEn,
-    this.activeMissionTitleEs,
-    this.activeMissionProgressPercent,
-    this.activeMissionChampionId,
   });
 
   final int rank;
@@ -32,26 +27,6 @@ class LeaderboardEntry {
   final String tagLine;
   final String region;
   final int profileIconId;
-  final int completedMissionsCount;
-  final String? activeMissionTitleEn;
-  final String? activeMissionTitleEs;
-  final int? activeMissionProgressPercent;
-  final int? activeMissionChampionId;
-
-  bool get hasActiveMission =>
-      activeMissionProgressPercent != null &&
-      (activeMissionTitleEn?.isNotEmpty == true ||
-          activeMissionTitleEs?.isNotEmpty == true);
-
-  String localizedActiveMissionTitle(String languageCode) {
-    if (languageCode == 'es') {
-      final es = activeMissionTitleEs?.trim();
-      if (es != null && es.isNotEmpty) return es;
-    }
-    final en = activeMissionTitleEn?.trim();
-    if (en != null && en.isNotEmpty) return en;
-    return activeMissionTitleEs?.trim() ?? '';
-  }
 }
 
 class LeaderboardViewerPayload {
@@ -212,14 +187,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       tagLine: json['tagLine'] as String? ?? '',
       region: json['region'] as String? ?? '',
       profileIconId: (json['profileIconId'] as num?)?.toInt() ?? 0,
-      completedMissionsCount:
-          (json['completedMissionsCount'] as num?)?.toInt() ?? 0,
-      activeMissionTitleEn: json['activeMissionTitleEn'] as String?,
-      activeMissionTitleEs: json['activeMissionTitleEs'] as String?,
-      activeMissionProgressPercent:
-          (json['activeMissionProgressPercent'] as num?)?.toInt(),
-      activeMissionChampionId:
-          (json['activeMissionChampionId'] as num?)?.toInt(),
     );
   }
 
