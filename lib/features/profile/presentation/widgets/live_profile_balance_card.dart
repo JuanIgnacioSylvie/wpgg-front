@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../wallet/data/datasources/dexscreener_datasource.dart';
+import '../../../wallet/domain/wpgg_balance_usd.dart';
+import '../../../wallet/presentation/widgets/live_wpgg_price_scope.dart';
 import 'profile_balance_card.dart';
 
 /// Balance card valued with the same live price chain as Finance.
@@ -21,10 +23,13 @@ class LiveProfileBalanceCard extends StatefulWidget {
 class _LiveProfileBalanceCardState extends State<LiveProfileBalanceCard> {
   final _dataSource = DexScreenerDataSource();
   double? _priceUsd;
+  bool _fetchScheduled = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (LiveWpggPriceScope.of(context) != null || _fetchScheduled) return;
+    _fetchScheduled = true;
     _fetchPrice();
   }
 
@@ -38,26 +43,28 @@ class _LiveProfileBalanceCardState extends State<LiveProfileBalanceCard> {
     }
   }
 
-  double _balanceUsd() {
-    final price = _priceUsd;
-    if (price == null) return 0;
-    return widget.balanceWpgg * price;
+  double? _resolvedPriceUsd(BuildContext context) {
+    return LiveWpggPriceScope.of(context) ?? _priceUsd;
   }
 
-  String _usdLabel() {
-    final usd = _balanceUsd();
-    if (usd <= 0 && _priceUsd == null) return '—';
-    if (usd >= 1) return '\$${usd.toStringAsFixed(2)}';
-    if (usd >= 0.01) return '\$${usd.toStringAsFixed(4)}';
-    return '\$${usd.toStringAsFixed(6)}';
+  double _balanceUsd(BuildContext context) {
+    final price = _resolvedPriceUsd(context);
+    if (price == null) return 0;
+    return wpggBalanceToUsd(widget.balanceWpgg, price);
+  }
+
+  String _usdLabel(BuildContext context) {
+    final price = _resolvedPriceUsd(context);
+    if (price == null) return '—';
+    return formatWpggUsdAmount(_balanceUsd(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return ProfileBalanceCard(
       balanceWpgg: widget.balanceWpgg,
-      balanceUsd: _balanceUsd(),
-      usdLabelOverride: _usdLabel(),
+      balanceUsd: _balanceUsd(context),
+      usdLabelOverride: _usdLabel(context),
       useWebStyle: widget.useWebStyle,
     );
   }

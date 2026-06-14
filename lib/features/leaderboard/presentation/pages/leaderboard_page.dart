@@ -21,6 +21,7 @@ import '../../../profile/presentation/profile_leaderboard_access.dart';
 import '../../../profile/presentation/widgets/profile_privacy_blocked.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
 import '../../data/leaderboard_rank_snapshot_store.dart';
+import '../../../wallet/presentation/widgets/live_wpgg_price_scope.dart';
 import '../../domain/leaderboard_helpers.dart';
 import '../bloc/leaderboard_bloc.dart';
 import '../widgets/leaderboard_controls.dart';
@@ -41,7 +42,6 @@ class LeaderboardPage extends StatefulWidget {
 class _LeaderboardPageState extends State<LeaderboardPage> {
   String? _regionFilter;
   LeaderboardListMode _listMode = LeaderboardListMode.full;
-  double? _priceUsd;
   Map<String, int> _rankDeltas = {};
   LeaderboardRankSnapshotStore? _rankStore;
 
@@ -234,7 +234,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           onTap: () => _openProfile(item),
           gapToAbove: leaderboardGapToRankAbove(item, allEntries),
           rankDelta: _rankDeltas[item.userId],
-          priceUsd: _priceUsd,
+          priceUsd: LiveWpggPriceScope.of(context),
           viewer: viewer,
           allEntries: allEntries,
           isViewer: viewer.userId == item.userId,
@@ -258,10 +258,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       entry: listedEntry,
     );
 
-    if (_priceUsd == null && response.latestPriceUsd > 0) {
-      _priceUsd = response.latestPriceUsd;
-    }
-
+    final priceUsd = LiveWpggPriceScope.of(context);
     final entries = _prepareEntries(raw: rawEntries, viewerRank: viewerRank);
     final showPodium = _listMode == LeaderboardListMode.full;
     final split = showPodium
@@ -290,7 +287,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         viewer: viewer,
         allEntries: rawEntries,
         ddragon: ddragon,
-        priceUsd: _priceUsd ?? response.latestPriceUsd,
+        priceUsd: priceUsd,
         useWebStyle: useWeb,
       ),
       const SizedBox(height: 20),
@@ -298,7 +295,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         LeaderboardPodium(
           entries: split.podium,
           ddragon: ddragon,
-          priceUsd: _priceUsd ?? response.latestPriceUsd,
+          priceUsd: priceUsd,
           onTap: _openProfile,
           useWebStyle: useWeb,
         ),
@@ -423,12 +420,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           return WpggGradientScaffold(body: _blockedView());
         }
 
-        final body = BlocBuilder<LeaderboardBloc, LeaderboardState>(
-          builder: (context, state) => _leaderboardBody(
-            state: state,
-            useWeb: useWeb,
-            ddragon: ddragon,
-            title: l10n.leaderboardTitle,
+        final body = LiveWpggPriceScope(
+          child: BlocBuilder<LeaderboardBloc, LeaderboardState>(
+            builder: (context, state) => _leaderboardBody(
+              state: state,
+              useWeb: useWeb,
+              ddragon: ddragon,
+              title: l10n.leaderboardTitle,
+            ),
           ),
         );
 

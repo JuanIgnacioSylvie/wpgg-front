@@ -1,4 +1,5 @@
 import '../../profile/data/datasources/profile_remote_datasource.dart';
+import '../../wallet/domain/wpgg_balance_usd.dart';
 
 enum LeaderboardListMode { full, nearMe }
 
@@ -133,9 +134,4 @@ int leaderboardCompareToViewer({
   return entry.balanceWpgg - baseline;
 }
 
-String formatLeaderboardUsd(double usd) {
-  if (usd <= 0) return '—';
-  if (usd >= 1) return '\$${usd.toStringAsFixed(2)}';
-  if (usd >= 0.01) return '\$${usd.toStringAsFixed(4)}';
-  return '\$${usd.toStringAsFixed(6)}';
-}
+String formatLeaderboardUsd(double usd) => formatWpggUsdAmount(usd);

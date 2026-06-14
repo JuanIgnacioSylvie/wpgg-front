@@ -14,8 +14,9 @@ import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../missions/presentation/widgets/web_mission_card.dart';
 import '../../../missions/presentation/widgets/web_mission_welcome_card.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
+import '../../../wallet/presentation/widgets/live_wpgg_price_scope.dart';
 import '../bloc/user_profile_bloc.dart';
-import '../widgets/profile_balance_card.dart';
+import '../widgets/live_profile_balance_card.dart';
 import '../widgets/profile_panel_header.dart';
 import '../widgets/profile_privacy_blocked.dart';
 import '../widgets/public_profile_stats_row.dart';
@@ -36,11 +37,13 @@ Future<void> showWebUserProfileDialog(
           create: (_) => sl<UserProfileBloc>()..add(LoadUserProfile(userId)),
         ),
       ],
-      child: ChangeNotifierProvider<DDragonProvider>.value(
-        value: ddragon,
-        child: _WebUserProfileDialog(
-          userId: userId,
-          onOpenSettings: openSettings,
+      child: LiveWpggPriceScope(
+        child: ChangeNotifierProvider<DDragonProvider>.value(
+          value: ddragon,
+          child: _WebUserProfileDialog(
+            userId: userId,
+            onOpenSettings: openSettings,
+          ),
         ),
       ),
     ),
@@ -276,9 +279,8 @@ class _WebUserProfileContent extends StatelessWidget {
               const SizedBox(height: 20),
               PublicProfileStatsRow(profile: profile, useWebStyle: true),
               const SizedBox(height: 20),
-              ProfileBalanceCard(
+              LiveProfileBalanceCard(
                 balanceWpgg: profile.balanceWpgg,
-                balanceUsd: profile.balanceUsd,
                 useWebStyle: true,
               ),
               const SizedBox(height: 32),

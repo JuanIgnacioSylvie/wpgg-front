@@ -17,9 +17,9 @@ import '../../../missions/presentation/widgets/mission_secondary_card.dart';
 import '../../../missions/presentation/widgets/mission_tertiary_card.dart';
 import '../../../missions/presentation/widgets/mission_welcome_card.dart';
 import '../../../riot/domain/entities/summoner_entity.dart';
+import '../../../wallet/presentation/widgets/live_wpgg_price_scope.dart';
 import '../bloc/user_profile_bloc.dart';
 import '../widgets/live_profile_balance_card.dart';
-import '../widgets/profile_balance_card.dart';
 import '../widgets/profile_privacy_blocked.dart';
 import '../widgets/public_profile_stats_row.dart';
 
@@ -35,10 +35,12 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          sl<UserProfileBloc>()..add(LoadUserProfile(userId)),
-      child: _UserProfileView(useWebStyle: useWebStyle),
+    return LiveWpggPriceScope(
+      child: BlocProvider(
+        create: (_) =>
+            sl<UserProfileBloc>()..add(LoadUserProfile(userId)),
+        child: _UserProfileView(useWebStyle: useWebStyle),
+      ),
     );
   }
 }
@@ -145,16 +147,10 @@ class _UserProfileView extends StatelessWidget {
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: profile.balanceUsd > 0
-                  ? ProfileBalanceCard(
-                      balanceWpgg: profile.balanceWpgg,
-                      balanceUsd: profile.balanceUsd,
-                      useWebStyle: useWebStyle,
-                    )
-                  : LiveProfileBalanceCard(
-                      balanceWpgg: profile.balanceWpgg,
-                      useWebStyle: useWebStyle,
-                    ),
+              child: LiveProfileBalanceCard(
+                balanceWpgg: profile.balanceWpgg,
+                useWebStyle: useWebStyle,
+              ),
             ),
             const SizedBox(height: 24),
             Padding(
