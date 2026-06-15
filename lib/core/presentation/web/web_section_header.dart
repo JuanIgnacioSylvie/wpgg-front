@@ -10,11 +10,13 @@ class WebSectionHeader extends StatelessWidget {
     required this.title,
     this.count,
     this.subtitle,
+    this.trailing,
   });
 
   final String title;
   final int? count;
   final String? subtitle;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class WebSectionHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               title,
@@ -35,7 +38,10 @@ class WebSectionHeader extends StatelessWidget {
             if (count != null) ...[
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 2,
+                ),
                 decoration: BoxDecoration(
                   color: WebColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(10),
@@ -50,6 +56,10 @@ class WebSectionHeader extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
+            if (trailing != null) ...[
+              const SizedBox(width: 12),
+              trailing!,
             ],
           ],
         ),

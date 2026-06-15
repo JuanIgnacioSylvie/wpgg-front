@@ -45,6 +45,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get inProgress => 'En progreso';
 
   @override
+  String get missionSyncUpdateNow => 'Actualizar ahora';
+
+  @override
+  String get missionSyncUpToDate => 'Al día';
+
+  @override
+  String get missionSyncSyncing => 'Actualizando...';
+
+  @override
+  String get missionSyncRetry => 'Reintentar';
+
+  @override
   String missionDayResets(String date, String timezone) {
     return 'Día de misión $date · reinicia 00:00 $timezone';
   }

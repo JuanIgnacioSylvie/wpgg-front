@@ -17,6 +17,7 @@ import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/draggable_web_mission_card.dart';
+import '../widgets/mission_sync_button.dart';
 import '../widgets/pick_missions_dialog.dart';
 import '../widgets/web_mission_card.dart';
 import '../widgets/web_mission_trash_zone.dart';
@@ -196,10 +197,11 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
               final activeMissions = _activeMissions(home);
               final isDragging = _draggingMissionId != null;
 
-              return WebAnimatedSwitcher(
-                child: Stack(
-                  key: const ValueKey('dashboard-content'),
-                  children: [
+              return MissionSyncStatusPoller(
+                child: WebAnimatedSwitcher(
+                  child: Stack(
+                    key: const ValueKey('dashboard-content'),
+                    children: [
                     RefreshIndicator(
                       color: WebColors.accent,
                       backgroundColor: WebColors.surface,
@@ -244,6 +246,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                             WebSectionHeader(
                               title: l10n.inProgress,
                               count: _inProgressCount(home),
+                              trailing: const MissionSyncButton(useWebStyle: true),
                             ),
                             const SizedBox(height: 20),
                             Wrap(
@@ -366,7 +369,8 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                     ),
                   ],
                 ),
-              );
+              ),
+            );
             },
           );
         },

@@ -174,6 +174,30 @@ abstract class AppLocalizations {
   /// **'In Progress'**
   String get inProgress;
 
+  /// No description provided for @missionSyncUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get missionSyncUpdateNow;
+
+  /// No description provided for @missionSyncUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get missionSyncUpToDate;
+
+  /// No description provided for @missionSyncSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating...'**
+  String get missionSyncSyncing;
+
+  /// No description provided for @missionSyncRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get missionSyncRetry;
+
   /// No description provided for @missionDayResets.
   ///
   /// In en, this message translates to:

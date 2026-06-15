@@ -4,6 +4,15 @@ enum MissionsLoadStatus { initial, loading, loaded, error }
 
 enum MissionActionType { accept, reroll, cancel }
 
+enum MissionSyncUiStatus {
+  hidden,
+  unknown,
+  upToDate,
+  updatesAvailable,
+  syncing,
+  error,
+}
+
 class MissionActionFeedback extends Equatable {
   const MissionActionFeedback({
     required this.type,
@@ -95,6 +104,8 @@ class MissionsState extends Equatable {
     this.byDayError,
     this.actionInProgress,
     this.actionFeedback,
+    this.missionSyncStatus = MissionSyncUiStatus.hidden,
+    this.missionSyncError,
   });
 
   final MissionsLoadStatus homeStatus;
@@ -111,6 +122,9 @@ class MissionsState extends Equatable {
 
   final MissionActionType? actionInProgress;
   final MissionActionFeedback? actionFeedback;
+
+  final MissionSyncUiStatus missionSyncStatus;
+  final String? missionSyncError;
 
   MissionsState copyWith({
     MissionsLoadStatus? homeStatus,
@@ -129,6 +143,9 @@ class MissionsState extends Equatable {
     bool clearActionInProgress = false,
     MissionActionFeedback? actionFeedback,
     bool clearActionFeedback = false,
+    MissionSyncUiStatus? missionSyncStatus,
+    String? missionSyncError,
+    bool clearMissionSyncError = false,
   }) {
     return MissionsState(
       homeStatus: homeStatus ?? this.homeStatus,
@@ -146,6 +163,10 @@ class MissionsState extends Equatable {
       actionFeedback: clearActionFeedback
           ? null
           : (actionFeedback ?? this.actionFeedback),
+      missionSyncStatus: missionSyncStatus ?? this.missionSyncStatus,
+      missionSyncError: clearMissionSyncError
+          ? null
+          : (missionSyncError ?? this.missionSyncError),
     );
   }
 
@@ -162,5 +183,7 @@ class MissionsState extends Equatable {
         byDayError,
         actionInProgress,
         actionFeedback,
+        missionSyncStatus,
+        missionSyncError,
       ];
 }

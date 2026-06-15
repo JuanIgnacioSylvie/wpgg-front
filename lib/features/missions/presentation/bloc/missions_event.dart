@@ -67,3 +67,11 @@ class ReorderActiveMissions extends MissionsEvent {
 class ClearMissionActionFeedback extends MissionsEvent {
   const ClearMissionActionFeedback();
 }
+
+class CheckMissionSyncStatus extends MissionsEvent {
+  const CheckMissionSyncStatus();
+}
+
+class SyncMissionsNow extends MissionsEvent {
+  const SyncMissionsNow();
+}

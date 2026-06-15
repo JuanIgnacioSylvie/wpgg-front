@@ -12,6 +12,10 @@
   "welcomeMissionBadge": "MISSION CADEAU",
   "welcomeMissionSection": "Mission cadeau",
   "inProgress": "En cours",
+  "missionSyncUpdateNow": "Mettre à jour",
+  "missionSyncUpToDate": "À jour",
+  "missionSyncSyncing": "Mise à jour...",
+  "missionSyncRetry": "Réessayer",
   "missionDayResets": "Jour de mission {date} · réinitialisation à 00:00 {timezone}",
   "@missionDayResets": {
     "placeholders": {

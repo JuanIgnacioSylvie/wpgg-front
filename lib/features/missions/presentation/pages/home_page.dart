@@ -20,6 +20,7 @@ import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
+import '../widgets/mission_sync_button.dart';
 import '../widgets/mission_tertiary_card.dart';
 import '../widgets/mission_welcome_card.dart';
 import '../../../profile/presentation/widgets/live_profile_balance_card.dart';
@@ -177,7 +178,8 @@ class _HomePageState extends State<HomePage> {
                   return const SizedBox.shrink();
                 }
 
-                return RefreshIndicator(
+                return MissionSyncStatusPoller(
+                  child: RefreshIndicator(
                   color: WpggBrand.primary,
                   onRefresh: () async {
                     context.read<MissionsBloc>().add(const LoadMissionsHome());
@@ -202,13 +204,20 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            l10n.inProgress,
-                            style: const TextStyle(
-                              color: WpggBrand.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                l10n.inProgress,
+                                style: const TextStyle(
+                                  color: WpggBrand.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              const MissionSyncButton(),
+                            ],
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -325,6 +334,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                     ],
                   ),
+                ),
                 );
               },
             );

@@ -12,6 +12,10 @@
   "welcomeMissionBadge": "MISIÓN DE REGALO",
   "welcomeMissionSection": "Misión de regalo",
   "inProgress": "En progreso",
+  "missionSyncUpdateNow": "Actualizar ahora",
+  "missionSyncUpToDate": "Al día",
+  "missionSyncSyncing": "Actualizando...",
+  "missionSyncRetry": "Reintentar",
   "missionDayResets": "Día de misión {date} · reinicia 00:00 {timezone}",
   "dayEndsIn": "Día termina en: {time}",
   "@dayEndsIn": {

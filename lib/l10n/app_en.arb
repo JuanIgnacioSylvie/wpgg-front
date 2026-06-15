@@ -12,6 +12,10 @@
   "welcomeMissionBadge": "GIFT MISSION",
   "welcomeMissionSection": "Gift mission",
   "inProgress": "In Progress",
+  "missionSyncUpdateNow": "Update now",
+  "missionSyncUpToDate": "Up to date",
+  "missionSyncSyncing": "Updating...",
+  "missionSyncRetry": "Retry",
   "missionDayResets": "Mission day {date} · resets 00:00 {timezone}",
   "@missionDayResets": {
     "placeholders": {

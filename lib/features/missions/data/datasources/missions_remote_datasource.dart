@@ -1,6 +1,64 @@
 import '../../../../core/network/api_client.dart';
 import '../models/mission_card_model.dart';
 
+enum MissionSyncApiStatus {
+  noActiveMissions,
+  upToDate,
+  updatesAvailable;
+
+  static MissionSyncApiStatus fromApi(String value) {
+    return switch (value) {
+      'NO_ACTIVE_MISSIONS' => MissionSyncApiStatus.noActiveMissions,
+      'UP_TO_DATE' => MissionSyncApiStatus.upToDate,
+      'UPDATES_AVAILABLE' => MissionSyncApiStatus.updatesAvailable,
+      _ => MissionSyncApiStatus.updatesAvailable,
+    };
+  }
+}
+
+class MissionSyncStatusResponse {
+  const MissionSyncStatusResponse({
+    required this.status,
+    this.lastSyncedAt,
+    this.latestMatchId,
+    this.newestMatchId,
+  });
+
+  final MissionSyncApiStatus status;
+  final String? lastSyncedAt;
+  final String? latestMatchId;
+  final String? newestMatchId;
+
+  factory MissionSyncStatusResponse.fromJson(Map<String, dynamic> json) {
+    return MissionSyncStatusResponse(
+      status: MissionSyncApiStatus.fromApi(json['status'] as String? ?? ''),
+      lastSyncedAt: json['lastSyncedAt'] as String?,
+      latestMatchId: json['latestMatchId'] as String?,
+      newestMatchId: json['newestMatchId'] as String?,
+    );
+  }
+}
+
+class MissionSyncResult {
+  const MissionSyncResult({
+    required this.processed,
+    required this.lastSyncedAt,
+    this.latestMatchId,
+  });
+
+  final int processed;
+  final String lastSyncedAt;
+  final String? latestMatchId;
+
+  factory MissionSyncResult.fromJson(Map<String, dynamic> json) {
+    return MissionSyncResult(
+      processed: (json['processed'] as num?)?.toInt() ?? 0,
+      lastSyncedAt: json['lastSyncedAt'] as String? ?? '',
+      latestMatchId: json['latestMatchId'] as String?,
+    );
+  }
+}
+
 class MissionsHomeResponse {
   MissionsHomeResponse({
     this.welcome,
@@ -44,7 +102,8 @@ abstract class MissionsRemoteDataSource {
   Future<MissionCardModel> acceptOffer(String offerId);
   Future<MissionCardModel> rerollOffer(String offerId);
   Future<void> cancelActiveMission(String missionId);
-  Future<void> syncMatches();
+  Future<MissionSyncStatusResponse> fetchSyncStatus();
+  Future<MissionSyncResult> syncMatches();
 }
 
 class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
@@ -129,7 +188,14 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
   }
 
   @override
-  Future<void> syncMatches() async {
-    await _client.post<void>('/missions/sync');
+  Future<MissionSyncStatusResponse> fetchSyncStatus() async {
+    final res = await _client.get<Map<String, dynamic>>('/missions/sync-status');
+    return MissionSyncStatusResponse.fromJson(res.data!);
+  }
+
+  @override
+  Future<MissionSyncResult> syncMatches() async {
+    final res = await _client.post<Map<String, dynamic>>('/missions/sync');
+    return MissionSyncResult.fromJson(res.data!);
   }
 }

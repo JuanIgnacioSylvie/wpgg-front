@@ -23,6 +23,8 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     on<CancelActiveMission>(_onCancel);
     on<ReorderActiveMissions>(_onReorder);
     on<ClearMissionActionFeedback>(_onClearActionFeedback);
+    on<CheckMissionSyncStatus>(_onCheckSyncStatus);
+    on<SyncMissionsNow>(_onSyncNow);
   }
 
   final MissionsRemoteDataSource _dataSource;
@@ -33,6 +35,22 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
   }
 
   String _missionErrorMessage(Object error) => networkErrorMessage(error);
+
+  bool _homeHasSyncableMissions(MissionsHomeData? home) {
+    if (home == null) return false;
+    return home.welcome != null ||
+        home.primary != null ||
+        home.secondary.isNotEmpty;
+  }
+
+  MissionSyncUiStatus _uiStatusFromApi(MissionSyncApiStatus status) {
+    return switch (status) {
+      MissionSyncApiStatus.noActiveMissions => MissionSyncUiStatus.hidden,
+      MissionSyncApiStatus.upToDate => MissionSyncUiStatus.upToDate,
+      MissionSyncApiStatus.updatesAvailable =>
+        MissionSyncUiStatus.updatesAvailable,
+    };
+  }
 
   Future<void> _onHome(
     LoadMissionsHome event,
@@ -64,6 +82,12 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
         home: homeFromOrderedMissions(baseHome, ordered),
         clearHomeError: true,
       ));
+      if (_homeHasSyncableMissions(baseHome)) {
+        emit(state.copyWith(missionSyncStatus: MissionSyncUiStatus.unknown));
+        add(const CheckMissionSyncStatus());
+      } else {
+        emit(state.copyWith(missionSyncStatus: MissionSyncUiStatus.hidden));
+      }
     } catch (e) {
       if (hasCachedHome) {
         // Mantener datos visibles si un refresh en segundo plano falla.
@@ -270,6 +294,69 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
           success: false,
           message: _missionErrorMessage(e),
         ),
+      ));
+    }
+  }
+
+  Future<void> _onCheckSyncStatus(
+    CheckMissionSyncStatus event,
+    Emitter<MissionsState> emit,
+  ) async {
+    if (state.missionSyncStatus == MissionSyncUiStatus.syncing) {
+      return;
+    }
+    if (!_homeHasSyncableMissions(state.home)) {
+      emit(state.copyWith(missionSyncStatus: MissionSyncUiStatus.hidden));
+      return;
+    }
+
+    try {
+      final status = await _dataSource.fetchSyncStatus();
+      emit(state.copyWith(
+        missionSyncStatus: _uiStatusFromApi(status.status),
+        clearMissionSyncError: true,
+      ));
+    } catch (e) {
+      if (state.missionSyncStatus == MissionSyncUiStatus.hidden ||
+          state.missionSyncStatus == MissionSyncUiStatus.unknown) {
+        emit(state.copyWith(
+          missionSyncStatus: MissionSyncUiStatus.updatesAvailable,
+          clearMissionSyncError: true,
+        ));
+        return;
+      }
+      emit(state.copyWith(
+        missionSyncStatus: MissionSyncUiStatus.error,
+        missionSyncError: _missionErrorMessage(e),
+      ));
+    }
+  }
+
+  Future<void> _onSyncNow(
+    SyncMissionsNow event,
+    Emitter<MissionsState> emit,
+  ) async {
+    if (state.missionSyncStatus == MissionSyncUiStatus.syncing) {
+      return;
+    }
+
+    emit(state.copyWith(
+      missionSyncStatus: MissionSyncUiStatus.syncing,
+      clearMissionSyncError: true,
+    ));
+
+    try {
+      await _dataSource.syncMatches();
+      _refreshWallet();
+      add(const LoadMissionsHome());
+      emit(state.copyWith(
+        missionSyncStatus: MissionSyncUiStatus.upToDate,
+        clearMissionSyncError: true,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        missionSyncStatus: MissionSyncUiStatus.error,
+        missionSyncError: _missionErrorMessage(e),
       ));
     }
   }

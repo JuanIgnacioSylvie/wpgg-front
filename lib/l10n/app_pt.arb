@@ -12,6 +12,10 @@
   "welcomeMissionBadge": "MISSÃO PRESENTE",
   "welcomeMissionSection": "Missão presente",
   "inProgress": "Em andamento",
+  "missionSyncUpdateNow": "Atualizar agora",
+  "missionSyncUpToDate": "Em dia",
+  "missionSyncSyncing": "Atualizando...",
+  "missionSyncRetry": "Tentar de novo",
   "missionDayResets": "Dia de missão {date} · reinicia às 00:00 {timezone}",
   "@missionDayResets": {
     "placeholders": {
