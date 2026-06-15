@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/auth_ui_colors.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 
 /// Card blanca con ilustración Samira sobresaliendo arriba.
 class AuthCard extends StatelessWidget {
@@ -33,16 +34,12 @@ class AuthCard extends StatelessWidget {
             width: double.infinity,
             constraints: const BoxConstraints(maxWidth: 400),
             padding: const EdgeInsets.fromLTRB(24, contentTopPadding, 24, 28),
-            decoration: BoxDecoration(
-              color: AuthUiColors.cardBackground,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  blurRadius: 24,
-                  offset: const Offset(0, 12),
-                ),
-              ],
+            decoration: WpggCardElevation.enhance(
+              BoxDecoration(
+                color: AuthUiColors.cardBackground,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              baseColor: AuthUiColors.cardBackground,
             ),
             child: child,
           ),

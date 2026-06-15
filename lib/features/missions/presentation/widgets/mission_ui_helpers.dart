@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/mission_card_entity.dart';
 
@@ -66,26 +67,42 @@ double difficultyBorderWidth(MissionDifficulty d) {
   return 1;
 }
 
-BoxDecoration missionCardDecoration(MissionCardEntity mission) {
+BoxDecoration missionCardDecoration(
+  MissionCardEntity mission, {
+  bool hovered = false,
+  Color? surfaceColor,
+}) {
   if (mission.isWelcome) {
-    return BoxDecoration(
-      color: WpggBrand.welcomeAccentSoft,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-        color: WpggBrand.welcomeAccent.withValues(alpha: 0.5),
-        width: 2,
+    return WpggCardElevation.enhance(
+      BoxDecoration(
+        color: WpggBrand.welcomeAccentSoft,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: WpggBrand.welcomeAccent.withValues(alpha: 0.5),
+          width: 2,
+        ),
       ),
+      hovered: hovered,
+      accentColor: WpggBrand.welcomeAccent,
+      baseColor: WpggBrand.welcomeAccentSoft,
     );
   }
 
   final color = difficultyColor(mission.difficulty);
-  return BoxDecoration(
-    color: difficultyCardBackground(mission.difficulty),
-    borderRadius: BorderRadius.circular(20),
-    border: Border.all(
-      color: color.withValues(alpha: 0.2),
-      width: difficultyBorderWidth(mission.difficulty),
+  final background = surfaceColor ?? difficultyCardBackground(mission.difficulty);
+
+  return WpggCardElevation.enhance(
+    BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: color.withValues(alpha: 0.2),
+        width: difficultyBorderWidth(mission.difficulty),
+      ),
     ),
+    hovered: hovered,
+    accentColor: color,
+    baseColor: background,
   );
 }
 

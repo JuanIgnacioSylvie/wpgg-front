@@ -8,6 +8,7 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/locale/locale_provider.dart';
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -364,13 +365,23 @@ class _SettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: useWebStyle ? WebColors.surfaceElevated : WpggBrand.cardSurface,
-        borderRadius: BorderRadius.circular(useWebStyle ? 12 : 20),
-        border: useWebStyle
-            ? Border.all(color: WebColors.borderSubtle)
-            : null,
-      ),
+      decoration: useWebStyle
+          ? WpggCardElevation.enhance(
+              BoxDecoration(
+                color: WebColors.surfaceElevated,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: WebColors.borderSubtle),
+              ),
+              variant: WpggCardElevationVariant.dark,
+              baseColor: WebColors.surfaceElevated,
+            )
+          : WpggCardElevation.enhance(
+              BoxDecoration(
+                color: WpggBrand.cardSurface,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              baseColor: WpggBrand.cardSurface,
+            ),
       child: Column(children: children),
     );
   }

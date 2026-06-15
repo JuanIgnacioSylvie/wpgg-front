@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../domain/entities/store_product.dart';
 import 'store_purchase_dialog.dart';
@@ -32,12 +33,17 @@ class _WebStoreProductCardState extends State<WebStoreProductCard> {
     return SizedBox(
       width: 280,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: _hovered ? WebColors.surfaceElevated : WebColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _hovered ? WebColors.border : WebColors.borderSubtle,
+        decoration: WpggCardElevation.enhance(
+          BoxDecoration(
+            color: _hovered ? WebColors.surfaceElevated : WebColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _hovered ? WebColors.border : WebColors.borderSubtle,
+            ),
           ),
+          variant: WpggCardElevationVariant.dark,
+          hovered: _hovered,
+          baseColor: _hovered ? WebColors.surfaceElevated : WebColors.surface,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

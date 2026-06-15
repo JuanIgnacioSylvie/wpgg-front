@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
@@ -24,24 +25,21 @@ class MissionWelcomeCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            WpggBrand.welcomeAccentSoft,
-            WpggBrand.cardSurface,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _accent.withValues(alpha: 0.55), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: _accent.withValues(alpha: 0.18),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
+      decoration: WpggCardElevation.enhance(
+        BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              WpggBrand.welcomeAccentSoft,
+              WpggBrand.cardSurface,
+            ],
           ),
-        ],
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: _accent.withValues(alpha: 0.55), width: 1.5),
+        ),
+        accentColor: _accent,
+        useConvexGradient: false,
       ),
       child: Stack(
         clipBehavior: Clip.none,

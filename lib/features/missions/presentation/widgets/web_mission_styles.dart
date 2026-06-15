@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/presentation/web/web_colors.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_ui_helpers.dart';
 
@@ -30,39 +31,42 @@ BoxDecoration webMissionCardDecoration(
   bool dragFeedback = false,
 }) {
   if (mission.isWelcome) {
-    return BoxDecoration(
-      color: hovered
-          ? WebColors.surfaceElevated
-          : WebColors.surface,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: WebColors.border.withValues(alpha: hovered ? 0.9 : 0.55),
-        width: 1,
+    final surface = hovered ? WebColors.surfaceElevated : WebColors.surface;
+
+    return WpggCardElevation.enhance(
+      BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: WebColors.border.withValues(alpha: hovered ? 0.9 : 0.55),
+          width: 1,
+        ),
       ),
+      variant: WpggCardElevationVariant.dark,
+      hovered: hovered,
+      dragFeedback: dragFeedback,
+      baseColor: surface,
     );
   }
 
   final accent = difficultyColor(mission.difficulty);
+  final surface = hovered
+      ? WebColors.surfaceElevated
+      : webDifficultySurface(mission.difficulty);
 
-  return BoxDecoration(
-    color: hovered
-        ? WebColors.surfaceElevated
-        : webDifficultySurface(mission.difficulty),
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(
-      color: isPlaceholder
-          ? WebColors.border
-          : accent.withValues(alpha: hovered ? 0.28 : 0.16),
-      width: 1,
+  return WpggCardElevation.enhance(
+    BoxDecoration(
+      color: surface,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: isPlaceholder ? WebColors.border : WebColors.borderSubtle,
+        width: 1,
+      ),
     ),
-    boxShadow: dragFeedback
-        ? [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ]
-        : null,
+    variant: WpggCardElevationVariant.dark,
+    hovered: hovered,
+    dragFeedback: dragFeedback,
+    accentColor: isPlaceholder ? null : accent,
+    baseColor: surface,
   );
 }

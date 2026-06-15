@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../domain/entities/store_product.dart';
 import 'store_purchase_dialog.dart';
@@ -20,9 +21,15 @@ class StoreProductCard extends StatelessWidget {
     final l10n = context.l10n;
     final priceLabel = NumberFormat.decimalPattern().format(product.priceWpgg);
 
-    return Card(
+    return Container(
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      decoration: WpggCardElevation.enhance(
+        BoxDecoration(
+          color: WpggBrand.cardSurface,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        baseColor: WpggBrand.cardSurface,
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
