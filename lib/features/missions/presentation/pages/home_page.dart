@@ -17,6 +17,7 @@ import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../riot/presentation/widgets/riot_link_sheet.dart';
 import '../../../riot/presentation/widgets/stats_header.dart';
 import '../bloc/missions_bloc.dart';
+import '../utils/mission_timer_utils.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
@@ -240,7 +241,9 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: MissionPrimaryCard(
                             mission: home.primary!,
-                            endsInSeconds: home.endsInSeconds,
+                            endsInSeconds: MissionTimerUtils.endsInSeconds(
+                              home.primary!.endsAt,
+                            ),
                             onCancel: () => _cancelMission(
                               context,
                               home.primary!.id,

@@ -255,7 +255,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                 prev.home != curr.home,
             builder: (context, missionsState) {
               final home = missionsState.home;
-              final endsIn = isDashboard ? home?.endsInSeconds : null;
+              final endsIn = home?.endsInSeconds;
               final activeCount = home == null
                   ? 0
                   : (home.primary != null ? 1 : 0) + home.secondary.length;
@@ -265,8 +265,7 @@ class _WebAppShellPageState extends State<WebAppShellPage>
                 dashboardSummoner: dashboardSummoner,
                 showAddButton: isDashboard,
                 addButtonEnabled: activeCount < 3,
-                showDayCountdown:
-                    isDashboard && endsIn != null && endsIn > 0,
+                showDayCountdown: endsIn != null && endsIn > 0,
                 dayEndsInSeconds: endsIn,
                 onAddTap: _openPickMissions,
               );

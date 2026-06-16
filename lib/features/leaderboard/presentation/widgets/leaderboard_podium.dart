@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -141,26 +143,38 @@ class _PodiumCardState extends State<_PodiumCard> {
         : widget.entry.balanceWpgg * widget.priceUsd!;
     final duration = WebMotion.resolve(context, WebMotion.fast);
 
+    final surface = _hovered ? WebColors.surfaceElevated : WebColors.surface;
+
     final card = AnimatedContainer(
       duration: duration,
       curve: WebMotion.curve,
       padding: EdgeInsets.fromLTRB(16, widget.elevated ? 22 : 16, 16, 16),
-      decoration: BoxDecoration(
-        color: _hovered ? WebColors.surfaceElevated : WebColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: accent.withValues(alpha: _hovered ? 0.55 : 0.35),
-        ),
-        boxShadow: widget.elevated
-            ? [
-                BoxShadow(
-                  color: accent.withValues(alpha: _hovered ? 0.18 : 0.1),
-                  blurRadius: 24,
-                  offset: const Offset(0, 6),
+      decoration: widget.useWebStyle
+          ? WpggCardElevation.enhance(
+              BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: accent.withValues(alpha: _hovered ? 0.45 : 0.3),
                 ),
-              ]
-            : null,
-      ),
+              ),
+              variant: WpggCardElevationVariant.dark,
+              hovered: _hovered,
+              accentColor: accent,
+              baseColor: surface,
+            )
+          : WpggCardElevation.enhance(
+              BoxDecoration(
+                color: WpggBrand.cardSurface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: accent.withValues(alpha: _hovered ? 0.45 : 0.3),
+                ),
+              ),
+              hovered: _hovered,
+              accentColor: accent,
+              baseColor: WpggBrand.cardSurface,
+            ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(

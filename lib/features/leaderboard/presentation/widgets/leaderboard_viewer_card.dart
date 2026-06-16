@@ -5,6 +5,7 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/constants/wpgg_brand.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -63,11 +64,26 @@ class LeaderboardViewerCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: border),
-      ),
+      decoration: useWebStyle
+          ? WpggCardElevation.enhance(
+              BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border),
+              ),
+              variant: WpggCardElevationVariant.dark,
+              accentColor: accent,
+              baseColor: surface,
+            )
+          : WpggCardElevation.enhance(
+              BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border),
+              ),
+              accentColor: accent,
+              baseColor: surface,
+            ),
       child: compact
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,

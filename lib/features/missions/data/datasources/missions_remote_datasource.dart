@@ -44,17 +44,20 @@ class MissionSyncResult {
     required this.processed,
     required this.lastSyncedAt,
     this.latestMatchId,
+    this.queued = false,
   });
 
   final int processed;
   final String lastSyncedAt;
   final String? latestMatchId;
+  final bool queued;
 
   factory MissionSyncResult.fromJson(Map<String, dynamic> json) {
     return MissionSyncResult(
       processed: (json['processed'] as num?)?.toInt() ?? 0,
       lastSyncedAt: json['lastSyncedAt'] as String? ?? '',
       latestMatchId: json['latestMatchId'] as String?,
+      queued: json['queued'] as bool? ?? false,
     );
   }
 }

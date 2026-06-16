@@ -6,6 +6,7 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
+import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../core/presentation/widgets/wpgg_summoner_identity_labels.dart';
 import '../../../../core/presentation/wpgg_profile_avatar.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -56,27 +57,40 @@ class _LeaderboardRowState extends State<LeaderboardRow> {
     final highlightViewer = widget.isViewer;
 
     if (widget.useWebStyle) {
-      return BoxDecoration(
-        color: highlightViewer
-            ? WebColors.accent.withValues(alpha: _hovered ? 0.1 : 0.06)
-            : (_hovered ? WebColors.surfaceElevated : WebColors.surface),
-        borderRadius: radius,
-        border: Border.all(
-          color: highlightViewer
-              ? WebColors.accent.withValues(alpha: 0.45)
-              : rankAccent != null
-                  ? rankAccent.withValues(alpha: _hovered ? 0.5 : 0.32)
-                  : (_hovered ? WebColors.border : WebColors.borderSubtle),
+      final surface = highlightViewer
+          ? Color.alphaBlend(
+              WebColors.accent.withValues(alpha: _hovered ? 0.1 : 0.06),
+              WebColors.surface,
+            )
+          : (_hovered ? WebColors.surfaceElevated : WebColors.surface);
+
+      return WpggCardElevation.enhance(
+        BoxDecoration(
+          color: surface,
+          borderRadius: radius,
+          border: Border.all(
+            color: highlightViewer
+                ? WebColors.accent.withValues(alpha: 0.45)
+                : WebColors.borderSubtle,
+          ),
         ),
+        variant: WpggCardElevationVariant.dark,
+        hovered: _hovered,
+        accentColor: highlightViewer ? WebColors.accent : rankAccent,
+        baseColor: surface,
       );
     }
 
-    return BoxDecoration(
-      color: WpggBrand.cardSurface,
-      borderRadius: radius,
-      border: rankAccent != null
-          ? Border.all(color: rankAccent.withValues(alpha: 0.35))
-          : null,
+    return WpggCardElevation.enhance(
+      BoxDecoration(
+        color: WpggBrand.cardSurface,
+        borderRadius: radius,
+        border: rankAccent != null
+            ? Border.all(color: rankAccent.withValues(alpha: 0.35))
+            : null,
+      ),
+      accentColor: rankAccent,
+      baseColor: WpggBrand.cardSurface,
     );
   }
 

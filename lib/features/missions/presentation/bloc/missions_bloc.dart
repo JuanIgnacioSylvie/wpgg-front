@@ -298,6 +298,29 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     }
   }
 
+  Future<void> _waitForSyncComplete() async {
+    for (var attempt = 0; attempt < 45; attempt++) {
+      await Future<void>.delayed(const Duration(seconds: 2));
+      try {
+        final status = await _dataSource.fetchSyncStatus();
+        if (status.status == MissionSyncApiStatus.upToDate) {
+          return;
+        }
+      } catch (_) {
+        // Keep polling until timeout.
+      }
+    }
+  }
+
+  Future<void> _finishSync(Emitter<MissionsState> emit) async {
+    _refreshWallet();
+    add(const LoadMissionsHome());
+    emit(state.copyWith(
+      missionSyncStatus: MissionSyncUiStatus.upToDate,
+      clearMissionSyncError: true,
+    ));
+  }
+
   Future<void> _onCheckSyncStatus(
     CheckMissionSyncStatus event,
     Emitter<MissionsState> emit,
@@ -312,8 +335,28 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
 
     try {
       final status = await _dataSource.fetchSyncStatus();
+      final uiStatus = _uiStatusFromApi(status.status);
+      if (uiStatus == MissionSyncUiStatus.updatesAvailable) {
+        emit(state.copyWith(
+          missionSyncStatus: MissionSyncUiStatus.syncing,
+          clearMissionSyncError: true,
+        ));
+        try {
+          final result = await _dataSource.syncMatches();
+          if (result.queued) {
+            await _waitForSyncComplete();
+          }
+          await _finishSync(emit);
+        } catch (e) {
+          emit(state.copyWith(
+            missionSyncStatus: MissionSyncUiStatus.error,
+            missionSyncError: _missionErrorMessage(e),
+          ));
+        }
+        return;
+      }
       emit(state.copyWith(
-        missionSyncStatus: _uiStatusFromApi(status.status),
+        missionSyncStatus: uiStatus,
         clearMissionSyncError: true,
       ));
     } catch (e) {
@@ -346,13 +389,11 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     ));
 
     try {
-      await _dataSource.syncMatches();
-      _refreshWallet();
-      add(const LoadMissionsHome());
-      emit(state.copyWith(
-        missionSyncStatus: MissionSyncUiStatus.upToDate,
-        clearMissionSyncError: true,
-      ));
+      final result = await _dataSource.syncMatches();
+      if (result.queued) {
+        await _waitForSyncComplete();
+      }
+      await _finishSync(emit);
     } catch (e) {
       emit(state.copyWith(
         missionSyncStatus: MissionSyncUiStatus.error,

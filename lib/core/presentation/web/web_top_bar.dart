@@ -102,9 +102,9 @@ class WebTopBar extends StatelessWidget {
             MissionDayCountdown(
               initialSeconds: dayEndsInSeconds!,
               labelBuilder: l10n.dayEndsIn,
+              showUrgencyContainer: true,
               style: const TextStyle(
                 fontFamily: AppFonts.lexendDeca,
-                color: WebColors.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
