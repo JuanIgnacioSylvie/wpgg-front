@@ -15,7 +15,6 @@ import '../../../riot/presentation/widgets/riot_link_sheet.dart';
 import '../../../riot/presentation/widgets/stats_header.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
-import '../utils/mission_timer_utils.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/draggable_web_mission_card.dart';
 import '../widgets/mission_sync_button.dart';
@@ -275,10 +274,6 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                       ),
                                       child: DraggableWebMissionCard(
                                         mission: m,
-                                        endsInSeconds:
-                                            MissionTimerUtils.endsInSeconds(
-                                          m.endsAt,
-                                        ),
                                         onDragStarted: _onDragStarted,
                                         onDragEnded: _onDragEnded,
                                         onReorder: _onReorder,

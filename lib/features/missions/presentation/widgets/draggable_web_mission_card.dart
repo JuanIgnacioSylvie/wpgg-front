@@ -11,14 +11,12 @@ class DraggableWebMissionCard extends StatefulWidget {
   const DraggableWebMissionCard({
     super.key,
     required this.mission,
-    this.endsInSeconds,
     required this.onDragStarted,
     required this.onDragEnded,
     this.onReorder,
   });
 
   final MissionCardEntity mission;
-  final int? endsInSeconds;
   final ValueChanged<String> onDragStarted;
   final VoidCallback onDragEnded;
   final MissionReorderCallback? onReorder;
@@ -108,7 +106,6 @@ class _DraggableWebMissionCardState extends State<DraggableWebMissionCard> {
               opacity: 0.94,
               child: WebMissionCard(
                 mission: widget.mission,
-                endsInSeconds: widget.endsInSeconds,
                 visualState: WebMissionCardVisualState.dragFeedback,
               ),
             ),
@@ -117,7 +114,6 @@ class _DraggableWebMissionCardState extends State<DraggableWebMissionCard> {
       ),
       childWhenDragging: WebMissionCard(
         mission: widget.mission,
-        endsInSeconds: widget.endsInSeconds,
         visualState: WebMissionCardVisualState.placeholder,
       ),
       child: AnimatedScale(
@@ -126,7 +122,6 @@ class _DraggableWebMissionCardState extends State<DraggableWebMissionCard> {
         curve: WebMotion.curve,
         child: WebMissionCard(
           mission: widget.mission,
-          endsInSeconds: widget.endsInSeconds,
         ),
       ),
     );

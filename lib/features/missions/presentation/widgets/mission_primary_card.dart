@@ -4,6 +4,7 @@ import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_card_countdown.dart';
 import 'mission_primary_description.dart';
 import 'mission_progress_ring.dart';
 import 'mission_shared_widgets.dart';
@@ -13,12 +14,10 @@ class MissionPrimaryCard extends StatelessWidget {
   const MissionPrimaryCard({
     super.key,
     required this.mission,
-    this.endsInSeconds,
     this.onCancel,
   });
 
   final MissionCardEntity mission;
-  final int? endsInSeconds;
   final VoidCallback? onCancel;
 
   @override
@@ -78,11 +77,22 @@ class MissionPrimaryCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: MissionPrimaryDescription(
-                    title: mission.localizedTitle(context),
-                    accent: color,
-                    endsInLabel: (time) => context.l10n.endsIn(time),
-                    endsInSeconds: endsInSeconds,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MissionPrimaryDescription(
+                        title: mission.localizedTitle(context),
+                        accent: color,
+                      ),
+                      if (mission.endsAt != null) ...[
+                        const SizedBox(height: 10),
+                        MissionCardCountdown(
+                          endsAt: mission.endsAt,
+                          accentColor: color,
+                          fontSize: 12,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],

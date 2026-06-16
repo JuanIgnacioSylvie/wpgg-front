@@ -9,6 +9,7 @@ import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_motion.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'web_mission_styles.dart';
+import 'mission_card_countdown.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
@@ -20,7 +21,6 @@ class WebMissionCard extends StatefulWidget {
   const WebMissionCard({
     super.key,
     required this.mission,
-    this.endsInSeconds,
     this.variant = WebMissionCardVariant.active,
     this.visualState = WebMissionCardVisualState.normal,
     this.onTap,
@@ -28,12 +28,10 @@ class WebMissionCard extends StatefulWidget {
 
   const WebMissionCard.empty({super.key, this.onTap})
       : mission = null,
-        endsInSeconds = null,
         variant = WebMissionCardVariant.empty,
         visualState = WebMissionCardVisualState.normal;
 
   final MissionCardEntity? mission;
-  final int? endsInSeconds;
   final WebMissionCardVariant variant;
   final WebMissionCardVisualState visualState;
   final VoidCallback? onTap;
@@ -132,6 +130,14 @@ class _WebMissionCardState extends State<WebMissionCard> {
                     ),
                   ],
                 ),
+                if (!isPast && mission.endsAt != null) ...[
+                  const SizedBox(height: 8),
+                  MissionCardCountdown(
+                    endsAt: mission.endsAt,
+                    accentColor: color,
+                    useWebStyle: true,
+                  ),
+                ],
                 const SizedBox(height: 14),
                 Row(
                   children: [

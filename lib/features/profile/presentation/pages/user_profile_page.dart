@@ -188,12 +188,11 @@ class _UserProfileView extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: MissionPrimaryCard(
                     mission: profile.primary!,
-                    endsInSeconds: 0,
                   ),
                 ),
               if (profile.secondary.isNotEmpty)
                 SizedBox(
-                  height: 132,
+                  height: 148,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.only(left: 16),
