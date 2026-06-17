@@ -63,7 +63,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String dayEndsIn(String time) {
-    return 'Le jour se termine dans : $time';
+    return 'Prochaine mission se termine dans : $time';
   }
 
   @override

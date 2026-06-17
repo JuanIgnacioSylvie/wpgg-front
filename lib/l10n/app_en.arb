@@ -23,7 +23,7 @@
       "timezone": {"type": "String"}
     }
   },
-  "dayEndsIn": "Day ends in: {time}",
+  "dayEndsIn": "Next mission ends in: {time}",
   "@dayEndsIn": {
     "placeholders": {
       "time": {"type": "String"}

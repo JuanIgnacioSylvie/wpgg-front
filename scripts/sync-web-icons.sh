@@ -16,4 +16,17 @@ cp "$ASSETS/wpgg-coin_192x192.png" "$WEB/icons/Icon-maskable-192.png"
 cp "$ASSETS/wpgg-coin_512x512.png" "$WEB/icons/Icon-512.png"
 cp "$ASSETS/wpgg-coin_512x512.png" "$WEB/icons/Icon-maskable-512.png"
 
+# Browsers and Google request /favicon.ico. Must be a real ICO (not a renamed PNG) and a
+# static file — the SPA rewrite must not serve index.html for this path.
+if command -v magick >/dev/null 2>&1; then
+  magick "$ASSETS/wpgg-coin_32x32.png" -define icon:auto-resize=16,32,48 "$WEB/favicon.ico"
+elif command -v convert >/dev/null 2>&1; then
+  convert "$ASSETS/wpgg-coin_32x32.png" -define icon:auto-resize=16,32,48 "$WEB/favicon.ico"
+elif command -v node >/dev/null 2>&1; then
+  npx --yes png-to-ico "$ASSETS/wpgg-coin_32x32.png" > "$WEB/favicon.ico"
+else
+  echo "ERROR: need ImageMagick or Node.js to build favicon.ico" >&2
+  exit 1
+fi
+
 echo "Synced WPGG coin icons to web/"

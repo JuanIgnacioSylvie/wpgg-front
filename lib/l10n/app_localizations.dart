@@ -207,7 +207,7 @@ abstract class AppLocalizations {
   /// No description provided for @dayEndsIn.
   ///
   /// In en, this message translates to:
-  /// **'Day ends in: {time}'**
+  /// **'Next mission ends in: {time}'**
   String dayEndsIn(String time);
 
   /// No description provided for @noActiveMissions.
