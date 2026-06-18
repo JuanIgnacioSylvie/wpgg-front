@@ -90,13 +90,9 @@ class MissionSecondaryCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 12),
-          MissionLinearProgress(
-            percent: mission.progressPercent,
-            color: color,
-          ),
-          const SizedBox(height: 6),
           MissionProgressDetail(
             mission: mission,
+            showBars: true,
             accentColor: color,
           ),
         ],

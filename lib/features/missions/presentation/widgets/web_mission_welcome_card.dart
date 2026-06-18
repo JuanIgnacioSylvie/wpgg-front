@@ -111,19 +111,10 @@ class WebMissionWelcomeCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: mission.progressPercent / 100,
-              minHeight: 6,
-              backgroundColor: WebColors.borderSubtle,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 6),
           MissionProgressDetail(
             mission: mission,
             useWebStyle: true,
+            showBars: true,
             accentColor: color,
           ),
         ],

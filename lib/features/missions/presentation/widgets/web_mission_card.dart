@@ -5,7 +5,6 @@ import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
-import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'web_mission_styles.dart';
@@ -189,15 +188,10 @@ class _WebMissionCardState extends State<WebMissionCard> {
                 ),
                 if (!isPast) ...[
                   const SizedBox(height: 12),
-                  WebAnimatedProgressBar(
-                    value: mission.progressPercent / 100,
-                    color: color,
-                    backgroundColor: WebColors.border,
-                  ),
-                  const SizedBox(height: 6),
                   MissionProgressDetail(
                     mission: mission,
                     useWebStyle: true,
+                    showBars: true,
                     accentColor: color,
                   ),
                 ] else if (mission.progressLines.isNotEmpty) ...[
@@ -205,6 +199,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
                   MissionProgressDetail(
                     mission: mission,
                     useWebStyle: true,
+                    showBars: true,
                     accentColor: isCompleted
                         ? WebColors.online
                         : WebColors.textMuted,
