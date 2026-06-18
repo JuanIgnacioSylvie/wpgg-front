@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +31,21 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
 
   final MissionsRemoteDataSource _dataSource;
   final MissionLayoutStore _layoutStore;
+  Timer? _missionDayTimer;
+
+  @override
+  Future<void> close() {
+    _missionDayTimer?.cancel();
+    return super.close();
+  }
+
+  void _scheduleMissionDayRolloverReload() {
+    _missionDayTimer?.cancel();
+    final now = DateTime.now().toUtc();
+    final nextDayStart = DateTime.utc(now.year, now.month, now.day + 1);
+    final delay = nextDayStart.difference(now) + const Duration(seconds: 2);
+    _missionDayTimer = Timer(delay, () => add(const LoadMissionsHome()));
+  }
 
   void _refreshWallet() {
     sl<WalletBloc>().add(const LoadWallet());
@@ -88,6 +105,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
       } else {
         emit(state.copyWith(missionSyncStatus: MissionSyncUiStatus.hidden));
       }
+      _scheduleMissionDayRolloverReload();
     } catch (e) {
       if (hasCachedHome) {
         // Mantener datos visibles si un refresh en segundo plano falla.
@@ -117,11 +135,14 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
       emit(state.copyWith(
         pickStatus: MissionsLoadStatus.loaded,
         pick: MissionsPickData(
-          date: pick.date,
           offers: pick.offers,
-          selectedCount: pick.selectedCount,
-          maxSelectable: pick.maxSelectable,
+          activeCount: pick.activeCount,
+          hardActiveCount: pick.hardActiveCount,
+          maxActive: pick.maxActive,
           maxHard: pick.maxHard,
+          offersPerDifficulty: pick.offersPerDifficulty,
+          offersRefreshAt: pick.offersRefreshAt,
+          offersRefreshInSeconds: pick.offersRefreshInSeconds,
         ),
         clearPickError: true,
       ));

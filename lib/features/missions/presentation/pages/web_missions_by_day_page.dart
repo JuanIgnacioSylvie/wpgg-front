@@ -66,16 +66,14 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
     }
     return missions
         .where(
-          (m) =>
-              m.status == MissionStatus.completed || m.progressPercent >= 100,
+          (m) => m.status == MissionStatus.completed,
         )
         .toList();
   }
 
   bool _isPastMission(MissionCardEntity mission) {
     return mission.status == MissionStatus.completed ||
-        mission.status == MissionStatus.expired ||
-        mission.progressPercent >= 100;
+        mission.status == MissionStatus.expired;
   }
 
   String _formattedSelectedDate(BuildContext context) {

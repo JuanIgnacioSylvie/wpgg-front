@@ -29,7 +29,7 @@
       "time": {"type": "String"}
     }
   },
-  "noActiveMissions": "No active missions yet. Pick up to 3 for today!",
+  "noActiveMissions": "No active missions yet. Pick up to 3!",
   "pickMissions": "Pick missions",
   "passMissions": "Pass Missions",
   "completedMissionsPlaceholder": "Completed missions will appear here.",
@@ -57,12 +57,19 @@
   },
   "pickMissionsTitle": "Pick Missions",
   "errorLoadingOffers": "Error loading offers",
-  "selectedMissionsCount": "Selected {count}/{max} (max {maxHard} hard)",
+  "selectedMissionsCount": "Active {count}/{max} (max {maxHard} hard)",
   "@selectedMissionsCount": {
     "placeholders": {
       "count": {"type": "int"},
       "max": {"type": "int"},
       "maxHard": {"type": "int"}
+    }
+  },
+  "missionOffersInfo": "2 offers per difficulty · refreshes every 24h",
+  "missionOffersRefreshIn": "New offers in: {time}",
+  "@missionOffersRefreshIn": {
+    "placeholders": {
+      "time": {"type": "String"}
     }
   },
   "rerollMissionTitle": "Reroll mission?",

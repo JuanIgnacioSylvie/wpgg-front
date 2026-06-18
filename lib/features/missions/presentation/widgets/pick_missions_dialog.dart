@@ -7,11 +7,11 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_skeleton.dart';
-import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
+import '../utils/pick_mission_utils.dart';
 import 'mission_spend_dialog.dart';
-import 'web_day_selector.dart';
+import 'pick_offers_header.dart';
 import 'web_filter_chips.dart';
 import 'web_mission_pick_card.dart';
 
@@ -34,7 +34,6 @@ class PickMissionsDialog extends StatefulWidget {
 
 class _PickMissionsDialogState extends State<PickMissionsDialog> {
   var _filterIndex = 0;
-  final _selectedDate = MissionDay.todayUtc();
 
   @override
   void initState() {
@@ -92,15 +91,6 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: WebDaySelector(
-                selectedDate: _selectedDate,
-                onDateSelected: (_) {},
-                lockToToday: true,
-              ),
-            ),
-            const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: WebFilterChips(
@@ -166,26 +156,12 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
         .where((o) => o.status != MissionStatus.offer)
         .map((o) => o.offerId ?? o.id)
         .toSet();
-    final canPickMore = pick.selectedCount < pick.maxSelectable;
+    final canPickMore = canPickMoreMissions(pick);
 
     return Column(
       key: const ValueKey('pick-content'),
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Text(
-            l10n.selectedMissionsCount(
-              pick.selectedCount,
-              pick.maxSelectable,
-              pick.maxHard,
-            ),
-            style: const TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              color: WebColors.textMuted,
-              fontSize: 13,
-            ),
-          ),
-        ),
+        PickOffersHeader(pick: pick),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.only(bottom: 16),
@@ -194,12 +170,15 @@ class _PickMissionsDialogState extends State<PickMissionsDialog> {
               final m = offers[i];
               final oid = m.offerId ?? m.id;
               final accepted = acceptedIds.contains(oid);
+              final canAccept =
+                  !accepted && canAcceptMissionOffer(m, pick);
               return WebAnimatedAppear(
                 key: ValueKey('pick-offer-$oid'),
                 staggerIndex: i,
                 child: WebMissionPickCard(
                   mission: m,
                   accepted: accepted,
+                  canAccept: canAccept,
                   onAccept: () {
                     context.read<MissionsBloc>().add(
                           AcceptMissionOffer(oid),

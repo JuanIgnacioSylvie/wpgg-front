@@ -23,7 +23,7 @@
       "time": {"type": "String"}
     }
   },
-  "noActiveMissions": "No tenés misiones activas. ¡Elegí hasta 3 para hoy!",
+  "noActiveMissions": "No tenés misiones activas. ¡Elegí hasta 3!",
   "pickMissions": "Elegir misiones",
   "passMissions": "Misiones pasadas",
   "completedMissionsPlaceholder": "Las misiones completadas aparecerán acá.",
@@ -46,7 +46,21 @@
   "endsIn": "Termina en: {time}",
   "pickMissionsTitle": "Elegir misiones",
   "errorLoadingOffers": "Error al cargar ofertas",
-  "selectedMissionsCount": "Seleccionadas {count}/{max} (máx. {maxHard} difícil)",
+  "selectedMissionsCount": "Activas {count}/{max} (máx. {maxHard} difícil)",
+  "@selectedMissionsCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "max": {"type": "int"},
+      "maxHard": {"type": "int"}
+    }
+  },
+  "missionOffersInfo": "2 ofertas por dificultad · se renuevan cada 24 h",
+  "missionOffersRefreshIn": "Nuevas ofertas en: {time}",
+  "@missionOffersRefreshIn": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
   "rerollMissionTitle": "¿Cambiar misión?",
   "rerollMissionBody": "Esto costará {cost} WPGG de tu saldo.",
   "@rerollMissionBody": {

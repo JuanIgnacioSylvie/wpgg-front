@@ -141,7 +141,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String selectedMissionsCount(int count, int max, int maxHard) {
-    return 'Selecionadas $count/$max (máx. $maxHard difícil)';
+    return 'Ativas $count/$max (máx. $maxHard difícil)';
+  }
+
+  @override
+  String get missionOffersInfo =>
+      '2 ofertas por dificuldade · renova a cada 24 h';
+
+  @override
+  String missionOffersRefreshIn(String time) {
+    return 'Novas ofertas em: $time';
   }
 
   @override

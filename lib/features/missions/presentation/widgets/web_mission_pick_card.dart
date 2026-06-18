@@ -15,12 +15,14 @@ class WebMissionPickCard extends StatefulWidget {
     super.key,
     required this.mission,
     required this.accepted,
+    required this.canAccept,
     required this.onAccept,
     required this.onReroll,
   });
 
   final MissionCardEntity mission;
   final bool accepted;
+  final bool canAccept;
   final VoidCallback onAccept;
   final VoidCallback onReroll;
 
@@ -105,7 +107,7 @@ class _WebMissionPickCardState extends State<WebMissionPickCard> {
                   icon: Icons.check_rounded,
                   tooltip: l10n.transactionSuccessAcceptMission,
                   filled: true,
-                  enabled: !widget.accepted,
+                  enabled: !widget.accepted && widget.canAccept,
                   onTap: widget.onAccept,
                 ),
                 const SizedBox(height: 8),

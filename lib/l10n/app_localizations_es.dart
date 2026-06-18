@@ -67,8 +67,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get noActiveMissions =>
-      'No tenés misiones activas. ¡Elegí hasta 3 para hoy!';
+  String get noActiveMissions => 'No tenés misiones activas. ¡Elegí hasta 3!';
 
   @override
   String get pickMissions => 'Elegir misiones';
@@ -141,7 +140,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String selectedMissionsCount(int count, int max, int maxHard) {
-    return 'Seleccionadas $count/$max (máx. $maxHard difícil)';
+    return 'Activas $count/$max (máx. $maxHard difícil)';
+  }
+
+  @override
+  String get missionOffersInfo =>
+      '2 ofertas por dificultad · se renuevan cada 24 h';
+
+  @override
+  String missionOffersRefreshIn(String time) {
+    return 'Nuevas ofertas en: $time';
   }
 
   @override

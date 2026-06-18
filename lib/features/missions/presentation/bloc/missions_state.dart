@@ -61,21 +61,36 @@ class MissionsHomeData extends Equatable {
 
 class MissionsPickData extends Equatable {
   const MissionsPickData({
-    required this.date,
     required this.offers,
-    required this.selectedCount,
-    required this.maxSelectable,
+    required this.activeCount,
+    required this.hardActiveCount,
+    required this.maxActive,
     required this.maxHard,
+    required this.offersPerDifficulty,
+    required this.offersRefreshAt,
+    required this.offersRefreshInSeconds,
   });
 
-  final String date;
   final List<MissionCardEntity> offers;
-  final int selectedCount;
-  final int maxSelectable;
+  final int activeCount;
+  final int hardActiveCount;
+  final int maxActive;
   final int maxHard;
+  final int offersPerDifficulty;
+  final DateTime? offersRefreshAt;
+  final int offersRefreshInSeconds;
 
   @override
-  List<Object?> get props => [date, offers, selectedCount, maxSelectable, maxHard];
+  List<Object?> get props => [
+        offers,
+        activeCount,
+        hardActiveCount,
+        maxActive,
+        maxHard,
+        offersPerDifficulty,
+        offersRefreshAt,
+        offersRefreshInSeconds,
+      ];
 }
 
 class MissionsByDayData extends Equatable {

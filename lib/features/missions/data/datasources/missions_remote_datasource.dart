@@ -84,18 +84,24 @@ class MissionsHomeResponse {
 
 class PickTodayResponse {
   PickTodayResponse({
-    required this.date,
     required this.offers,
-    required this.selectedCount,
-    required this.maxSelectable,
+    required this.activeCount,
+    required this.hardActiveCount,
+    required this.maxActive,
     required this.maxHard,
+    required this.offersPerDifficulty,
+    required this.offersRefreshAt,
+    required this.offersRefreshInSeconds,
   });
 
-  final String date;
   final List<MissionCardModel> offers;
-  final int selectedCount;
-  final int maxSelectable;
+  final int activeCount;
+  final int hardActiveCount;
+  final int maxActive;
   final int maxHard;
+  final int offersPerDifficulty;
+  final DateTime? offersRefreshAt;
+  final int offersRefreshInSeconds;
 }
 
 abstract class MissionsRemoteDataSource {
@@ -147,13 +153,19 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
     final res = await _client.get<Map<String, dynamic>>('/missions/pick/today');
     final data = res.data!;
     return PickTodayResponse(
-      date: data['date'] as String? ?? '',
       offers: (data['offers'] as List<dynamic>? ?? [])
           .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      selectedCount: (data['selectedCount'] as num?)?.toInt() ?? 0,
-      maxSelectable: (data['maxSelectable'] as num?)?.toInt() ?? 3,
+      activeCount: (data['activeCount'] as num?)?.toInt() ?? 0,
+      hardActiveCount: (data['hardActiveCount'] as num?)?.toInt() ?? 0,
+      maxActive: (data['maxActive'] as num?)?.toInt() ?? 3,
       maxHard: (data['maxHard'] as num?)?.toInt() ?? 1,
+      offersPerDifficulty: (data['offersPerDifficulty'] as num?)?.toInt() ?? 2,
+      offersRefreshAt: data['offersRefreshAt'] != null
+          ? DateTime.tryParse(data['offersRefreshAt'] as String)
+          : null,
+      offersRefreshInSeconds:
+          (data['offersRefreshInSeconds'] as num?)?.toInt() ?? 0,
     );
   }
 

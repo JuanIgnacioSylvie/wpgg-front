@@ -56,8 +56,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
     final mission = widget.mission!;
     final color = missionAccentColor(mission);
     final isPast = widget.variant == WebMissionCardVariant.past;
-    final isCompleted = mission.status == MissionStatus.completed ||
-        mission.progressPercent >= 100;
+    final isCompleted = mission.status == MissionStatus.completed;
     final isPlaceholder =
         widget.visualState == WebMissionCardVisualState.placeholder;
     final isDragFeedback =

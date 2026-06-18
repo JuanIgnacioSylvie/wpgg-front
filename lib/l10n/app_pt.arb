@@ -57,12 +57,19 @@
   },
   "pickMissionsTitle": "Escolher missões",
   "errorLoadingOffers": "Erro ao carregar ofertas",
-  "selectedMissionsCount": "Selecionadas {count}/{max} (máx. {maxHard} difícil)",
+  "selectedMissionsCount": "Ativas {count}/{max} (máx. {maxHard} difícil)",
   "@selectedMissionsCount": {
     "placeholders": {
       "count": {"type": "int"},
       "max": {"type": "int"},
       "maxHard": {"type": "int"}
+    }
+  },
+  "missionOffersInfo": "2 ofertas por dificuldade · renova a cada 24 h",
+  "missionOffersRefreshIn": "Novas ofertas em: {time}",
+  "@missionOffersRefreshIn": {
+    "placeholders": {
+      "time": {"type": "String"}
     }
   },
   "rerollMissionTitle": "Trocar missão?",

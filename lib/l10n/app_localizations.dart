@@ -213,7 +213,7 @@ abstract class AppLocalizations {
   /// No description provided for @noActiveMissions.
   ///
   /// In en, this message translates to:
-  /// **'No active missions yet. Pick up to 3 for today!'**
+  /// **'No active missions yet. Pick up to 3!'**
   String get noActiveMissions;
 
   /// No description provided for @pickMissions.
@@ -351,8 +351,20 @@ abstract class AppLocalizations {
   /// No description provided for @selectedMissionsCount.
   ///
   /// In en, this message translates to:
-  /// **'Selected {count}/{max} (max {maxHard} hard)'**
+  /// **'Active {count}/{max} (max {maxHard} hard)'**
   String selectedMissionsCount(int count, int max, int maxHard);
+
+  /// No description provided for @missionOffersInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'2 offers per difficulty · refreshes every 24h'**
+  String get missionOffersInfo;
+
+  /// No description provided for @missionOffersRefreshIn.
+  ///
+  /// In en, this message translates to:
+  /// **'New offers in: {time}'**
+  String missionOffersRefreshIn(String time);
 
   /// No description provided for @rerollMissionTitle.
   ///

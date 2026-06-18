@@ -15,12 +15,14 @@ class MissionCardCountdown extends StatefulWidget {
     this.accentColor,
     this.fontSize = 11,
     this.useWebStyle = false,
+    this.labelBuilder,
   });
 
   final DateTime? endsAt;
   final Color? accentColor;
   final double fontSize;
   final bool useWebStyle;
+  final String Function(String formattedTime)? labelBuilder;
 
   @override
   State<MissionCardCountdown> createState() => _MissionCardCountdownState();
@@ -85,6 +87,9 @@ class _MissionCardCountdownState extends State<MissionCardCountdown> {
         ? (isCritical ? WebColors.accent : WebColors.textMuted)
         : (isCritical ? accent : Colors.black54);
 
+    final buildLabel =
+        widget.labelBuilder ?? (time) => context.l10n.endsIn(time);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -96,7 +101,7 @@ class _MissionCardCountdownState extends State<MissionCardCountdown> {
         const SizedBox(width: 4),
         Flexible(
           child: Text(
-            context.l10n.endsIn(_formatDuration(_remainingSeconds)),
+            buildLabel(_formatDuration(_remainingSeconds)),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

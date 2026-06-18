@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
-import '../../../../core/utils/mission_day.dart';
 import '../../../../core/presentation/wpgg_app_bar.dart';
 import '../../../../core/presentation/wpgg_gradient_scaffold.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
@@ -13,10 +12,11 @@ import '../../../riot/presentation/bloc/riot_bloc.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
-import '../widgets/day_carousel.dart';
+import '../utils/pick_mission_utils.dart';
 import '../widgets/filter_pills.dart';
 import '../widgets/mission_pick_card.dart';
 import '../widgets/mission_spend_dialog.dart';
+import '../widgets/pick_offers_header.dart';
 
 class PickMissionsPage extends StatefulWidget {
   const PickMissionsPage({super.key});
@@ -27,7 +27,6 @@ class PickMissionsPage extends StatefulWidget {
 
 class _PickMissionsPageState extends State<PickMissionsPage> {
   var _filterIndex = 0;
-  final _selectedDate = MissionDay.todayUtc();
 
   @override
   void initState() {
@@ -95,11 +94,6 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                   .toSet();
               return Column(
                 children: [
-                  DayCarousel(
-                    selectedDate: _selectedDate,
-                    onDateSelected: (_) {},
-                    lockToToday: true,
-                  ),
                   const SizedBox(height: 12),
                   FilterPills(
                     labels: [
@@ -111,17 +105,7 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                     selectedIndex: _filterIndex,
                     onSelected: (i) => setState(() => _filterIndex = i),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      l10n.selectedMissionsCount(
-                        pick.selectedCount,
-                        pick.maxSelectable,
-                        pick.maxHard,
-                      ),
-                      style: const TextStyle(color: WpggBrand.textMuted),
-                    ),
-                  ),
+                  PickOffersHeader(pick: pick, useWebStyle: false),
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 100),
@@ -130,9 +114,12 @@ class _PickMissionsPageState extends State<PickMissionsPage> {
                         final m = offers[i];
                         final oid = m.offerId ?? m.id;
                         final accepted = acceptedIds.contains(oid);
+                        final canAccept =
+                            !accepted && canAcceptMissionOffer(m, pick);
                         return MissionPickCard(
                           mission: m,
                           accepted: accepted,
+                          canAccept: canAccept,
                           onAccept: () {
                             context.read<MissionsBloc>().add(
                                   AcceptMissionOffer(oid),

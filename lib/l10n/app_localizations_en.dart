@@ -67,8 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noActiveMissions =>
-      'No active missions yet. Pick up to 3 for today!';
+  String get noActiveMissions => 'No active missions yet. Pick up to 3!';
 
   @override
   String get pickMissions => 'Pick missions';
@@ -141,7 +140,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String selectedMissionsCount(int count, int max, int maxHard) {
-    return 'Selected $count/$max (max $maxHard hard)';
+    return 'Active $count/$max (max $maxHard hard)';
+  }
+
+  @override
+  String get missionOffersInfo =>
+      '2 offers per difficulty · refreshes every 24h';
+
+  @override
+  String missionOffersRefreshIn(String time) {
+    return 'New offers in: $time';
   }
 
   @override

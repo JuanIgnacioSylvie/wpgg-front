@@ -12,12 +12,14 @@ class MissionPickCard extends StatelessWidget {
     super.key,
     required this.mission,
     required this.accepted,
+    required this.canAccept,
     required this.onAccept,
     required this.onReroll,
   });
 
   final MissionCardEntity mission;
   final bool accepted;
+  final bool canAccept;
   final VoidCallback onAccept;
   final VoidCallback onReroll;
 
@@ -78,7 +80,7 @@ class MissionPickCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: accepted ? null : onAccept,
+                  onPressed: accepted || !canAccept ? null : onAccept,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: WpggBrand.primary,
                     shape: RoundedRectangleBorder(
