@@ -17,6 +17,7 @@ import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/draggable_web_mission_card.dart';
+import '../widgets/mission_matches_dialog.dart';
 import '../widgets/mission_sync_button.dart';
 import '../widgets/pick_missions_dialog.dart';
 import '../widgets/web_mission_card.dart';
@@ -101,6 +102,10 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
             targetId: targetId,
           ),
         );
+  }
+
+  void _openMissionMatches(MissionCardEntity mission) {
+    showMissionMatchesDialog(context, mission);
   }
 
   @override
@@ -259,6 +264,9 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                     staggerIndex: 0,
                                     child: WebMissionWelcomeCard(
                                       mission: home.welcome!,
+                                      onTap: () => _openMissionMatches(
+                                        home.welcome!,
+                                      ),
                                     ),
                                   ),
                                 ...activeMissions.asMap().entries.map(
@@ -274,6 +282,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                       ),
                                       child: DraggableWebMissionCard(
                                         mission: m,
+                                        onTap: () => _openMissionMatches(m),
                                         onDragStarted: _onDragStarted,
                                         onDragEnded: _onDragEnded,
                                         onReorder: _onReorder,
@@ -330,6 +339,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                                       child: WebMissionCard(
                                         mission: m,
                                         variant: WebMissionCardVariant.past,
+                                        onTap: () => _openMissionMatches(m),
                                       ),
                                     );
                                   },

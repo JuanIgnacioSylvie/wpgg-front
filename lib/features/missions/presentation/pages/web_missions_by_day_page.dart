@@ -11,6 +11,7 @@ import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../../core/utils/mission_day.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
+import '../widgets/mission_matches_dialog.dart';
 import '../widgets/web_day_selector.dart';
 import '../widgets/web_filter_chips.dart';
 import '../widgets/web_mission_card.dart';
@@ -257,12 +258,16 @@ class _MissionsByDayGrid extends StatelessWidget {
           key: ValueKey('by-day-${mission.id}'),
           staggerIndex: entry.key,
           child: mission.isWelcome
-              ? WebMissionWelcomeCard(mission: mission)
+              ? WebMissionWelcomeCard(
+                  mission: mission,
+                  onTap: () => showMissionMatchesDialog(context, mission),
+                )
               : WebMissionCard(
                   mission: mission,
                   variant: isPastMission(mission)
                       ? WebMissionCardVariant.past
                       : WebMissionCardVariant.active,
+                  onTap: () => showMissionMatchesDialog(context, mission),
                 ),
         );
       }).toList(),

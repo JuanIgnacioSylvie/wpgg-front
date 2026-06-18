@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../domain/entities/mission_card_entity.dart';
 import 'mission_card_countdown.dart';
+import 'mission_progress_detail.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
@@ -12,17 +13,21 @@ class MissionSecondaryCard extends StatelessWidget {
     required this.mission,
     this.width = 280,
     this.onCancel,
+    this.onTap,
   });
 
   final MissionCardEntity mission;
   final double width;
   final VoidCallback? onCancel;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final color = difficultyColor(mission.difficulty);
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       width: width,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(16),
@@ -89,8 +94,14 @@ class MissionSecondaryCard extends StatelessWidget {
             percent: mission.progressPercent,
             color: color,
           ),
+          const SizedBox(height: 6),
+          MissionProgressDetail(
+            mission: mission,
+            accentColor: color,
+          ),
         ],
       ),
+    ),
     );
   }
 }

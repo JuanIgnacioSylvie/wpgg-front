@@ -1,5 +1,6 @@
 import '../../../../core/network/api_client.dart';
 import '../models/mission_card_model.dart';
+import '../models/mission_match_model.dart';
 
 enum MissionSyncApiStatus {
   noActiveMissions,
@@ -113,6 +114,7 @@ abstract class MissionsRemoteDataSource {
   Future<void> cancelActiveMission(String missionId);
   Future<MissionSyncStatusResponse> fetchSyncStatus();
   Future<MissionSyncResult> syncMatches();
+  Future<List<MissionMatchModel>> fetchMissionMatches(String missionId);
 }
 
 class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
@@ -212,5 +214,16 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
   Future<MissionSyncResult> syncMatches() async {
     final res = await _client.post<Map<String, dynamic>>('/missions/sync');
     return MissionSyncResult.fromJson(res.data!);
+  }
+
+  @override
+  Future<List<MissionMatchModel>> fetchMissionMatches(String missionId) async {
+    final res = await _client.get<Map<String, dynamic>>(
+      '/missions/$missionId/matches',
+    );
+    final list = res.data!['matches'] as List<dynamic>? ?? [];
+    return list
+        .map((e) => MissionMatchModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

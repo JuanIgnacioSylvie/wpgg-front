@@ -1,4 +1,5 @@
 import '../../domain/entities/mission_card_entity.dart';
+import '../../domain/entities/mission_progress_line.dart';
 
 class MissionCardModel extends MissionCardEntity {
   const MissionCardModel({
@@ -14,6 +15,7 @@ class MissionCardModel extends MissionCardEntity {
     required super.rewardWpgg,
     required super.status,
     required super.progressPercent,
+    super.progressLines,
     super.championId,
     super.endsAt,
   });
@@ -38,11 +40,25 @@ class MissionCardModel extends MissionCardEntity {
       rewardWpgg: (json['rewardWpgg'] as num?)?.toInt() ?? 0,
       status: _status(json['status'] as String?),
       progressPercent: (json['progressPercent'] as num?)?.toInt() ?? 0,
+      progressLines: _progressLines(json['progressLines']),
       championId: (json['championId'] as num?)?.toInt(),
       endsAt: json['endsAt'] != null
           ? DateTime.tryParse(json['endsAt'] as String)
           : null,
     );
+  }
+
+  static List<MissionProgressLine> _progressLines(dynamic raw) {
+    if (raw is! List<dynamic>) {
+      return const [];
+    }
+    return raw.map((entry) {
+      final map = entry as Map<String, dynamic>;
+      return MissionProgressLine(
+        current: (map['current'] as num?)?.toInt() ?? 0,
+        target: (map['target'] as num?)?.toInt() ?? 0,
+      );
+    }).toList();
   }
 
   static MissionKind _kind(String? raw) {

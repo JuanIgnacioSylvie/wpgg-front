@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_progress_detail.dart';
 import 'mission_progress_ring.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
@@ -11,16 +12,20 @@ class MissionTertiaryCard extends StatelessWidget {
   const MissionTertiaryCard({
     super.key,
     required this.mission,
+    this.onTap,
   });
 
   final MissionCardEntity mission;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final color = missionAccentColor(mission);
     final l10n = context.l10n;
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: missionCardDecoration(mission),
       child: Row(
@@ -43,6 +48,12 @@ class MissionTertiaryCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
+                MissionProgressDetail(
+                  mission: mission,
+                  fontSize: 12,
+                  accentColor: color,
+                ),
+                const SizedBox(height: 2),
                 Text(
                   statusLabel(mission.status, l10n),
                   style: const TextStyle(
@@ -63,6 +74,7 @@ class MissionTertiaryCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

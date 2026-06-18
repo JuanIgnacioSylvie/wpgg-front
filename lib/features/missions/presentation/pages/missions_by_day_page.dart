@@ -15,6 +15,7 @@ import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/day_carousel.dart';
 import '../widgets/filter_pills.dart';
+import '../widgets/mission_matches_dialog.dart';
 import '../widgets/mission_tertiary_card.dart';
 
 class MissionsByDayPage extends StatefulWidget {
@@ -141,6 +142,10 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
                               ),
                               child: MissionTertiaryCard(
                                 mission: missions[i],
+                                onTap: () => showMissionMatchesDialog(
+                                  context,
+                                  missions[i],
+                                ),
                               ),
                             ),
                           ),

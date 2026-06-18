@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'mission_progress_line.dart';
+
 enum MissionDifficulty { easy, medium, hard }
 
 enum MissionKind { standard, welcome }
@@ -30,6 +32,7 @@ class MissionCardEntity extends Equatable {
     required this.rewardWpgg,
     required this.status,
     required this.progressPercent,
+    this.progressLines = const [],
     this.championId,
     this.endsAt,
   });
@@ -46,11 +49,12 @@ class MissionCardEntity extends Equatable {
   final int rewardWpgg;
   final MissionStatus status;
   final int progressPercent;
+  final List<MissionProgressLine> progressLines;
   final int? championId;
   final DateTime? endsAt;
 
   bool get isWelcome => kind == MissionKind.welcome;
 
   @override
-  List<Object?> get props => [id, status, progressPercent, kind, category];
+  List<Object?> get props => [id, status, progressPercent, progressLines, kind, category];
 }

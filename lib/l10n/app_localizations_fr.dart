@@ -188,6 +188,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deleteMission => 'Supprimer';
 
   @override
+  String get missionMatchesTitle => 'Parties de la mission';
+
+  @override
+  String get missionMatchesEmpty =>
+      'Aucune partie dans la fenêtre de cette mission pour l\'instant.';
+
+  @override
+  String get missionMatchContributed => 'Comptée';
+
+  @override
+  String get missionMatchNoProgress => 'Sans progrès';
+
+  @override
+  String get missionMatchNotEligible => 'Ne compte pas';
+
+  @override
+  String get missionMatchesLegendContributed => 'Comptée pour la mission';
+
+  @override
+  String get missionMatchesLegendNoProgress => 'Dans la fenêtre, sans progrès';
+
+  @override
+  String get missionMatchesLegendNotEligible => 'Ne compte pas (mode/file)';
+
+  @override
   String get dropToDeleteMission => 'Déposez ici pour supprimer';
 
   @override

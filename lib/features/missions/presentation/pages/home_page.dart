@@ -16,8 +16,10 @@ import '../../../riot/presentation/bloc/riot_event.dart';
 import '../../../riot/presentation/bloc/riot_state.dart';
 import '../../../riot/presentation/widgets/riot_link_sheet.dart';
 import '../../../riot/presentation/widgets/stats_header.dart';
+import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
+import '../widgets/mission_matches_dialog.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_sync_button.dart';
@@ -234,12 +236,22 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                       if (home.welcome != null)
-                        MissionWelcomeCard(mission: home.welcome!),
+                        MissionWelcomeCard(
+                          mission: home.welcome!,
+                          onTap: () => _openMissionMatches(
+                            context,
+                            home.welcome!,
+                          ),
+                        ),
                       if (home.primary != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: MissionPrimaryCard(
                             mission: home.primary!,
+                            onTap: () => _openMissionMatches(
+                              context,
+                              home.primary!,
+                            ),
                             onCancel: () => _cancelMission(
                               context,
                               home.primary!.id,
@@ -278,6 +290,10 @@ class _HomePageState extends State<HomePage> {
                               final mission = home.secondary[i];
                               return MissionSecondaryCard(
                                 mission: mission,
+                                onTap: () => _openMissionMatches(
+                                  context,
+                                  mission,
+                                ),
                                 onCancel: () => _cancelMission(
                                   context,
                                   mission.id,
@@ -328,7 +344,10 @@ class _HomePageState extends State<HomePage> {
                         ...home.past.map(
                           (m) => Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                            child: MissionTertiaryCard(mission: m),
+                            child: MissionTertiaryCard(
+                              mission: m,
+                              onTap: () => _openMissionMatches(context, m),
+                            ),
                           ),
                         ),
                     ],
@@ -343,6 +362,10 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void _openMissionMatches(BuildContext context, MissionCardEntity mission) {
+    showMissionMatchesDialog(context, mission);
   }
 
   Future<void> _cancelMission(BuildContext context, String missionId) async {

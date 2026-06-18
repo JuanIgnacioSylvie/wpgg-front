@@ -187,6 +187,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteMission => 'Eliminar';
 
   @override
+  String get missionMatchesTitle => 'Partidas de la misión';
+
+  @override
+  String get missionMatchesEmpty =>
+      'Todavía no hay partidas en la ventana de esta misión.';
+
+  @override
+  String get missionMatchContributed => 'Sumó';
+
+  @override
+  String get missionMatchNoProgress => 'Sin progreso';
+
+  @override
+  String get missionMatchNotEligible => 'No cuenta';
+
+  @override
+  String get missionMatchesLegendContributed => 'Sumó a la misión';
+
+  @override
+  String get missionMatchesLegendNoProgress => 'En rango, sin progreso';
+
+  @override
+  String get missionMatchesLegendNotEligible => 'No cuenta (modo/cola)';
+
+  @override
   String get dropToDeleteMission => 'Soltá acá para eliminar';
 
   @override

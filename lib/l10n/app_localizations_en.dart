@@ -187,6 +187,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteMission => 'Delete';
 
   @override
+  String get missionMatchesTitle => 'Mission matches';
+
+  @override
+  String get missionMatchesEmpty => 'No matches in this mission window yet.';
+
+  @override
+  String get missionMatchContributed => 'Counted';
+
+  @override
+  String get missionMatchNoProgress => 'No progress';
+
+  @override
+  String get missionMatchNotEligible => 'Doesn\'t count';
+
+  @override
+  String get missionMatchesLegendContributed => 'Counted toward mission';
+
+  @override
+  String get missionMatchesLegendNoProgress => 'In range, no progress';
+
+  @override
+  String get missionMatchesLegendNotEligible => 'Doesn\'t count (mode/queue)';
+
+  @override
   String get dropToDeleteMission => 'Drop here to delete';
 
   @override

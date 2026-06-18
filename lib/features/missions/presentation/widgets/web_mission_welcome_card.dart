@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
@@ -6,15 +7,18 @@ import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_progress_detail.dart';
 import 'mission_ui_helpers.dart';
 
 class WebMissionWelcomeCard extends StatelessWidget {
   const WebMissionWelcomeCard({
     super.key,
     required this.mission,
+    this.onTap,
   });
 
   final MissionCardEntity mission;
+  final VoidCallback? onTap;
 
   static const _accent = WpggBrand.welcomeAccent;
 
@@ -24,7 +28,11 @@ class WebMissionWelcomeCard extends StatelessWidget {
     final subtitle = mission.localizedSubtitle(context);
     final color = missionAccentColor(mission);
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegion(
+        cursor: onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+        child: Container(
       width: 320,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -113,17 +121,15 @@ class WebMissionWelcomeCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            '${mission.progressPercent}%',
-            style: TextStyle(
-              fontFamily: AppFonts.lexendDeca,
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
+          MissionProgressDetail(
+            mission: mission,
+            useWebStyle: true,
+            accentColor: color,
           ),
         ],
       ),
+    ),
+    ),
     );
   }
 }

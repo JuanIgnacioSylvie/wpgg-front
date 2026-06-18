@@ -188,6 +188,31 @@ class AppLocalizationsPt extends AppLocalizations {
   String get deleteMission => 'Excluir';
 
   @override
+  String get missionMatchesTitle => 'Partidas da missão';
+
+  @override
+  String get missionMatchesEmpty =>
+      'Ainda não há partidas na janela desta missão.';
+
+  @override
+  String get missionMatchContributed => 'Contou';
+
+  @override
+  String get missionMatchNoProgress => 'Sem progresso';
+
+  @override
+  String get missionMatchNotEligible => 'Não conta';
+
+  @override
+  String get missionMatchesLegendContributed => 'Contou para a missão';
+
+  @override
+  String get missionMatchesLegendNoProgress => 'No intervalo, sem progresso';
+
+  @override
+  String get missionMatchesLegendNotEligible => 'Não conta (modo/fila)';
+
+  @override
   String get dropToDeleteMission => 'Solte aqui para excluir';
 
   @override

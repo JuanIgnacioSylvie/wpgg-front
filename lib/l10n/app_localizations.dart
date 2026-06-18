@@ -420,6 +420,54 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get deleteMission;
 
+  /// No description provided for @missionMatchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission matches'**
+  String get missionMatchesTitle;
+
+  /// No description provided for @missionMatchesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches in this mission window yet.'**
+  String get missionMatchesEmpty;
+
+  /// No description provided for @missionMatchContributed.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted'**
+  String get missionMatchContributed;
+
+  /// No description provided for @missionMatchNoProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'No progress'**
+  String get missionMatchNoProgress;
+
+  /// No description provided for @missionMatchNotEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t count'**
+  String get missionMatchNotEligible;
+
+  /// No description provided for @missionMatchesLegendContributed.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted toward mission'**
+  String get missionMatchesLegendContributed;
+
+  /// No description provided for @missionMatchesLegendNoProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In range, no progress'**
+  String get missionMatchesLegendNoProgress;
+
+  /// No description provided for @missionMatchesLegendNotEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t count (mode/queue)'**
+  String get missionMatchesLegendNotEligible;
+
   /// No description provided for @dropToDeleteMission.
   ///
   /// In en, this message translates to:

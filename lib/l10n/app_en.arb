@@ -96,6 +96,14 @@
     }
   },
   "deleteMission": "Delete",
+  "missionMatchesTitle": "Mission matches",
+  "missionMatchesEmpty": "No matches in this mission window yet.",
+  "missionMatchContributed": "Counted",
+  "missionMatchNoProgress": "No progress",
+  "missionMatchNotEligible": "Doesn't count",
+  "missionMatchesLegendContributed": "Counted toward mission",
+  "missionMatchesLegendNoProgress": "In range, no progress",
+  "missionMatchesLegendNotEligible": "Doesn't count (mode/queue)",
   "dropToDeleteMission": "Drop here to delete",
   "summonerLevel": "Level {level}",
   "@summonerLevel": {

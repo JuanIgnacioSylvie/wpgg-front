@@ -14,12 +14,14 @@ class DraggableWebMissionCard extends StatefulWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     this.onReorder,
+    this.onTap,
   });
 
   final MissionCardEntity mission;
   final ValueChanged<String> onDragStarted;
   final VoidCallback onDragEnded;
   final MissionReorderCallback? onReorder;
+  final VoidCallback? onTap;
 
   @override
   State<DraggableWebMissionCard> createState() => _DraggableWebMissionCardState();
@@ -122,6 +124,7 @@ class _DraggableWebMissionCardState extends State<DraggableWebMissionCard> {
         curve: WebMotion.curve,
         child: WebMissionCard(
           mission: widget.mission,
+          onTap: widget.onTap,
         ),
       ),
     );

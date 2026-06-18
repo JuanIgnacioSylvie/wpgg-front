@@ -96,6 +96,14 @@
     }
   },
   "deleteMission": "Excluir",
+  "missionMatchesTitle": "Partidas da missão",
+  "missionMatchesEmpty": "Ainda não há partidas na janela desta missão.",
+  "missionMatchContributed": "Contou",
+  "missionMatchNoProgress": "Sem progresso",
+  "missionMatchNotEligible": "Não conta",
+  "missionMatchesLegendContributed": "Contou para a missão",
+  "missionMatchesLegendNoProgress": "No intervalo, sem progresso",
+  "missionMatchesLegendNotEligible": "Não conta (modo/fila)",
   "dropToDeleteMission": "Solte aqui para excluir",
   "summonerLevel": "Nível {level}",
   "@summonerLevel": {

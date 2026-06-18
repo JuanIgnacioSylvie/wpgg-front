@@ -6,15 +6,18 @@ import '../../../../core/presentation/widgets/wpgg_card_elevation.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_progress_detail.dart';
 import 'mission_progress_ring.dart';
 import 'mission_shared_widgets.dart';
 class MissionWelcomeCard extends StatelessWidget {
   const MissionWelcomeCard({
     super.key,
     required this.mission,
+    this.onTap,
   });
 
   final MissionCardEntity mission;
+  final VoidCallback? onTap;
 
   static const _accent = WpggBrand.welcomeAccent;
 
@@ -23,7 +26,9 @@ class MissionWelcomeCard extends StatelessWidget {
     final l10n = context.l10n;
     final subtitle = mission.localizedSubtitle(context);
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       decoration: WpggCardElevation.enhance(
         BoxDecoration(
@@ -59,6 +64,12 @@ class MissionWelcomeCard extends StatelessWidget {
                       color: _accent,
                       size: 104,
                       strokeWidth: 4,
+                    ),
+                    const SizedBox(height: 8),
+                    MissionProgressDetail(
+                      mission: mission,
+                      accentColor: _accent,
+                      align: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
                     MissionRewardRow(
@@ -118,6 +129,7 @@ class MissionWelcomeCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

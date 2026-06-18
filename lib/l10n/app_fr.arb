@@ -96,6 +96,14 @@
     }
   },
   "deleteMission": "Supprimer",
+  "missionMatchesTitle": "Parties de la mission",
+  "missionMatchesEmpty": "Aucune partie dans la fenêtre de cette mission pour l'instant.",
+  "missionMatchContributed": "Comptée",
+  "missionMatchNoProgress": "Sans progrès",
+  "missionMatchNotEligible": "Ne compte pas",
+  "missionMatchesLegendContributed": "Comptée pour la mission",
+  "missionMatchesLegendNoProgress": "Dans la fenêtre, sans progrès",
+  "missionMatchesLegendNotEligible": "Ne compte pas (mode/file)",
   "dropToDeleteMission": "Déposez ici pour supprimer",
   "summonerLevel": "Niveau {level}",
   "@summonerLevel": {
