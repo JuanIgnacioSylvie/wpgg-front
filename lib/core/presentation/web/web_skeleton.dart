@@ -156,6 +156,54 @@ class WebMissionCardSkeleton extends StatelessWidget {
   }
 }
 
+class ProfileBalanceCardSkeleton extends StatelessWidget {
+  const ProfileBalanceCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: WebColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: WebColors.borderSubtle),
+          boxShadow: [
+            BoxShadow(
+              color: WebColors.accent.withValues(alpha: 0.08),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            WebSkeletonBox(
+              width: 28,
+              height: 28,
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+            ),
+            SizedBox(width: 14),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                WebSkeletonBox(width: 52, height: 12),
+                SizedBox(height: 6),
+                WebSkeletonBox(width: 100, height: 20),
+                SizedBox(height: 4),
+                WebSkeletonBox(width: 72, height: 13),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class WebDashboardSkeleton extends StatelessWidget {
   const WebDashboardSkeleton({super.key});
 
@@ -168,6 +216,8 @@ class WebDashboardSkeleton extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const ProfileBalanceCardSkeleton(),
+            const SizedBox(height: 24),
             Row(
               children: [
                 WebSkeletonBox(width: 110, height: 16),

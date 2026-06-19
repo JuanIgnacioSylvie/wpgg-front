@@ -230,10 +230,26 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                           children: [
                             BlocBuilder<WalletBloc, WalletState>(
                               builder: (context, walletState) {
+                                final walletLoading =
+                                    walletState is WalletInitial ||
+                                        walletState is WalletLoading;
+                                if (walletLoading) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(bottom: 24),
+                                    child: WebShimmerScope(
+                                      child: ProfileBalanceCardSkeleton(),
+                                    ),
+                                  );
+                                }
+
                                 WalletSummary? summary;
                                 if (walletState is WalletLoaded) {
                                   summary = walletState.summary;
                                 } else if (walletState is WalletWithdrawing) {
+                                  summary = walletState.summary;
+                                } else if (walletState is WalletWithdrawSuccess) {
+                                  summary = walletState.summary;
+                                } else if (walletState is WalletWithdrawError) {
                                   summary = walletState.summary;
                                 }
                                 if (summary == null) {

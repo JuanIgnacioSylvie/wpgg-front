@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/presentation/web/web_skeleton.dart';
 import '../../../wallet/data/datasources/dexscreener_datasource.dart';
 import '../../../wallet/domain/wpgg_balance_usd.dart';
 import '../../../wallet/presentation/widgets/live_wpgg_price_scope.dart';
@@ -24,11 +25,16 @@ class _LiveProfileBalanceCardState extends State<LiveProfileBalanceCard> {
   final _dataSource = DexScreenerDataSource();
   double? _priceUsd;
   bool _fetchScheduled = false;
+  bool _priceFetchComplete = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (LiveWpggPriceScope.of(context) != null || _fetchScheduled) return;
+    if (LiveWpggPriceScope.of(context) != null) {
+      _priceFetchComplete = true;
+      return;
+    }
+    if (_fetchScheduled) return;
     _fetchScheduled = true;
     _fetchPrice();
   }
@@ -37,9 +43,13 @@ class _LiveProfileBalanceCardState extends State<LiveProfileBalanceCard> {
     try {
       final price = await _dataSource.fetchWpggPrice();
       if (!mounted) return;
-      setState(() => _priceUsd = price.priceUsd);
+      setState(() {
+        _priceUsd = price.priceUsd;
+        _priceFetchComplete = true;
+      });
     } catch (_) {
-      // Keep USD hidden until price loads.
+      if (!mounted) return;
+      setState(() => _priceFetchComplete = true);
     }
   }
 
@@ -59,8 +69,20 @@ class _LiveProfileBalanceCardState extends State<LiveProfileBalanceCard> {
     return formatWpggUsdAmount(_balanceUsd(context));
   }
 
+  bool _showSkeleton(BuildContext context) {
+    if (!widget.useWebStyle) return false;
+    if (_resolvedPriceUsd(context) != null) return false;
+    return !_priceFetchComplete;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_showSkeleton(context)) {
+      return const WebShimmerScope(
+        child: ProfileBalanceCardSkeleton(),
+      );
+    }
+
     return ProfileBalanceCard(
       balanceWpgg: widget.balanceWpgg,
       balanceUsd: _balanceUsd(context),
