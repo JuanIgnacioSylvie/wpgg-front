@@ -97,6 +97,12 @@
   },
   "deleteMission": "Supprimer",
   "missionMatchesTitle": "Parties de la mission",
+  "missionAssignedChampion": "Champion : {name}",
+  "@missionAssignedChampion": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "missionMatchesEmpty": "Aucune partie dans la fenêtre de cette mission pour l'instant.",
   "missionMatchContributed": "Comptée",
   "missionMatchNoProgress": "Sans progrès",

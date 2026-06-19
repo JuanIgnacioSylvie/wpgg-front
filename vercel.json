@@ -2,7 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "bash scripts/build-web-vercel.sh",
   "outputDirectory": "build/web",
-  "installCommand": "if ! command -v flutter >/dev/null 2>&1; then git clone https://github.com/flutter/flutter.git -b stable --depth 1 /tmp/flutter && export PATH=\"/tmp/flutter/bin:$PATH\"; fi && flutter pub get",
+  "installCommand": "npm install && if ! command -v flutter >/dev/null 2>&1; then git clone https://github.com/flutter/flutter.git -b stable --depth 1 /tmp/flutter && export PATH=\"/tmp/flutter/bin:$PATH\"; fi && flutter pub get",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.wpgg.lol" }],
+      "destination": "https://wpgg.lol/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!robots\\.txt|sitemap\\.xml|favicon\\.ico|favicon\\.png|icons/|firebase-messaging-sw\\.js|firebase-config\\.js|_vercel/).*)",

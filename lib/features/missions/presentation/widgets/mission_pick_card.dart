@@ -51,6 +51,13 @@ class MissionPickCard extends StatelessWidget {
                     color: Colors.black87,
                   ),
                 ),
+                if (mission.hasAssignedChampion) ...[
+                  const SizedBox(height: 4),
+                  MissionAssignedChampionLabel(
+                    mission: mission,
+                    accentColor: difficultyColor(mission.difficulty),
+                  ),
+                ],
                 const SizedBox(height: 4),
                 Row(
                   children: [

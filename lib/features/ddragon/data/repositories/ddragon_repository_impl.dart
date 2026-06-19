@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/entities/ddragon_champion_info.dart';
 import '../../domain/repositories/ddragon_repository.dart';
 import '../datasources/ddragon_remote_datasource.dart';
 
@@ -11,12 +12,12 @@ class DDragonRepositoryImpl implements DDragonRepository {
   final DDragonRemoteDataSource _remote;
 
   @override
-  Future<Either<Failure, Map<int, String>>> getChampionKeys(
+  Future<Either<Failure, Map<int, DDragonChampionInfo>>> getChampionCatalog(
     String version,
   ) async {
     try {
-      final keys = await _remote.fetchChampionKeys(version);
-      return Right(keys);
+      final catalog = await _remote.fetchChampionCatalog(version);
+      return Right(catalog);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {

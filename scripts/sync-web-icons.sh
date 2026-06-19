@@ -23,7 +23,10 @@ if command -v magick >/dev/null 2>&1; then
 elif command -v convert >/dev/null 2>&1; then
   convert "$ASSETS/wpgg-coin_32x32.png" -define icon:auto-resize=16,32,48 "$WEB/favicon.ico"
 elif command -v node >/dev/null 2>&1; then
-  npx --yes png-to-ico "$ASSETS/wpgg-coin_32x32.png" > "$WEB/favicon.ico"
+  if ! node -e "require('to-ico')" >/dev/null 2>&1; then
+    npm install --no-save to-ico --prefix "$ROOT"
+  fi
+  node "$ROOT/scripts/generate-favicon-ico.mjs"
 else
   echo "ERROR: need ImageMagick or Node.js to build favicon.ico" >&2
   exit 1

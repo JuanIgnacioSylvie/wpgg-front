@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18235247629"></script>
@@ -29,26 +29,121 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>WPGG — Misiones diarias de LoL, tokens transparentes y recompensas reales</title>
-  <meta name="description" content="Jugá League of Legends, completá misiones diarias y ganá WPGG. Canjeá por RP, retirá a tu wallet o usalos como quieras. Pool fijo, contrato verificable on-chain. Sin promesas mágicas.">
-  <link rel="canonical" href="https://wpgg.lol/">
+  <!-- SEO: must run before Flutter so crawlers/Lighthouse get per-route tags -->
+  <script>
+    (function () {
+      var ORIGIN = 'https://wpgg.lol';
+      var PRIVATE_PREFIXES = [
+        '/home', '/missions', '/finance', '/store', '/leaderboard',
+        '/settings', '/auth', '/splash', '/forgot-password', '/reset-password', '/users'
+      ];
+      var DEFAULT = {
+        title: 'WPGG — Misiones diarias de LoL, tokens transparentes y recompensas reales',
+        description: 'Jugá League of Legends, completá misiones diarias y ganá WPGG. Canjeá por RP, retirá a tu wallet o usalos como quieras. Pool fijo, contrato verificable on-chain. Sin promesas mágicas.',
+        ogTitle: 'WPGG — Misiones diarias de LoL con recompensas reales',
+        ogDescription: 'Jugá LoL, ganá WPGG, canjeá por RP o retirá. Pool fijo y transparente on-chain.'
+      };
+      var ROUTES = {
+        '/login': {
+          title: 'Iniciar sesión — WPGG',
+          description: 'Ingresá a WPGG para completar misiones diarias de League of Legends y ganar tokens WPGG.',
+          ogTitle: 'Iniciar sesión — WPGG',
+          ogDescription: 'Accedé a tu cuenta WPGG y empezá a ganar recompensas jugando LoL.'
+        },
+        '/register': {
+          title: 'Crear cuenta — WPGG',
+          description: 'Registrate en WPGG gratis. Completá misiones de LoL, ganá tokens y canjealos por RP o retiralos.',
+          ogTitle: 'Crear cuenta — WPGG',
+          ogDescription: 'Unite a WPGG y empezá a ganar recompensas reales jugando League of Legends.'
+        },
+        '/faqs': {
+          title: 'Preguntas frecuentes — WPGG',
+          description: 'Respuestas sobre misiones, tokens WPGG, retiros, canje de RP y cómo funciona la plataforma.',
+          ogTitle: 'FAQs — WPGG',
+          ogDescription: 'Todo lo que necesitás saber sobre WPGG, misiones de LoL y recompensas.'
+        },
+        '/terms': {
+          title: 'Términos y condiciones — WPGG',
+          description: 'Términos de uso de WPGG, la plataforma de misiones diarias de League of Legends.',
+          ogTitle: 'Términos — WPGG',
+          ogDescription: 'Condiciones de uso de la plataforma WPGG.'
+        }
+      };
+
+      function normalizePath(path) {
+        if (!path || path === '/') return '/';
+        return path.replace(/\/+$/, '') || '/';
+      }
+
+      function isPrivate(path) {
+        for (var i = 0; i < PRIVATE_PREFIXES.length; i++) {
+          if (path === PRIVATE_PREFIXES[i] || path.indexOf(PRIVATE_PREFIXES[i] + '/') === 0) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function esc(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;');
+      }
+
+      var path = normalizePath(window.location.pathname);
+      var meta = ROUTES[path] || DEFAULT;
+      var canonical = ORIGIN + (path === '/' ? '/' : path);
+      var robots = isPrivate(path) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+
+      document.write('<title>' + esc(meta.title) + '</title>');
+      document.write('<meta name="description" content="' + esc(meta.description) + '">');
+      document.write('<link rel="canonical" href="' + esc(canonical) + '">');
+      document.write('<meta name="robots" content="' + esc(robots) + '">');
+      document.write('<meta property="og:url" content="' + esc(canonical) + '">');
+      document.write('<meta property="og:title" content="' + esc(meta.ogTitle || meta.title) + '">');
+      document.write('<meta property="og:description" content="' + esc(meta.ogDescription || meta.description) + '">');
+      document.write('<meta name="twitter:title" content="' + esc(meta.ogTitle || meta.title) + '">');
+      document.write('<meta name="twitter:description" content="' + esc(meta.ogDescription || meta.description) + '">');
+
+      window.wpggApplySeo = function (nextPath) {
+        var p = normalizePath(nextPath);
+        var m = ROUTES[p] || DEFAULT;
+        var c = ORIGIN + (p === '/' ? '/' : p);
+        var r = isPrivate(p) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+        document.title = m.title;
+        var desc = document.querySelector('meta[name="description"]');
+        if (desc) desc.setAttribute('content', m.description);
+        var canon = document.querySelector('link[rel="canonical"]');
+        if (canon) canon.setAttribute('href', c);
+        var robotsEl = document.querySelector('meta[name="robots"]');
+        if (robotsEl) robotsEl.setAttribute('content', r);
+        var ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', c);
+        var ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', m.ogTitle || m.title);
+        var ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', m.ogDescription || m.description);
+        var twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twTitle) twTitle.setAttribute('content', m.ogTitle || m.title);
+        var twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twDesc) twDesc.setAttribute('content', m.ogDescription || m.description);
+      };
+    })();
+  </script>
+
   <meta name="google-site-verification" content="Q8kCVoRoBNyLZKFD-iLGc9oPi71IsEv4McN77NX9nBM">
 
-  <!-- Open Graph -->
+  <!-- Open Graph (static assets; url/title/description set by SEO script above) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WPGG">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:url" content="https://wpgg.lol/">
-  <meta property="og:title" content="WPGG — Misiones diarias de LoL con recompensas reales">
-  <meta property="og:description" content="Jugá LoL, ganá WPGG, canjeá por RP o retirá. Pool fijo y transparente on-chain.">
+  <meta property="og:locale" content="es_AR">
   <meta property="og:image" content="https://wpgg.lol/icons/Icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
 
-  <!-- Twitter -->
+  <!-- Twitter (title/description set by SEO script above) -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WPGG — Misiones diarias de LoL con recompensas reales">
-  <meta name="twitter:description" content="Jugá LoL, ganá WPGG, canjeá por RP o retirá. Pool fijo y transparente on-chain.">
   <meta name="twitter:image" content="https://wpgg.lol/icons/Icon-512.png">
 
   <!-- iOS meta tags & icons -->
@@ -58,20 +153,63 @@
   <meta name="apple-mobile-web-app-title" content="WPGG">
   <meta name="theme-color" content="#AD1F0F">
 
-  <!-- Favicons (WPGG coin — synced from assets/images via scripts/sync-web-icons.sh) -->
-  <link rel="icon" href="/favicon.ico" sizes="48x48">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/Icon-192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <!-- Favicons: absolute URLs + 192px first (Google prefers multiples of 48px) -->
+  <link rel="icon" type="image/png" sizes="192x192" href="https://wpgg.lol/icons/Icon-192.png">
+  <link rel="icon" href="https://wpgg.lol/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://wpgg.lol/icons/apple-touch-icon.png">
 
   <link rel="manifest" href="manifest.json">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://wpgg.lol/#organization",
+        "name": "WPGG",
+        "url": "https://wpgg.lol/",
+        "logo": "https://wpgg.lol/icons/Icon-512.png",
+        "description": "Plataforma de misiones diarias de League of Legends con recompensas WPGG verificables on-chain."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://wpgg.lol/#website",
+        "url": "https://wpgg.lol/",
+        "name": "WPGG",
+        "publisher": { "@id": "https://wpgg.lol/#organization" },
+        "inLanguage": ["es", "en", "pt", "fr"]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://wpgg.lol/#webpage",
+        "url": "https://wpgg.lol/",
+        "name": "WPGG — Misiones diarias de LoL, tokens transparentes y recompensas reales",
+        "description": "Jugá League of Legends, completá misiones diarias y ganá WPGG. Canjeá por RP, retirá a tu wallet o usalos como quieras.",
+        "isPartOf": { "@id": "https://wpgg.lol/#website" },
+        "about": { "@id": "https://wpgg.lol/#organization" },
+        "inLanguage": "es"
+      }
+    ]
+  }
+  </script>
+
   <style>
     html, body {
       margin: 0;
       height: 100%;
       background: #0B0B0F;
+    }
+    #wpgg-seo-content {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     #wpgg-splash {
       position: fixed;
@@ -170,6 +308,20 @@
   </script>
 </head>
 <body>
+  <main id="wpgg-seo-content">
+    <h1>WPGG — Misiones diarias de League of Legends</h1>
+    <p>
+      Jugá League of Legends, completá misiones diarias y ganá tokens WPGG.
+      Canjeá por RP, retirá a tu wallet o usalos como quieras.
+      Pool fijo, contrato verificable on-chain.
+    </p>
+    <nav aria-label="Enlaces públicos">
+      <a href="/login">Iniciar sesión</a>
+      <a href="/register">Crear cuenta</a>
+      <a href="/faqs">Preguntas frecuentes</a>
+      <a href="/terms">Términos y condiciones</a>
+    </nav>
+  </main>
   <div id="wpgg-splash" aria-hidden="true">
     <img src="icons/Icon-192.png" alt="" width="72" height="72" />
     <div id="wpgg-splash-bar"><span></span></div>
@@ -180,6 +332,8 @@
       if (!el || el.classList.contains('wpgg-splash--hide')) return;
       el.classList.add('wpgg-splash--hide');
       window.setTimeout(function () { el.remove(); }, 280);
+      var seo = document.getElementById('wpgg-seo-content');
+      if (seo) seo.remove();
     }
     window.addEventListener('flutter-first-frame', wpggHideSplash);
   </script>

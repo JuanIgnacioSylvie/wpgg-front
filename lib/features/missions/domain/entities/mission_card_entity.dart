@@ -34,6 +34,8 @@ class MissionCardEntity extends Equatable {
     required this.progressPercent,
     this.progressLines = const [],
     this.championId,
+    this.championKey,
+    this.championName,
     this.endsAt,
   });
 
@@ -51,9 +53,13 @@ class MissionCardEntity extends Equatable {
   final int progressPercent;
   final List<MissionProgressLine> progressLines;
   final int? championId;
+  final String? championKey;
+  final String? championName;
   final DateTime? endsAt;
 
   bool get isWelcome => kind == MissionKind.welcome;
+
+  bool get hasAssignedChampion => championId != null && championId! > 0;
 
   @override
   List<Object?> get props => [id, status, progressPercent, progressLines, kind, category];

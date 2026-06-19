@@ -191,6 +191,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get missionMatchesTitle => 'Parties de la mission';
 
   @override
+  String missionAssignedChampion(String name) {
+    return 'Champion : $name';
+  }
+
+  @override
   String get missionMatchesEmpty =>
       'Aucune partie dans la fenêtre de cette mission pour l\'instant.';
 

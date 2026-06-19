@@ -9,6 +9,7 @@ import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/presentation/web/web_animations.dart';
 import '../../../../core/presentation/web/web_colors.dart';
 import '../../../../core/presentation/web/web_dot_grid_background.dart';
+import '../../../../core/platform/web_crawler.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../../auth/domain/usecases/refresh_token_usecase.dart';
 import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
@@ -39,6 +40,10 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _maybeRedirectSession() async {
+    if (isWebCrawler()) {
+      if (mounted) setState(() => _checkingSession = false);
+      return;
+    }
     try {
       final storage = sl<SecureStorage>();
       final token = await storage.getAccessToken();

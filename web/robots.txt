@@ -2,8 +2,8 @@ User-agent: *
 Allow: /
 Allow: /login
 Allow: /register
-Allow: /profile/faqs
-Allow: /profile/terms
+Allow: /faqs
+Allow: /terms
 Disallow: /auth/
 Disallow: /splash
 Disallow: /home

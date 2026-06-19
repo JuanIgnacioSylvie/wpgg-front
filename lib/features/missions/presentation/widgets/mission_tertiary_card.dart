@@ -47,6 +47,14 @@ class MissionTertiaryCard extends StatelessWidget {
                     height: 1.3,
                   ),
                 ),
+                if (mission.hasAssignedChampion) ...[
+                  const SizedBox(height: 4),
+                  MissionAssignedChampionLabel(
+                    mission: mission,
+                    accentColor: color,
+                    fontSize: 12,
+                  ),
+                ],
                 const SizedBox(height: 4),
                 MissionProgressDetail(
                   mission: mission,

@@ -2,12 +2,15 @@ import 'dart:js_interop';
 
 import 'package:go_router/go_router.dart';
 
+import '../presentation/web/web_seo.dart';
+
 @JS('wpggNotifyRouteChange')
 external void _wpggNotifyRouteChange(JSString path);
 
 void initVercelAnalytics(GoRouter router) {
   void onRouteChange() {
     final path = router.routeInformationProvider.value.uri.path;
+    updateWebSeoForRoute(path);
     _notify(path);
   }
 

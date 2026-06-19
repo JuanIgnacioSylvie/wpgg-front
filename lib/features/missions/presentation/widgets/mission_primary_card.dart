@@ -95,6 +95,14 @@ class MissionPrimaryCard extends StatelessWidget {
                         title: mission.localizedTitle(context),
                         accent: color,
                       ),
+                      if (mission.hasAssignedChampion) ...[
+                        const SizedBox(height: 8),
+                        MissionAssignedChampionLabel(
+                          mission: mission,
+                          accentColor: color,
+                          fontSize: 12,
+                        ),
+                      ],
                       if (mission.endsAt != null) ...[
                         const SizedBox(height: 10),
                         MissionCardCountdown(

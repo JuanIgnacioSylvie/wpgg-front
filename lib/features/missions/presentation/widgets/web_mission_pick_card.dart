@@ -76,6 +76,14 @@ class _WebMissionPickCardState extends State<WebMissionPickCard> {
                       color: WebColors.textPrimary,
                     ),
                   ),
+                  if (mission.hasAssignedChampion) ...[
+                    const SizedBox(height: 4),
+                    MissionAssignedChampionLabel(
+                      mission: mission,
+                      useWebStyle: true,
+                      accentColor: accent,
+                    ),
+                  ],
                   const SizedBox(height: 6),
                   Row(
                     children: [

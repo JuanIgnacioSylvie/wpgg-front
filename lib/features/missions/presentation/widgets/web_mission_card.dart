@@ -111,6 +111,14 @@ class _WebMissionCardState extends State<WebMissionCard> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+                          if (mission.hasAssignedChampion) ...[
+                            const SizedBox(height: 2),
+                            MissionAssignedChampionLabel(
+                              mission: mission,
+                              useWebStyle: true,
+                              accentColor: color,
+                            ),
+                          ],
                           const SizedBox(height: 2),
                           Text(
                             mission.isWelcome

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../core/presentation/web/web_colors.dart';
 import '../../../ddragon/presentation/providers/ddragon_provider.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/l10n/l10n_extension.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import '../../domain/mission_champion_fallback.dart';
 import 'mission_category_icons.dart';
 import 'mission_ui_helpers.dart';
 
@@ -71,11 +73,18 @@ class MissionCategoryIconBox extends StatelessWidget {
     final championId = mission.championId;
     if (championId != null && championId > 0) {
       final dd = context.watch<DDragonProvider>();
-      final url = dd.championSquareUrl('', championId: championId);
+      final championKey = mission.championKey ??
+          missionChampionFallbackKey(championId);
+      final url = dd.championSquareUrl(
+        mission.championName ?? '',
+        championId: championId,
+        championKey: championKey,
+      );
       if (url.isNotEmpty) {
         return _accentBox(
           accent: accent,
           clipChild: true,
+          fullBleed: true,
           child: CachedNetworkImage(
             imageUrl: url,
             width: size,
@@ -112,6 +121,7 @@ class MissionCategoryIconBox extends StatelessWidget {
     required Color accent,
     required Widget child,
     bool clipChild = false,
+    bool fullBleed = false,
   }) {
     final radius = BorderRadius.circular(borderRadius);
     return Container(
@@ -123,11 +133,57 @@ class MissionCategoryIconBox extends StatelessWidget {
       ),
       clipBehavior: clipChild ? Clip.antiAlias : Clip.none,
       child: clipChild
-          ? Padding(
-              padding: const EdgeInsets.all(6),
-              child: child,
-            )
+          ? (fullBleed
+              ? child
+              : Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: child,
+                ))
           : Center(child: child),
+    );
+  }
+}
+
+class MissionAssignedChampionLabel extends StatelessWidget {
+  const MissionAssignedChampionLabel({
+    super.key,
+    required this.mission,
+    this.accentColor,
+    this.useWebStyle = false,
+    this.fontSize = 11,
+  });
+
+  final MissionCardEntity mission;
+  final Color? accentColor;
+  final bool useWebStyle;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final championId = mission.championId;
+    if (championId == null || championId <= 0) {
+      return const SizedBox.shrink();
+    }
+
+    final dd = context.watch<DDragonProvider>();
+    final resolvedName = mission.championName?.trim();
+    final fallbackName = missionChampionFallbackName(championId);
+    final name = (resolvedName != null && resolvedName.isNotEmpty)
+        ? resolvedName
+        : (fallbackName ?? dd.championDisplayName(championId));
+    final color = accentColor ??
+        (useWebStyle ? WebColors.textSecondary : Colors.black54);
+
+    return Text(
+      context.l10n.missionAssignedChampion(name),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontFamily: AppFonts.lexendDeca,
+        color: color,
+        fontSize: fontSize,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }

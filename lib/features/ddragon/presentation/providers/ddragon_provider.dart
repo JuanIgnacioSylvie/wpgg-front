@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../domain/entities/ddragon_champion_info.dart';
 import '../../domain/repositories/ddragon_repository.dart';
 
 class DDragonProvider extends ChangeNotifier {
@@ -9,7 +10,7 @@ class DDragonProvider extends ChangeNotifier {
 
   String? _version;
   String? _error;
-  Map<int, String> _championKeys = {};
+  Map<int, DDragonChampionInfo> _champions = {};
   Future<void>? _ensureInFlight;
 
   String? get version => _version;
@@ -22,12 +23,16 @@ class DDragonProvider extends ChangeNotifier {
       'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem';
 
   Future<void> ensureLoaded() async {
-    if (_version != null) return;
+    if (_version != null && _champions.isNotEmpty) return;
     _ensureInFlight ??= _loadVersionOnce();
     try {
       await _ensureInFlight;
     } finally {
       _ensureInFlight = null;
+    }
+    if (_champions.isEmpty && _version != null) {
+      await _loadChampionCatalog(_version!);
+      notifyListeners();
     }
   }
 
@@ -37,24 +42,34 @@ class DDragonProvider extends ChangeNotifier {
       (f) async {
         _error = f.message;
         _version = '14.1.1';
-        await _loadChampionKeys(_version!);
+        await _loadChampionCatalog(_version!);
         notifyListeners();
       },
       (v) async {
         _version = v;
         _error = null;
-        await _loadChampionKeys(v);
+        await _loadChampionCatalog(v);
         notifyListeners();
       },
     );
   }
 
-  Future<void> _loadChampionKeys(String version) async {
-    final r = await _repository.getChampionKeys(version);
+  Future<void> _loadChampionCatalog(String version) async {
+    final r = await _repository.getChampionCatalog(version);
     r.fold(
-      (_) => _championKeys = {},
-      (keys) => _championKeys = keys,
+      (_) => _champions = {},
+      (catalog) => _champions = catalog,
     );
+    notifyListeners();
+  }
+
+  String? championName(int championId) {
+    if (championId <= 0) return null;
+    return _champions[championId]?.name;
+  }
+
+  String championDisplayName(int championId) {
+    return championName(championId) ?? '#$championId';
   }
 
   String profileIconUrl(int profileIconId) {
@@ -62,10 +77,18 @@ class DDragonProvider extends ChangeNotifier {
     return '$cdnBase/$v/img/profileicon/$profileIconId.png';
   }
 
-  String championSquareUrl(String championName, {int championId = 0}) {
+  String championSquareUrl(
+    String championName, {
+    int championId = 0,
+    String? championKey,
+  }) {
     final v = _version ?? '14.1.1';
-    final fromId = championId > 0 ? _championKeys[championId] : null;
-    final key = (fromId ?? championName).replaceAll(' ', '').replaceAll("'", '');
+    final fromApi = championKey?.trim();
+    final fromId =
+        championId > 0 ? _champions[championId]?.key : null;
+    final key = (fromApi ?? fromId ?? championName)
+        .replaceAll(' ', '')
+        .replaceAll("'", '');
     if (key.isEmpty) return '';
     return '$cdnBase/$v/img/champion/$key.png';
   }

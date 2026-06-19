@@ -97,6 +97,12 @@
   },
   "deleteMission": "Delete",
   "missionMatchesTitle": "Mission matches",
+  "missionAssignedChampion": "Champion: {name}",
+  "@missionAssignedChampion": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "missionMatchesEmpty": "No matches in this mission window yet.",
   "missionMatchContributed": "Counted",
   "missionMatchNoProgress": "No progress",

@@ -12,6 +12,7 @@ import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../riot/presentation/widgets/match_tile.dart';
 import '../../data/datasources/missions_remote_datasource.dart';
 import '../../domain/entities/mission_card_entity.dart';
+import 'mission_shared_widgets.dart';
 import '../../domain/entities/mission_match_entity.dart';
 
 Future<void> showMissionMatchesDialog(
@@ -157,6 +158,17 @@ class _MissionMatchesPanelState extends State<MissionMatchesPanel> {
                         fontSize: 13,
                       ),
                     ),
+                    if (widget.mission.hasAssignedChampion) ...[
+                      const SizedBox(height: 4),
+                      MissionAssignedChampionLabel(
+                        mission: widget.mission,
+                        useWebStyle: isWeb,
+                        accentColor: isWeb
+                            ? WebColors.textSecondary
+                            : Colors.white70,
+                        fontSize: 12,
+                      ),
+                    ],
                   ],
                 ),
               ),

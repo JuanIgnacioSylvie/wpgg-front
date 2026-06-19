@@ -97,6 +97,12 @@
   },
   "deleteMission": "Excluir",
   "missionMatchesTitle": "Partidas da missão",
+  "missionAssignedChampion": "Campeão: {name}",
+  "@missionAssignedChampion": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "missionMatchesEmpty": "Ainda não há partidas na janela desta missão.",
   "missionMatchContributed": "Contou",
   "missionMatchNoProgress": "Sem progresso",

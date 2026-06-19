@@ -426,6 +426,12 @@ abstract class AppLocalizations {
   /// **'Mission matches'**
   String get missionMatchesTitle;
 
+  /// No description provided for @missionAssignedChampion.
+  ///
+  /// In en, this message translates to:
+  /// **'Champion: {name}'**
+  String missionAssignedChampion(String name);
+
   /// No description provided for @missionMatchesEmpty.
   ///
   /// In en, this message translates to:

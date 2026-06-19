@@ -81,6 +81,13 @@ class MissionSecondaryCard extends StatelessWidget {
               height: 1.25,
             ),
           ),
+          if (mission.hasAssignedChampion) ...[
+            const SizedBox(height: 4),
+            MissionAssignedChampionLabel(
+              mission: mission,
+              accentColor: color,
+            ),
+          ],
           if (mission.endsAt != null) ...[
             const SizedBox(height: 6),
             MissionCardCountdown(

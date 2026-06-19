@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/cdn_client.dart';
+import '../../domain/entities/ddragon_champion_info.dart';
 
 class DDragonRemoteDataSource {
   DDragonRemoteDataSource(this._cdn);
 
   final CdnClient _cdn;
 
-  Future<Map<int, String>> fetchChampionKeys(String version) async {
+  Future<Map<int, DDragonChampionInfo>> fetchChampionCatalog(
+    String version,
+  ) async {
     try {
       final res = await _cdn.get<dynamic>(
         '/cdn/$version/data/en_US/champion.json',
@@ -30,14 +33,15 @@ class DDragonRemoteDataSource {
       if (champs is! Map) {
         throw const ServerException('Champions DDragon inválidos');
       }
-      final out = <int, String>{};
+      final out = <int, DDragonChampionInfo>{};
       for (final entry in champs.entries) {
         if (entry.value is! Map) continue;
         final c = Map<String, dynamic>.from(entry.value as Map);
         final id = (c['key'] as num?)?.toInt();
         final key = c['id'] as String? ?? entry.key as String;
+        final name = c['name'] as String? ?? key;
         if (id != null && key.isNotEmpty) {
-          out[id] = key;
+          out[id] = DDragonChampionInfo(key: key, name: name);
         }
       }
       return out;

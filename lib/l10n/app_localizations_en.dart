@@ -190,6 +190,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missionMatchesTitle => 'Mission matches';
 
   @override
+  String missionAssignedChampion(String name) {
+    return 'Champion: $name';
+  }
+
+  @override
   String get missionMatchesEmpty => 'No matches in this mission window yet.';
 
   @override

@@ -16,12 +16,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://wpgg.lol/profile/faqs</loc>
+    <loc>https://wpgg.lol/faqs</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wpgg.lol/profile/terms</loc>
+    <loc>https://wpgg.lol/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

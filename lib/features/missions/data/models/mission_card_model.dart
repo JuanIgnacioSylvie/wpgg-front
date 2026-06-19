@@ -17,6 +17,8 @@ class MissionCardModel extends MissionCardEntity {
     required super.progressPercent,
     super.progressLines,
     super.championId,
+    super.championKey,
+    super.championName,
     super.endsAt,
   });
 
@@ -42,6 +44,8 @@ class MissionCardModel extends MissionCardEntity {
       progressPercent: (json['progressPercent'] as num?)?.toInt() ?? 0,
       progressLines: _progressLines(json['progressLines']),
       championId: (json['championId'] as num?)?.toInt(),
+      championKey: json['championKey'] as String?,
+      championName: json['championName'] as String?,
       endsAt: json['endsAt'] != null
           ? DateTime.tryParse(json['endsAt'] as String)
           : null,
