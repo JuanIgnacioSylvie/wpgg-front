@@ -150,6 +150,8 @@ class MissionCardModel extends MissionCardEntity {
         return MissionStatus.active;
       case 'COMPLETED':
         return MissionStatus.completed;
+      case 'CLAIMED':
+        return MissionStatus.claimed;
       case 'EXPIRED':
         return MissionStatus.expired;
       case 'OFFER':

@@ -64,6 +64,15 @@ class ReorderActiveMissions extends MissionsEvent {
   List<Object?> get props => [draggedId, targetId];
 }
 
+class ClaimMissionReward extends MissionsEvent {
+  const ClaimMissionReward(this.missionId);
+
+  final String missionId;
+
+  @override
+  List<Object?> get props => [missionId];
+}
+
 class ClearMissionActionFeedback extends MissionsEvent {
   const ClearMissionActionFeedback();
 }

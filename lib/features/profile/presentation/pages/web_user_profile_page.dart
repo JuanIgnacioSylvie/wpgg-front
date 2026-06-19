@@ -318,7 +318,7 @@ class _WebUserProfileContent extends StatelessWidget {
               const SizedBox(height: 20),
               if (profile.past.isEmpty)
                 Text(
-                  l10n.completedMissionsPlaceholder,
+                  l10n.passMissionsPlaceholder,
                   style: const TextStyle(
                     color: WebColors.textMuted,
                     fontSize: 13,

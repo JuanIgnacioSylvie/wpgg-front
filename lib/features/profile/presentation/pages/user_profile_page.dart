@@ -239,7 +239,7 @@ class _UserProfileView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  l10n.completedMissionsPlaceholder,
+                  l10n.passMissionsPlaceholder,
                   style: TextStyle(
                     color: useWebStyle
                         ? WebColors.textMuted

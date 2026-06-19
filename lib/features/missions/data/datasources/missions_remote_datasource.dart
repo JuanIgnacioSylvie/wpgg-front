@@ -68,6 +68,7 @@ class MissionsHomeResponse {
     this.welcome,
     required this.primary,
     required this.secondary,
+    required this.completed,
     required this.past,
     required this.endsInSeconds,
     required this.missionDate,
@@ -77,6 +78,7 @@ class MissionsHomeResponse {
   final MissionCardModel? welcome;
   final MissionCardModel? primary;
   final List<MissionCardModel> secondary;
+  final List<MissionCardModel> completed;
   final List<MissionCardModel> past;
   final int endsInSeconds;
   final String missionDate;
@@ -112,6 +114,7 @@ abstract class MissionsRemoteDataSource {
   Future<MissionCardModel> acceptOffer(String offerId);
   Future<MissionCardModel> rerollOffer(String offerId);
   Future<void> cancelActiveMission(String missionId);
+  Future<MissionCardModel> claimMissionReward(String missionId);
   Future<MissionSyncStatusResponse> fetchSyncStatus();
   Future<MissionSyncResult> syncMatches();
   Future<List<MissionMatchModel>> fetchMissionMatches(String missionId);
@@ -141,6 +144,9 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
             )
           : null,
       secondary: (data['secondary'] as List<dynamic>? ?? [])
+          .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      completed: (data['completed'] as List<dynamic>? ?? [])
           .map((e) => MissionCardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       past: (data['past'] as List<dynamic>? ?? [])
@@ -202,6 +208,14 @@ class MissionsRemoteDataSourceImpl implements MissionsRemoteDataSource {
   @override
   Future<void> cancelActiveMission(String missionId) async {
     await _client.post<void>('/missions/active/$missionId/cancel');
+  }
+
+  @override
+  Future<MissionCardModel> claimMissionReward(String missionId) async {
+    final res = await _client.post<Map<String, dynamic>>(
+      '/missions/$missionId/claim',
+    );
+    return MissionCardModel.fromJson(res.data!);
   }
 
   @override

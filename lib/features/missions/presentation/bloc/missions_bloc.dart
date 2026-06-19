@@ -23,6 +23,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
     on<AcceptMissionOffer>(_onAccept);
     on<RerollMissionOffer>(_onReroll);
     on<CancelActiveMission>(_onCancel);
+    on<ClaimMissionReward>(_onClaim);
     on<ReorderActiveMissions>(_onReorder);
     on<ClearMissionActionFeedback>(_onClearActionFeedback);
     on<CheckMissionSyncStatus>(_onCheckSyncStatus);
@@ -86,6 +87,7 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
         welcome: home.welcome,
         primary: home.primary,
         secondary: home.secondary,
+        completed: home.completed,
         past: home.past,
         endsInSeconds: home.endsInSeconds,
         missionDate: home.missionDate,
@@ -249,6 +251,40 @@ class MissionsBloc extends Bloc<MissionsEvent, MissionsState> {
         clearActionInProgress: true,
         actionFeedback: MissionActionFeedback(
           type: MissionActionType.reroll,
+          success: false,
+          message: _missionErrorMessage(e),
+        ),
+      ));
+    }
+  }
+
+  Future<void> _onClaim(
+    ClaimMissionReward event,
+    Emitter<MissionsState> emit,
+  ) async {
+    if (state.actionInProgress != null) {
+      return;
+    }
+    emit(state.copyWith(
+      actionInProgress: MissionActionType.claim,
+      clearActionFeedback: true,
+    ));
+    try {
+      await _dataSource.claimMissionReward(event.missionId);
+      _refreshWallet();
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: const MissionActionFeedback(
+          type: MissionActionType.claim,
+          success: true,
+        ),
+      ));
+      add(const LoadMissionsHome());
+    } catch (e) {
+      emit(state.copyWith(
+        clearActionInProgress: true,
+        actionFeedback: MissionActionFeedback(
+          type: MissionActionType.claim,
           success: false,
           message: _missionErrorMessage(e),
         ),

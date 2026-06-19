@@ -26,7 +26,16 @@
   "noActiveMissions": "No tenés misiones activas. ¡Elegí hasta 3!",
   "pickMissions": "Elegir misiones",
   "passMissions": "Misiones pasadas",
+  "completedMissions": "Misiones completadas",
   "completedMissionsPlaceholder": "Las misiones completadas aparecerán acá.",
+  "passMissionsPlaceholder": "Las misiones pasadas aparecerán acá.",
+  "claimReward": "Reclamar",
+  "claimRewardAmount": "Reclamar {amount} WPGG",
+  "@claimRewardAmount": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
   "noMissionsForDay": "No hay misiones para este día.",
   "noMissionsForFilter": "Ninguna misión coincide con este filtro.",
   "errorLoadingMissions": "Error al cargar misiones",
@@ -40,6 +49,7 @@
   "difficultyMedium": "Media",
   "difficultyHard": "Difícil",
   "statusCompleted": "Completada",
+  "statusClaimed": "Reclamada",
   "statusIncomplete": "Incompleta",
   "statusInProgress": "En progreso",
   "statusToDo": "Por hacer",
@@ -200,10 +210,12 @@
   "transactionProcessingAcceptMission": "Aceptando misión…",
   "transactionProcessingRerollMission": "Cambiando misión…",
   "transactionProcessingCancelMission": "Eliminando misión…",
+  "transactionProcessingClaimMission": "Reclamando recompensa…",
   "transactionProcessingPurchase": "Procesando compra…",
   "transactionSuccessAcceptMission": "Misión aceptada",
   "transactionSuccessRerollMission": "Misión cambiada",
   "transactionSuccessCancelMission": "Misión eliminada",
+  "transactionSuccessClaimMission": "Recompensa reclamada",
   "transactionFailedGeneric": "No se pudo completar la acción. Intentá de nuevo.",
   "viewOnGeckoTerminal": "Ver en GeckoTerminal",
   "authLoginSwitchLine": "Si no tenés una cuenta",

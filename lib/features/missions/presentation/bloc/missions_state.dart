@@ -2,7 +2,7 @@ part of 'missions_bloc.dart';
 
 enum MissionsLoadStatus { initial, loading, loaded, error }
 
-enum MissionActionType { accept, reroll, cancel }
+enum MissionActionType { accept, reroll, cancel, claim }
 
 enum MissionSyncUiStatus {
   hidden,
@@ -33,6 +33,7 @@ class MissionsHomeData extends Equatable {
     this.welcome,
     required this.primary,
     required this.secondary,
+    required this.completed,
     required this.past,
     required this.endsInSeconds,
     required this.missionDate,
@@ -42,6 +43,7 @@ class MissionsHomeData extends Equatable {
   final MissionCardEntity? welcome;
   final MissionCardEntity? primary;
   final List<MissionCardEntity> secondary;
+  final List<MissionCardEntity> completed;
   final List<MissionCardEntity> past;
   final int endsInSeconds;
   final String missionDate;
@@ -52,6 +54,7 @@ class MissionsHomeData extends Equatable {
         welcome,
         primary,
         secondary,
+        completed,
         past,
         endsInSeconds,
         missionDate,

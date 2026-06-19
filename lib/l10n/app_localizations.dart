@@ -228,11 +228,35 @@ abstract class AppLocalizations {
   /// **'Pass Missions'**
   String get passMissions;
 
+  /// No description provided for @completedMissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed missions'**
+  String get completedMissions;
+
   /// No description provided for @completedMissionsPlaceholder.
   ///
   /// In en, this message translates to:
   /// **'Completed missions will appear here.'**
   String get completedMissionsPlaceholder;
+
+  /// No description provided for @passMissionsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Past missions will appear here.'**
+  String get passMissionsPlaceholder;
+
+  /// No description provided for @claimReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim'**
+  String get claimReward;
+
+  /// No description provided for @claimRewardAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim {amount} WPGG'**
+  String claimRewardAmount(int amount);
 
   /// No description provided for @noMissionsForDay.
   ///
@@ -311,6 +335,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get statusCompleted;
+
+  /// No description provided for @statusClaimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Claimed'**
+  String get statusClaimed;
 
   /// No description provided for @statusIncomplete.
   ///
@@ -1014,6 +1044,12 @@ abstract class AppLocalizations {
   /// **'Deleting mission…'**
   String get transactionProcessingCancelMission;
 
+  /// No description provided for @transactionProcessingClaimMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Claiming reward…'**
+  String get transactionProcessingClaimMission;
+
   /// No description provided for @transactionProcessingPurchase.
   ///
   /// In en, this message translates to:
@@ -1037,6 +1073,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mission deleted'**
   String get transactionSuccessCancelMission;
+
+  /// No description provided for @transactionSuccessClaimMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward claimed'**
+  String get transactionSuccessClaimMission;
 
   /// No description provided for @transactionFailedGeneric.
   ///

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../auth/presentation/widgets/wpgg_primary_button.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/wpgg_brand.dart';
 import '../../../../core/extensions/mission_card_l10n.dart';
@@ -13,7 +14,7 @@ import 'mission_progress_detail.dart';
 import 'mission_shared_widgets.dart';
 import 'mission_ui_helpers.dart';
 
-enum WebMissionCardVariant { active, past, empty }
+enum WebMissionCardVariant { active, completed, past, empty }
 
 enum WebMissionCardVisualState { normal, placeholder, dragFeedback }
 
@@ -24,17 +25,23 @@ class WebMissionCard extends StatefulWidget {
     this.variant = WebMissionCardVariant.active,
     this.visualState = WebMissionCardVisualState.normal,
     this.onTap,
+    this.onClaim,
+    this.claimInProgress = false,
   });
 
   const WebMissionCard.empty({super.key, this.onTap})
       : mission = null,
         variant = WebMissionCardVariant.empty,
-        visualState = WebMissionCardVisualState.normal;
+        visualState = WebMissionCardVisualState.normal,
+        onClaim = null,
+        claimInProgress = false;
 
   final MissionCardEntity? mission;
   final WebMissionCardVariant variant;
   final WebMissionCardVisualState visualState;
   final VoidCallback? onTap;
+  final VoidCallback? onClaim;
+  final bool claimInProgress;
 
   @override
   State<WebMissionCard> createState() => _WebMissionCardState();
@@ -56,7 +63,10 @@ class _WebMissionCardState extends State<WebMissionCard> {
     final mission = widget.mission!;
     final color = missionAccentColor(mission);
     final isPast = widget.variant == WebMissionCardVariant.past;
-    final isCompleted = mission.status == MissionStatus.completed;
+    final isCompletedSection =
+        widget.variant == WebMissionCardVariant.completed;
+    final isCompleted = mission.status == MissionStatus.completed ||
+        mission.status == MissionStatus.claimed;
     final isPlaceholder =
         widget.visualState == WebMissionCardVisualState.placeholder;
     final isDragFeedback =
@@ -140,7 +150,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
                     ),
                   ],
                 ),
-                if (!isPast && mission.endsAt != null) ...[
+                if (!isPast && !isCompletedSection && mission.endsAt != null) ...[
                   const SizedBox(height: 8),
                   MissionCardCountdown(
                     endsAt: mission.endsAt,
@@ -194,7 +204,7 @@ class _WebMissionCardState extends State<WebMissionCard> {
                     ),
                   ],
                 ),
-                if (!isPast) ...[
+                if (!isPast && !isCompletedSection) ...[
                   const SizedBox(height: 12),
                   MissionProgressDetail(
                     mission: mission,
@@ -202,6 +212,28 @@ class _WebMissionCardState extends State<WebMissionCard> {
                     showBars: true,
                     accentColor: color,
                   ),
+                ] else if (isCompletedSection) ...[
+                  const SizedBox(height: 12),
+                  MissionProgressDetail(
+                    mission: mission,
+                    useWebStyle: true,
+                    showBars: true,
+                    accentColor: color,
+                  ),
+                  if (widget.onClaim != null) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: WpggPrimaryButton(
+                        label: context.l10n.claimRewardAmount(
+                          mission.rewardWpgg,
+                        ),
+                        onPressed:
+                            widget.claimInProgress ? null : widget.onClaim,
+                        isLoading: widget.claimInProgress,
+                      ),
+                    ),
+                  ],
                 ] else if (mission.progressLines.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   MissionProgressDetail(

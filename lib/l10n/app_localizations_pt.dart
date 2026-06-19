@@ -77,8 +77,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get passMissions => 'Missões passadas';
 
   @override
+  String get completedMissions => 'Missões concluídas';
+
+  @override
   String get completedMissionsPlaceholder =>
       'As missões concluídas vão aparecer aqui.';
+
+  @override
+  String get passMissionsPlaceholder =>
+      'As missões passadas vão aparecer aqui.';
+
+  @override
+  String get claimReward => 'Resgatar';
+
+  @override
+  String claimRewardAmount(int amount) {
+    return 'Resgatar $amount WPGG';
+  }
 
   @override
   String get noMissionsForDay => 'Nenhuma missão para este dia.';
@@ -118,6 +133,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get statusCompleted => 'Concluída';
+
+  @override
+  String get statusClaimed => 'Resgatada';
 
   @override
   String get statusIncomplete => 'Incompleta';
@@ -520,6 +538,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get transactionProcessingCancelMission => 'Excluindo missão…';
 
   @override
+  String get transactionProcessingClaimMission => 'Resgatando recompensa…';
+
+  @override
   String get transactionProcessingPurchase => 'Processando compra…';
 
   @override
@@ -530,6 +551,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get transactionSuccessCancelMission => 'Missão excluída';
+
+  @override
+  String get transactionSuccessClaimMission => 'Recompensa resgatada';
 
   @override
   String get transactionFailedGeneric =>

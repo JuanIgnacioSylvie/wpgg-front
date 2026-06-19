@@ -6,7 +6,7 @@ enum MissionDifficulty { easy, medium, hard }
 
 enum MissionKind { standard, welcome }
 
-enum MissionStatus { offer, active, completed, expired }
+enum MissionStatus { offer, active, completed, claimed, expired }
 
 /// LoL lane / fill role shown on mission cards.
 enum MissionCategory {

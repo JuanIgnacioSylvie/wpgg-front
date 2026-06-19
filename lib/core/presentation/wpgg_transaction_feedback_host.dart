@@ -39,6 +39,7 @@ class _WpggTransactionFeedbackHostState
       MissionActionType.accept => l10n.transactionProcessingAcceptMission,
       MissionActionType.reroll => l10n.transactionProcessingRerollMission,
       MissionActionType.cancel => l10n.transactionProcessingCancelMission,
+      MissionActionType.claim => l10n.transactionProcessingClaimMission,
     };
   }
 
@@ -48,6 +49,7 @@ class _WpggTransactionFeedbackHostState
       MissionActionType.accept => l10n.transactionSuccessAcceptMission,
       MissionActionType.reroll => l10n.transactionSuccessRerollMission,
       MissionActionType.cancel => l10n.transactionSuccessCancelMission,
+      MissionActionType.claim => l10n.transactionSuccessClaimMission,
     };
   }
 

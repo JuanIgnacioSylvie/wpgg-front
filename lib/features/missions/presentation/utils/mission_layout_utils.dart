@@ -53,6 +53,7 @@ MissionsHomeData homeFromOrderedMissions(
     welcome: home.welcome,
     primary: ordered.isEmpty ? null : ordered.first,
     secondary: ordered.length <= 1 ? const [] : ordered.sublist(1),
+    completed: home.completed,
     past: home.past,
     endsInSeconds: home.endsInSeconds,
     missionDate: home.missionDate,

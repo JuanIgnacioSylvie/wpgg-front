@@ -20,6 +20,7 @@ import '../../domain/entities/mission_card_entity.dart';
 import '../bloc/missions_bloc.dart';
 import '../widgets/cancel_mission_dialog.dart';
 import '../widgets/mission_matches_dialog.dart';
+import '../widgets/mission_completed_card.dart';
 import '../widgets/mission_primary_card.dart';
 import '../widgets/mission_secondary_card.dart';
 import '../widgets/mission_sync_button.dart';
@@ -309,6 +310,57 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Text(
+                              l10n.completedMissions,
+                              style: TextStyle(
+                                color: WpggBrand.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            CircleAvatar(
+                              radius: 12,
+                              backgroundColor: WpggBrand.primary,
+                              child: Text(
+                                '${home.completed.length}',
+                                style: const TextStyle(
+                                  color: WpggBrand.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (home.completed.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            l10n.completedMissionsPlaceholder,
+                            style: const TextStyle(color: WpggBrand.textMuted),
+                          ),
+                        )
+                      else
+                        ...home.completed.map(
+                          (m) => Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: MissionCompletedCard(
+                              mission: m,
+                              onTap: () => _openMissionMatches(context, m),
+                              onClaim: () => _claimMission(context, m.id),
+                              claimInProgress:
+                                  state.actionInProgress ==
+                                      MissionActionType.claim,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            Text(
                               l10n.passMissions,
                               style: TextStyle(
                                 color: WpggBrand.white,
@@ -336,7 +388,7 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Text(
-                            l10n.completedMissionsPlaceholder,
+                            l10n.passMissionsPlaceholder,
                             style: const TextStyle(color: WpggBrand.textMuted),
                           ),
                         )
@@ -375,5 +427,9 @@ class _HomePageState extends State<HomePage> {
     );
     if (!ok || !context.mounted) return;
     context.read<MissionsBloc>().add(CancelActiveMission(missionId));
+  }
+
+  void _claimMission(BuildContext context, String missionId) {
+    context.read<MissionsBloc>().add(ClaimMissionReward(missionId));
   }
 }

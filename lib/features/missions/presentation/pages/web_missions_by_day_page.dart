@@ -67,13 +67,16 @@ class _WebMissionsByDayPageState extends State<WebMissionsByDayPage> {
     }
     return missions
         .where(
-          (m) => m.status == MissionStatus.completed,
+          (m) =>
+              m.status == MissionStatus.completed ||
+              m.status == MissionStatus.claimed,
         )
         .toList();
   }
 
   bool _isPastMission(MissionCardEntity mission) {
     return mission.status == MissionStatus.completed ||
+        mission.status == MissionStatus.claimed ||
         mission.status == MissionStatus.expired;
   }
 

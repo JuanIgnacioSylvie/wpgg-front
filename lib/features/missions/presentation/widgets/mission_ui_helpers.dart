@@ -110,6 +110,8 @@ String statusLabel(MissionStatus s, AppLocalizations l10n) {
   switch (s) {
     case MissionStatus.completed:
       return l10n.statusCompleted;
+    case MissionStatus.claimed:
+      return l10n.statusClaimed;
     case MissionStatus.expired:
       return l10n.statusIncomplete;
     case MissionStatus.active:

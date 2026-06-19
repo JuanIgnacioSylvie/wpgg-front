@@ -65,7 +65,9 @@ class _MissionsByDayPageState extends State<MissionsByDayPage> {
           .toList();
     }
     return missions
-        .where((m) => m.status == MissionStatus.completed)
+        .where((m) =>
+            m.status == MissionStatus.completed ||
+            m.status == MissionStatus.claimed)
         .toList();
   }
 

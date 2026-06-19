@@ -108,6 +108,10 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
     showMissionMatchesDialog(context, mission);
   }
 
+  void _claimMission(String missionId) {
+    context.read<MissionsBloc>().add(ClaimMissionReward(missionId));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -330,13 +334,51 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
                               ),
                             const SizedBox(height: 48),
                             WebSectionHeader(
+                              title: l10n.completedMissions,
+                              count: home.completed.length,
+                            ),
+                            const SizedBox(height: 20),
+                            if (home.completed.isEmpty)
+                              Text(
+                                l10n.completedMissionsPlaceholder,
+                                style: const TextStyle(
+                                  color: WebColors.textMuted,
+                                  fontSize: 13,
+                                ),
+                              )
+                            else
+                              Wrap(
+                                spacing: 20,
+                                runSpacing: 20,
+                                children: home.completed.asMap().entries.map(
+                                  (entry) {
+                                    final m = entry.value;
+                                    return WebAnimatedAppear(
+                                      key: ValueKey('completed-${m.id}'),
+                                      staggerIndex: entry.key,
+                                      child: WebMissionCard(
+                                        mission: m,
+                                        variant:
+                                            WebMissionCardVariant.completed,
+                                        onTap: () => _openMissionMatches(m),
+                                        onClaim: () => _claimMission(m.id),
+                                        claimInProgress: state
+                                                .actionInProgress ==
+                                            MissionActionType.claim,
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            const SizedBox(height: 48),
+                            WebSectionHeader(
                               title: l10n.passMissions,
                               count: home.past.length,
                             ),
                             const SizedBox(height: 20),
                             if (home.past.isEmpty)
                               Text(
-                                l10n.completedMissionsPlaceholder,
+                                l10n.passMissionsPlaceholder,
                                 style: const TextStyle(
                                   color: WebColors.textMuted,
                                   fontSize: 13,

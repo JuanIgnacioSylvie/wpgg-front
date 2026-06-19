@@ -32,7 +32,16 @@
   "noActiveMissions": "No active missions yet. Pick up to 3!",
   "pickMissions": "Pick missions",
   "passMissions": "Pass Missions",
+  "completedMissions": "Completed missions",
   "completedMissionsPlaceholder": "Completed missions will appear here.",
+  "passMissionsPlaceholder": "Past missions will appear here.",
+  "claimReward": "Claim",
+  "claimRewardAmount": "Claim {amount} WPGG",
+  "@claimRewardAmount": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
   "noMissionsForDay": "No missions for this day.",
   "noMissionsForFilter": "No missions match this filter.",
   "errorLoadingMissions": "Error loading missions",
@@ -46,6 +55,7 @@
   "difficultyMedium": "Medium",
   "difficultyHard": "Hard",
   "statusCompleted": "Completed",
+  "statusClaimed": "Claimed",
   "statusIncomplete": "Incomplete",
   "statusInProgress": "In Progress",
   "statusToDo": "To do",
@@ -221,10 +231,12 @@
   "transactionProcessingAcceptMission": "Accepting mission…",
   "transactionProcessingRerollMission": "Rerolling mission…",
   "transactionProcessingCancelMission": "Deleting mission…",
+  "transactionProcessingClaimMission": "Claiming reward…",
   "transactionProcessingPurchase": "Processing purchase…",
   "transactionSuccessAcceptMission": "Mission accepted",
   "transactionSuccessRerollMission": "Mission rerolled",
   "transactionSuccessCancelMission": "Mission deleted",
+  "transactionSuccessClaimMission": "Reward claimed",
   "transactionFailedGeneric": "The action could not be completed. Please try again.",
   "viewOnGeckoTerminal": "View on GeckoTerminal",
   "authLoginSwitchLine": "Don't have an account?",
