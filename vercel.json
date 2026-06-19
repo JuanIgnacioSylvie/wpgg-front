@@ -11,6 +11,20 @@
       "permanent": true
     }
   ],
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "text/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!robots\\.txt|sitemap\\.xml|favicon\\.ico|favicon\\.png|icons/|firebase-messaging-sw\\.js|firebase-config\\.js|_vercel/).*)",

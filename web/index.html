@@ -29,7 +29,12 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO: must run before Flutter so crawlers/Lighthouse get per-route tags -->
+  <title>WPGG — Misiones diarias de LoL, tokens transparentes y recompensas reales</title>
+  <meta name="description" content="Jugá League of Legends, completá misiones diarias y ganá WPGG. Canjeá por RP, retirá a tu wallet o usalos como quieras. Pool fijo, contrato verificable on-chain. Sin promesas mágicas.">
+  <link rel="canonical" href="https://wpgg.lol/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- Per-route SEO: updates the static tags above before Flutter boots -->
   <script>
     (function () {
       var ORIGIN = 'https://wpgg.lol';
@@ -84,51 +89,39 @@
         return false;
       }
 
-      function esc(value) {
-        return String(value)
-          .replace(/&/g, '&amp;')
-          .replace(/"/g, '&quot;')
-          .replace(/</g, '&lt;');
+      function setMeta(name, content) {
+        var el = document.querySelector('meta[name="' + name + '"]');
+        if (el) el.setAttribute('content', content);
       }
 
-      var path = normalizePath(window.location.pathname);
-      var meta = ROUTES[path] || DEFAULT;
-      var canonical = ORIGIN + (path === '/' ? '/' : path);
-      var robots = isPrivate(path) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+      function setProperty(property, content) {
+        var el = document.querySelector('meta[property="' + property + '"]');
+        if (el) el.setAttribute('content', content);
+      }
 
-      document.write('<title>' + esc(meta.title) + '</title>');
-      document.write('<meta name="description" content="' + esc(meta.description) + '">');
-      document.write('<link rel="canonical" href="' + esc(canonical) + '">');
-      document.write('<meta name="robots" content="' + esc(robots) + '">');
-      document.write('<meta property="og:url" content="' + esc(canonical) + '">');
-      document.write('<meta property="og:title" content="' + esc(meta.ogTitle || meta.title) + '">');
-      document.write('<meta property="og:description" content="' + esc(meta.ogDescription || meta.description) + '">');
-      document.write('<meta name="twitter:title" content="' + esc(meta.ogTitle || meta.title) + '">');
-      document.write('<meta name="twitter:description" content="' + esc(meta.ogDescription || meta.description) + '">');
+      function applySeo(path) {
+        var meta = ROUTES[path] || DEFAULT;
+        var canonical = ORIGIN + (path === '/' ? '/' : path);
+        var robots = isPrivate(path) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+        document.title = meta.title;
+        setMeta('description', meta.description);
+        setMeta('robots', robots);
+        var canonicalEl = document.querySelector('link[rel="canonical"]');
+        if (canonicalEl) canonicalEl.setAttribute('href', canonical);
+        setProperty('og:url', canonical);
+        setProperty('og:title', meta.ogTitle || meta.title);
+        setProperty('og:description', meta.ogDescription || meta.description);
+        setMeta('twitter:title', meta.ogTitle || meta.title);
+        setMeta('twitter:description', meta.ogDescription || meta.description);
+      }
 
+      applySeo(normalizePath(window.location.pathname));
       window.wpggApplySeo = function (nextPath) {
-        var p = normalizePath(nextPath);
-        var m = ROUTES[p] || DEFAULT;
-        var c = ORIGIN + (p === '/' ? '/' : p);
-        var r = isPrivate(p) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
-        document.title = m.title;
-        var desc = document.querySelector('meta[name="description"]');
-        if (desc) desc.setAttribute('content', m.description);
-        var canon = document.querySelector('link[rel="canonical"]');
-        if (canon) canon.setAttribute('href', c);
-        var robotsEl = document.querySelector('meta[name="robots"]');
-        if (robotsEl) robotsEl.setAttribute('content', r);
-        var ogUrl = document.querySelector('meta[property="og:url"]');
-        if (ogUrl) ogUrl.setAttribute('content', c);
-        var ogTitle = document.querySelector('meta[property="og:title"]');
-        if (ogTitle) ogTitle.setAttribute('content', m.ogTitle || m.title);
-        var ogDesc = document.querySelector('meta[property="og:description"]');
-        if (ogDesc) ogDesc.setAttribute('content', m.ogDescription || m.description);
-        var twTitle = document.querySelector('meta[name="twitter:title"]');
-        if (twTitle) twTitle.setAttribute('content', m.ogTitle || m.title);
-        var twDesc = document.querySelector('meta[name="twitter:description"]');
-        if (twDesc) twDesc.setAttribute('content', m.ogDescription || m.description);
+        applySeo(normalizePath(nextPath));
       };
+      window.addEventListener('popstate', function () {
+        applySeo(normalizePath(window.location.pathname));
+      });
     })();
   </script>
 
@@ -138,12 +131,17 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="WPGG">
   <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://wpgg.lol/">
+  <meta property="og:title" content="WPGG — Misiones diarias de LoL con recompensas reales">
+  <meta property="og:description" content="Jugá LoL, ganá WPGG, canjeá por RP o retirá. Pool fijo y transparente on-chain.">
   <meta property="og:image" content="https://wpgg.lol/icons/Icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
 
   <!-- Twitter (title/description set by SEO script above) -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WPGG — Misiones diarias de LoL con recompensas reales">
+  <meta name="twitter:description" content="Jugá LoL, ganá WPGG, canjeá por RP o retirá. Pool fijo y transparente on-chain.">
   <meta name="twitter:image" content="https://wpgg.lol/icons/Icon-512.png">
 
   <!-- iOS meta tags & icons -->
@@ -153,9 +151,9 @@
   <meta name="apple-mobile-web-app-title" content="WPGG">
   <meta name="theme-color" content="#AD1F0F">
 
-  <!-- Favicons: absolute URLs + 192px first (Google prefers multiples of 48px) -->
+  <!-- Favicons: PNG only — Google corrupts PNG-in-ICO containers at small sizes -->
+  <link rel="icon" type="image/png" sizes="48x48" href="https://wpgg.lol/icons/icon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="https://wpgg.lol/icons/Icon-192.png">
-  <link rel="icon" href="https://wpgg.lol/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" sizes="180x180" href="https://wpgg.lol/icons/apple-touch-icon.png">
 
   <link rel="manifest" href="manifest.json">

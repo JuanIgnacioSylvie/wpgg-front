@@ -16,20 +16,19 @@ cp "$ASSETS/wpgg-coin_192x192.png" "$WEB/icons/Icon-maskable-192.png"
 cp "$ASSETS/wpgg-coin_512x512.png" "$WEB/icons/Icon-512.png"
 cp "$ASSETS/wpgg-coin_512x512.png" "$WEB/icons/Icon-maskable-512.png"
 
-# Browsers and Google request /favicon.ico. Must be a real ICO (not a renamed PNG) and a
-# static file — the SPA rewrite must not serve index.html for this path.
+# Google favicon: 48×48 PNG (multiple of 48). favicon.ico is the same PNG — Google's ICO
+# decoder corrupts PNG-in-ICO containers from to-ico/png-to-ico.
 if command -v magick >/dev/null 2>&1; then
-  magick "$ASSETS/wpgg-coin_32x32.png" -define icon:auto-resize=16,32,48 "$WEB/favicon.ico"
-elif command -v convert >/dev/null 2>&1; then
-  convert "$ASSETS/wpgg-coin_32x32.png" -define icon:auto-resize=16,32,48 "$WEB/favicon.ico"
+  magick "$ASSETS/wpgg-coin_192x192.png" -resize 48x48 "$WEB/icons/icon-48.png"
+  cp "$WEB/icons/icon-48.png" "$WEB/favicon.ico"
 elif command -v node >/dev/null 2>&1; then
-  if ! node -e "require('to-ico')" >/dev/null 2>&1; then
-    npm install --no-save to-ico --prefix "$ROOT"
+  if ! node -e "require('sharp')" >/dev/null 2>&1; then
+    npm install --no-save sharp --prefix "$ROOT"
   fi
   node "$ROOT/scripts/generate-favicon-ico.mjs"
 else
-  echo "ERROR: need ImageMagick or Node.js to build favicon.ico" >&2
-  exit 1
+  cp "$ASSETS/wpgg-coin_32x32.png" "$WEB/icons/icon-48.png"
+  cp "$WEB/icons/icon-48.png" "$WEB/favicon.ico"
 fi
 
 echo "Synced WPGG coin icons to web/"

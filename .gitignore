@@ -49,6 +49,7 @@ web/firebase-config.js
 
 # Marketing asset generator (script only; outputs are local)
 marketing/node_modules/
+node_modules/
 marketing/.frames/
 marketing/*.mp4
 marketing/*.png
